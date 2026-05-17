@@ -1,0 +1,336 @@
+{% comment %}
+  ACHARKHASTORY — Product Detail Tabs
+  3 accordion tabs below split panel: Description, Size Guide, Shipping & Returns.
+  Description open by default; others collapsed.
+{% endcomment %}
+
+{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .pdp-tabs {
+    max-width: var(--acs-container);
+    margin-inline: auto;
+    padding-inline: var(--acs-edge);
+    padding-block: var(--acs-sp-2xl);
+    border-top: 1px solid var(--acs-border);
+  }
+
+  .pdp-tabs__item {
+    border-bottom: 1px solid var(--acs-border);
+  }
+
+  .pdp-tabs__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: var(--acs-sp-lg) 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--acs-font-body);
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--acs-text-muted);
+    transition: color var(--acs-duration) var(--acs-ease);
+  }
+
+  .pdp-tabs__header:hover {
+    color: var(--acs-primary);
+  }
+
+  .pdp-tabs__header[aria-expanded="true"] {
+    color: var(--acs-primary);
+    border-bottom: 2px solid var(--acs-secondary);
+    padding-bottom: calc(var(--acs-sp-lg) - 2px);
+  }
+
+  .pdp-tabs__icon {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s var(--acs-ease);
+    flex-shrink: 0;
+  }
+
+  .pdp-tabs__header[aria-expanded="true"] .pdp-tabs__icon {
+    transform: rotate(180deg);
+  }
+
+  .pdp-tabs__icon svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .pdp-tabs__content {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.35s var(--acs-ease);
+  }
+
+  .pdp-tabs__content.is-open {
+    max-height: 1000px;
+  }
+
+  .pdp-tabs__body {
+    padding-bottom: var(--acs-sp-lg);
+    font-family: var(--acs-font-body);
+    font-size: var(--acs-fs-body);
+    font-weight: 400;
+    line-height: 1.8;
+    color: var(--acs-text);
+  }
+
+  .pdp-tabs__body ul {
+    list-style: none;
+    padding: 0;
+    margin: var(--acs-sp-md) 0 0;
+  }
+
+  .pdp-tabs__body ul li {
+    padding: var(--acs-sp-xxs) 0;
+    position: relative;
+    padding-left: 20px;
+  }
+
+  .pdp-tabs__body ul li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: var(--acs-secondary);
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.4;
+  }
+
+  /* Size chart table */
+  .pdp-tabs__size-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--acs-sp-md) 0;
+    font-size: 13px;
+  }
+
+  .pdp-tabs__size-table th {
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 11px;
+    color: var(--acs-text-muted);
+    padding: var(--acs-sp-sm);
+    border-bottom: 1px solid var(--acs-border);
+    text-align: left;
+  }
+
+  .pdp-tabs__size-table td {
+    padding: var(--acs-sp-sm);
+    border-bottom: 1px solid var(--acs-border);
+    color: var(--acs-text);
+  }
+
+  .pdp-tabs__size-table tr:hover td {
+    background: var(--acs-cream);
+  }
+
+  .pdp-tabs__note {
+    font-size: 13px;
+    color: var(--acs-text-muted);
+    font-style: italic;
+    margin-top: var(--acs-sp-md);
+  }
+
+  /* Unit toggle */
+  .pdp-tabs__unit-toggle {
+    display: inline-flex;
+    border: 1px solid var(--acs-border);
+    border-radius: var(--acs-r-sm);
+    overflow: hidden;
+    margin-bottom: var(--acs-sp-md);
+  }
+
+  .pdp-tabs__unit-btn {
+    padding: 6px 16px;
+    font-family: var(--acs-font-body);
+    font-size: 12px;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    color: var(--acs-text-muted);
+    transition: all var(--acs-duration) var(--acs-ease);
+  }
+
+  .pdp-tabs__unit-btn.is-active {
+    background: var(--acs-primary);
+    color: var(--acs-ivory);
+  }
+
+  @media (max-width: 768px) {
+    .pdp-tabs {
+      padding-inline: var(--acs-edge-m);
+    }
+  }
+</style>
+
+<section class="pdp-tabs" id="pdp-tabs-{{ section.id }}">
+  {%- for block in section.blocks -%}
+    <div class="pdp-tabs__item" {{ block.shopify_attributes }}>
+      <button
+        class="pdp-tabs__header"
+        aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+        aria-controls="tab-content-{{ block.id }}"
+        data-tab-toggle
+      >
+        <span>{{ block.settings.title }}</span>
+        <span class="pdp-tabs__icon">
+          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+      <div
+        class="pdp-tabs__content{% if forloop.first %} is-open{% endif %}"
+        id="tab-content-{{ block.id }}"
+        role="region"
+      >
+        <div class="pdp-tabs__body">
+          {%- case block.type -%}
+            {%- when 'description' -%}
+              {%- if product != blank -%}
+                {{ product.description }}
+              {%- else -%}
+                {{ block.settings.content }}
+              {%- endif -%}
+
+            {%- when 'size_guide' -%}
+              <div class="pdp-tabs__unit-toggle">
+                <button class="pdp-tabs__unit-btn is-active" data-unit="in">Inches</button>
+                <button class="pdp-tabs__unit-btn" data-unit="cm">Centimetres</button>
+              </div>
+              {{ block.settings.content }}
+              {%- if block.settings.note != blank -%}
+                <p class="pdp-tabs__note">{{ block.settings.note }}</p>
+              {%- endif -%}
+
+            {%- when 'shipping' -%}
+              {{ block.settings.content }}
+              {%- if block.settings.handmade_note != blank -%}
+                <p class="pdp-tabs__note">{{ block.settings.handmade_note }}</p>
+              {%- endif -%}
+          {%- endcase -%}
+        </div>
+      </div>
+    </div>
+  {%- endfor -%}
+</section>
+
+<script>
+  (function () {
+    document.querySelectorAll('[data-tab-toggle]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var expanded = this.getAttribute('aria-expanded') === 'true';
+        var content = document.getElementById(this.getAttribute('aria-controls'));
+        this.setAttribute('aria-expanded', String(!expanded));
+        content.classList.toggle('is-open', !expanded);
+      });
+    });
+
+    document.querySelectorAll('[data-unit]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var toggle = this.closest('.pdp-tabs__unit-toggle');
+        toggle.querySelectorAll('.pdp-tabs__unit-btn').forEach(function (b) { b.classList.remove('is-active'); });
+        this.classList.add('is-active');
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product Tabs",
+  "tag": "section",
+  "class": "pdp-tabs-section",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "description",
+      "name": "Description",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Tab title",
+          "default": "Description"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Fallback content (used when no product context)",
+          "default": "<p>Detailed product description with fabric, craft technique, and occasion details.</p>"
+        }
+      ]
+    },
+    {
+      "type": "size_guide",
+      "name": "Size Guide",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Tab title",
+          "default": "Size Guide"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Size chart content",
+          "default": "<p>Size chart will display here. Add an HTML table via the rich text editor.</p>"
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Fit note",
+          "default": "This garment runs true to size. For a relaxed fit, size up."
+        }
+      ]
+    },
+    {
+      "type": "shipping",
+      "name": "Shipping & Returns",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Tab title",
+          "default": "Shipping & Returns"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Shipping & returns content",
+          "default": "<ul><li>Free shipping on orders above ₹1,499</li><li>Standard delivery: 5–7 working days</li><li>15-day easy returns — unused with tags</li><li>Size exchanges free of charge within 15 days</li><li>Refund within 7 working days of return pickup</li></ul>"
+        },
+        {
+          "type": "text",
+          "id": "handmade_note",
+          "label": "Handmade note",
+          "default": "As each piece is handcrafted, slight variations in colour and pattern are a feature, not a defect."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Tabs",
+      "blocks": [
+        { "type": "description", "settings": { "title": "Description" } },
+        { "type": "size_guide", "settings": { "title": "Size Guide" } },
+        { "type": "shipping", "settings": { "title": "Shipping & Returns" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,256 @@
+{% comment %}
+  ACHARKHASTORY — Stories from the Studio (EX8)
+  Blog / Stories Preview section. 3 cards in a row.
+{% endcomment %}
+
+{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .explore-blog {
+    max-width: var(--acs-container);
+    margin-inline: auto;
+    padding-inline: var(--acs-edge);
+    padding-block: var(--acs-section-py);
+  }
+
+  .explore-blog__header {
+    margin-bottom: var(--acs-sp-xl);
+  }
+
+  .explore-blog__title {
+    font-family: var(--acs-font-display);
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--acs-primary);
+    margin: 0;
+  }
+
+  .explore-blog__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--acs-gutter);
+  }
+
+  .explore-blog__card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    border: 1px solid var(--acs-border);
+    border-radius: var(--acs-r-md);
+    overflow: hidden;
+    background: var(--acs-white);
+    transition: transform 0.4s var(--acs-ease), box-shadow 0.4s var(--acs-ease);
+  }
+
+  .explore-blog__card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(61, 34, 16, 0.08);
+  }
+
+  .explore-blog__img-wrap {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--acs-surface);
+    position: relative;
+  }
+
+  .explore-blog__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--acs-ease);
+  }
+
+  .explore-blog__card:hover .explore-blog__img {
+    transform: scale(1.05);
+  }
+
+  .explore-blog__tag {
+    position: absolute;
+    top: var(--acs-sp-md);
+    left: var(--acs-sp-md);
+    background: var(--acs-primary);
+    color: var(--acs-ivory);
+    font-family: var(--acs-font-body);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 8px;
+    border-radius: var(--acs-r-sm);
+  }
+
+  .explore-blog__content {
+    padding: var(--acs-sp-lg);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .explore-blog__headline {
+    font-family: var(--acs-font-display);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--acs-primary);
+    margin: 0 0 var(--acs-sp-xs);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .explore-blog__desc {
+    font-family: var(--acs-font-body);
+    font-size: 13px;
+    color: var(--acs-text-muted);
+    margin: 0 0 var(--acs-sp-md);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .explore-blog__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: var(--acs-sp-md);
+    border-top: 1px solid var(--acs-border);
+  }
+
+  .explore-blog__date {
+    font-family: var(--acs-font-body);
+    font-size: 12px;
+    color: var(--acs-text-muted);
+  }
+
+  .explore-blog__read-more {
+    font-family: var(--acs-font-body);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--acs-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 1024px) {
+    .explore-blog__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .explore-blog__grid {
+      grid-template-columns: 1fr;
+    }
+    .explore-blog__title {
+      font-size: 28px;
+    }
+  }
+</style>
+
+<section class="explore-blog" id="explore-blog">
+  <div class="explore-blog__header">
+    <h2 class="explore-blog__title">{{ section.settings.title }}</h2>
+  </div>
+
+  <div class="explore-blog__grid">
+    {%- for block in section.blocks -%}
+      {%- assign article = block.settings.article -%}
+      <a href="{{ article.url | default: '#' }}" class="explore-blog__card" {{ block.shopify_attributes }}>
+        <div class="explore-blog__img-wrap">
+          {%- assign img = block.settings.image | default: article.image -%}
+          {%- if img != blank -%}
+            <img
+              class="explore-blog__img"
+              src="{{ img | image_url: width: 600 }}"
+              alt="{{ block.settings.title | default: article.title | escape }}"
+              loading="lazy"
+              width="600"
+              height="337"
+            >
+          {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'explore-blog__img' }}
+          {%- endif -%}
+          {%- if block.settings.tag != blank -%}
+            <span class="explore-blog__tag">{{ block.settings.tag }}</span>
+          {%- endif -%}
+        </div>
+        
+        <div class="explore-blog__content">
+          <h3 class="explore-blog__headline">{{ block.settings.title | default: article.title | default: 'Article Title' }}</h3>
+          <p class="explore-blog__desc">{{ block.settings.description | default: article.excerpt_or_content | strip_html | truncatewords: 15 }}</p>
+          
+          <div class="explore-blog__footer">
+            <span class="explore-blog__date">{{ article.published_at | default: 'May 17, 2026' | time_tag: format: 'date' }}</span>
+            <span class="explore-blog__read-more">Read more →</span>
+          </div>
+        </div>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Stories from the Studio",
+  "tag": "section",
+  "class": "explore-blog-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Stories from the Studio"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "article_card",
+      "name": "Article Card",
+      "settings": [
+        {
+          "type": "article",
+          "id": "article",
+          "label": "Article"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom Image (Optional)"
+        },
+        {
+          "type": "text",
+          "id": "tag",
+          "label": "Badge Tag",
+          "default": "Craft Story"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Headline Override"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Preview Text Override"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Stories from the Studio",
+      "blocks": [
+        { "type": "article_card", "settings": { "tag": "Craft Story", "title": "The story of Ajrakh: 3000 years of a single pattern", "description": "Tracing the geometric legacy of the Indus Valley civilization." } },
+        { "type": "article_card", "settings": { "tag": "Artisan Feature", "title": "Meet Rekha: the mirror worker from Kutch", "description": "How a traditional skill is empowering a new generation of women." } },
+        { "type": "article_card", "settings": { "tag": "Style Guide", "title": "How to style a handblock kurta for the office", "description": "Three ways to wear our signature piece." } }
+      ]
+    }
+  ],
+  "max_blocks": 3
+}
+{% endschema %}

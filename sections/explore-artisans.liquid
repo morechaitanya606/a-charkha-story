@@ -1,0 +1,250 @@
+{% comment %}
+  ACHARKHASTORY — Artisans Directory (EX5)
+  4-column grid of artisan groups.
+{% endcomment %}
+
+{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .explore-artisans {
+    max-width: var(--acs-container);
+    margin-inline: auto;
+    padding-inline: var(--acs-edge);
+    padding-block: var(--acs-section-py);
+  }
+
+  .explore-artisans__header {
+    margin-bottom: var(--acs-sp-xl);
+  }
+
+  .explore-artisans__title {
+    font-family: var(--acs-font-display);
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--acs-primary);
+    margin: 0 0 var(--acs-sp-xs);
+  }
+
+  .explore-artisans__subtitle {
+    font-family: var(--acs-font-body);
+    font-size: 15px;
+    color: var(--acs-text-muted);
+    font-style: italic;
+    margin: 0;
+  }
+
+  .explore-artisans__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--acs-gutter);
+  }
+
+  .explore-artisans__card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+  }
+
+  .explore-artisans__img-wrap {
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: var(--acs-r-md);
+    background: var(--acs-surface);
+    margin-bottom: var(--acs-sp-sm);
+  }
+
+  .explore-artisans__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--acs-ease);
+  }
+
+  .explore-artisans__card:hover .explore-artisans__img {
+    transform: scale(1.05);
+  }
+
+  .explore-artisans__name {
+    font-family: var(--acs-font-body);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--acs-primary);
+    margin: 0 0 2px;
+  }
+
+  .explore-artisans__location {
+    font-family: var(--acs-font-body);
+    font-size: 12px;
+    color: var(--acs-text-muted);
+    margin: 0 0 var(--acs-sp-xs);
+  }
+
+  .explore-artisans__tags {
+    font-family: var(--acs-font-body);
+    font-size: 11px;
+    color: var(--acs-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 var(--acs-sp-xs);
+  }
+
+  .explore-artisans__link {
+    font-family: var(--acs-font-body);
+    font-size: 13px;
+    color: var(--acs-primary);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-weight: 500;
+    margin-top: auto;
+  }
+
+  .explore-artisans__footer {
+    text-align: center;
+    margin-top: var(--acs-sp-2xl);
+  }
+
+  @media (max-width: 1024px) {
+    .explore-artisans__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .explore-artisans__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .explore-artisans__title {
+      font-size: 28px;
+    }
+  }
+</style>
+
+<section class="explore-artisans" id="explore-artisans">
+  <div class="explore-artisans__header">
+    <h2 class="explore-artisans__title">{{ section.settings.title }}</h2>
+    {%- if section.settings.subtitle != blank -%}
+      <p class="explore-artisans__subtitle">{{ section.settings.subtitle }}</p>
+    {%- endif -%}
+  </div>
+
+  <div class="explore-artisans__grid">
+    {%- for block in section.blocks -%}
+      <a href="{{ block.settings.link | default: '#' }}" class="explore-artisans__card" {{ block.shopify_attributes }}>
+        <div class="explore-artisans__img-wrap">
+          {%- if block.settings.image != blank -%}
+            <img
+              class="explore-artisans__img"
+              src="{{ block.settings.image | image_url: width: 400 }}"
+              alt="{{ block.settings.name | escape }}"
+              loading="lazy"
+              width="400"
+              height="400"
+            >
+          {%- else -%}
+            {{ 'lifestyle-2' | placeholder_svg_tag: 'explore-artisans__img' }}
+          {%- endif -%}
+        </div>
+        
+        <h3 class="explore-artisans__name">{{ block.settings.name }}</h3>
+        {%- if block.settings.location != blank -%}
+          <p class="explore-artisans__location">{{ block.settings.location }}</p>
+        {%- endif -%}
+        
+        {%- if block.settings.tags != blank -%}
+          <p class="explore-artisans__tags">{{ block.settings.tags }}</p>
+        {%- endif -%}
+        
+        <span class="explore-artisans__link">View Collection →</span>
+      </a>
+    {%- endfor -%}
+  </div>
+
+  {%- if section.settings.cta_label != blank -%}
+    <div class="explore-artisans__footer">
+      <a href="{{ section.settings.cta_link | default: '#' }}" class="acs-btn acs-btn--ghost">
+        {{ section.settings.cta_label }}
+      </a>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Artisans Directory",
+  "tag": "section",
+  "class": "explore-artisans-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "The Hands Behind Acharkhastory"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "We work with 40+ artisan groups across 12 Indian states."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button Label",
+      "default": "View All Artisans"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button Link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "artisan",
+      "name": "Artisan Group",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Group Photo (Square 1:1)"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Group Name",
+          "default": "Rangsutra"
+        },
+        {
+          "type": "text",
+          "id": "location",
+          "label": "Location",
+          "default": "Bikaner, Rajasthan"
+        },
+        {
+          "type": "text",
+          "id": "tags",
+          "label": "Craft Tags",
+          "default": "Mirror Work · Embroidery"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Collection Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Artisans Directory",
+      "blocks": [
+        { "type": "artisan" },
+        { "type": "artisan" },
+        { "type": "artisan" },
+        { "type": "artisan" }
+      ]
+    }
+  ]
+}
+{% endschema %}

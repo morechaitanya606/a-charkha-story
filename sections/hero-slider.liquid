@@ -1,0 +1,438 @@
+{% comment %}
+  ACHARKHASTORY — Hero Banner Slider
+  Full-width cinematic hero with up to 8 slides.
+  Auto-advance, dot nav, arrow controls, touch/swipe.
+{% endcomment %}
+
+{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .hero-slider {
+    position: relative;
+    width: 100%;
+    height: clamp(600px, 88vh, 800px);
+    overflow: hidden;
+    background: var(--acs-surface);
+  }
+
+  .hero-slider__track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-slider__slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity var(--acs-duration-slow) var(--acs-ease);
+    z-index: 0;
+  }
+
+  .hero-slider__slide.is-active {
+    opacity: 1;
+    z-index: 1;
+  }
+
+  .hero-slider__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero-slider__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .hero-slider__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to right,
+      rgba(61, 34, 16, 0.55) 0%,
+      rgba(61, 34, 16, 0) 60%
+    );
+    z-index: 1;
+  }
+
+  .hero-slider__content {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 2;
+    max-width: 560px;
+    padding-left: var(--acs-edge);
+    display: flex;
+    flex-direction: column;
+    gap: var(--acs-sp-md);
+  }
+
+  .hero-slider__eyebrow {
+    font-family: var(--acs-font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--acs-warm-mid);
+  }
+
+  .hero-slider__headline {
+    font-family: var(--acs-font-display);
+    font-size: clamp(32px, 4.5vw, 52px);
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--acs-ivory);
+    margin: 0;
+  }
+
+  .hero-slider__subtext {
+    font-family: var(--acs-font-body);
+    font-size: 16px;
+    font-weight: 400;
+    color: rgba(253, 246, 238, 0.8);
+    line-height: 1.5;
+    max-width: 440px;
+  }
+
+  .hero-slider__ctas {
+    display: flex;
+    gap: var(--acs-sp-sm);
+    margin-top: var(--acs-sp-xs);
+  }
+
+  /* Dots */
+  .hero-slider__dots {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    gap: var(--acs-sp-xs);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .hero-slider__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(253, 246, 238, 0.4);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background var(--acs-duration) var(--acs-ease);
+  }
+
+  .hero-slider__dot.is-active {
+    background: var(--acs-ivory);
+  }
+
+  /* Arrows */
+  .hero-slider__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(253, 246, 238, 0.4);
+    background: rgba(61, 34, 16, 0.3);
+    color: var(--acs-ivory);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--acs-duration) var(--acs-ease);
+  }
+
+  .hero-slider:hover .hero-slider__arrow {
+    opacity: 1;
+  }
+
+  .hero-slider__arrow--prev { left: 24px; }
+  .hero-slider__arrow--next { right: 24px; }
+
+  .hero-slider__arrow:hover {
+    background: rgba(61, 34, 16, 0.6);
+    border-color: rgba(253, 246, 238, 0.7);
+  }
+
+  .hero-slider__arrow svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .hero-slider {
+      height: 70vh;
+    }
+
+    .hero-slider__overlay {
+      background: linear-gradient(
+        to top,
+        rgba(61, 34, 16, 0.65) 0%,
+        rgba(61, 34, 16, 0) 50%
+      );
+    }
+
+    .hero-slider__content {
+      top: auto;
+      bottom: 0;
+      transform: none;
+      padding: var(--acs-sp-lg) var(--acs-edge-m);
+      padding-bottom: 72px;
+      text-align: center;
+      max-width: 100%;
+      align-items: center;
+    }
+
+    .hero-slider__headline {
+      font-size: 32px;
+    }
+
+    .hero-slider__ctas {
+      justify-content: center;
+    }
+
+    /* Hide second CTA on mobile */
+    .hero-slider__cta--secondary {
+      display: none;
+    }
+
+    .hero-slider__arrow {
+      display: none;
+    }
+
+    .hero-slider__dots {
+      bottom: 24px;
+    }
+
+    .hero-slider__dot {
+      width: 10px;
+      height: 10px;
+    }
+  }
+</style>
+
+<section
+  class="hero-slider"
+  id="hero-slider-{{ section.id }}"
+  aria-label="Hero banner"
+  aria-roledescription="carousel"
+  data-autoplay="{{ section.settings.autoplay }}"
+  data-interval="{{ section.settings.interval }}"
+>
+  <div class="hero-slider__track">
+    {%- for block in section.blocks -%}
+      <div
+        class="hero-slider__slide{% if forloop.first %} is-active{% endif %}"
+        role="group"
+        aria-roledescription="slide"
+        aria-label="Slide {{ forloop.index }} of {{ section.blocks.size }}"
+        {{ block.shopify_attributes }}
+      >
+        <div class="hero-slider__media">
+          {%- if block.settings.mobile_image != blank -%}
+            <picture>
+              <source
+                media="(max-width: 768px)"
+                srcset="{{ block.settings.mobile_image | image_url: width: 800 }}"
+              >
+              <img
+                src="{{ block.settings.desktop_image | image_url: width: 1920 }}"
+                alt="{{ block.settings.headline | escape }}"
+                width="1920"
+                height="1080"
+                {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}
+              >
+            </picture>
+          {%- elsif block.settings.desktop_image != blank -%}
+            <img
+              src="{{ block.settings.desktop_image | image_url: width: 1920 }}"
+              alt="{{ block.settings.headline | escape }}"
+              width="1920"
+              height="1080"
+              {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}
+            >
+          {%- endif -%}
+        </div>
+
+        <div class="hero-slider__overlay"></div>
+
+        <div class="hero-slider__content">
+          {%- if block.settings.eyebrow != blank -%}
+            <span class="hero-slider__eyebrow">{{ block.settings.eyebrow }}</span>
+          {%- endif -%}
+
+          <h2 class="hero-slider__headline">{{ block.settings.headline }}</h2>
+
+          {%- if block.settings.subtext != blank -%}
+            <p class="hero-slider__subtext">{{ block.settings.subtext }}</p>
+          {%- endif -%}
+
+          <div class="hero-slider__ctas">
+            {%- if block.settings.cta1_label != blank -%}
+              <a href="{{ block.settings.cta1_link }}" class="acs-btn acs-btn--ivory">
+                {{ block.settings.cta1_label }}
+              </a>
+            {%- endif -%}
+            {%- if block.settings.cta2_label != blank -%}
+              <a href="{{ block.settings.cta2_link }}" class="acs-btn acs-btn--ghost-ivory hero-slider__cta--secondary">
+                {{ block.settings.cta2_label }}
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if section.blocks.size > 1 -%}
+    <button class="hero-slider__arrow hero-slider__arrow--prev" aria-label="Previous slide">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="hero-slider__arrow hero-slider__arrow--next" aria-label="Next slide">
+      <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+    </button>
+
+    <ol class="hero-slider__dots" role="tablist" aria-label="Slide navigation">
+      {%- for block in section.blocks -%}
+        <li>
+          <button
+            class="hero-slider__dot{% if forloop.first %} is-active{% endif %}"
+            role="tab"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            aria-label="Go to slide {{ forloop.index }}"
+            data-index="{{ forloop.index0 }}"
+          ></button>
+        </li>
+      {%- endfor -%}
+    </ol>
+  {%- endif -%}
+</section>
+
+<script src="{{ 'hero-slider.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Hero Slider",
+  "tag": "section",
+  "class": "hero-slider-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Auto-advance slides",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "interval",
+      "label": "Seconds between slides",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "desktop_image",
+          "label": "Desktop image"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "Mobile image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow text",
+          "default": "New Collection 2025"
+        },
+        {
+          "type": "text",
+          "id": "headline",
+          "label": "Headline",
+          "default": "Stories woven in every thread"
+        },
+        {
+          "type": "textarea",
+          "id": "subtext",
+          "label": "Subtext",
+          "default": "Handcrafted with love by artisans across India"
+        },
+        {
+          "type": "text",
+          "id": "cta1_label",
+          "label": "Primary CTA label",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "cta1_link",
+          "label": "Primary CTA link"
+        },
+        {
+          "type": "text",
+          "id": "cta2_label",
+          "label": "Secondary CTA label",
+          "default": "Explore Crafts"
+        },
+        {
+          "type": "url",
+          "id": "cta2_link",
+          "label": "Secondary CTA link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Slider",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "New Collection 2025",
+            "headline": "Stories woven in every thread",
+            "subtext": "Handcrafted Ajrakh, made in Kutch",
+            "cta1_label": "Shop Ajrakh",
+            "cta2_label": "Meet the Artisan"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Heirloom Embroidery",
+            "headline": "The art your grandmother remembered",
+            "subtext": "Mirror work by master craftswomen",
+            "cta1_label": "Shop Embroidery",
+            "cta2_label": "Explore Crafts"
+          }
+        }
+      ]
+    }
+  ],
+  "max_blocks": 8
+}
+{% endschema %}

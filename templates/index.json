@@ -1,0 +1,248 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */{
+  "sections": {
+    "hero_slider_acs": {
+      "type": "hero-slider",
+      "blocks": {
+        "slide_1": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "New Collection 2025",
+            "headline": "Stories woven in every thread",
+            "subtext": "Handcrafted Ajrakh, made in Kutch by master artisans",
+            "cta1_label": "Shop Ajrakh",
+            "cta2_label": "Meet the Artisan"
+          }
+        },
+        "slide_2": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Heirloom Embroidery",
+            "headline": "The art your grandmother remembered",
+            "subtext": "Mirror work by master craftswomen of Kutch",
+            "cta1_label": "Shop Embroidery",
+            "cta2_label": "Explore Crafts"
+          }
+        }
+      },
+      "block_order": ["slide_1", "slide_2"],
+      "settings": {
+        "autoplay": true,
+        "interval": 5
+      }
+    },
+    "trust_badges_acs": {
+      "type": "trust-badges",
+      "blocks": {
+        "badge_1": {
+          "type": "badge",
+          "settings": { "icon_type": "empowerment", "label": "Women Empowerment" }
+        },
+        "badge_2": {
+          "type": "badge",
+          "settings": { "icon_type": "circular", "label": "Circular Fashion" }
+        },
+        "badge_3": {
+          "type": "badge",
+          "settings": { "icon_type": "sustainable", "label": "Sustainable" }
+        },
+        "badge_4": {
+          "type": "badge",
+          "settings": { "icon_type": "heirloom", "label": "Heirloom Crafts" }
+        },
+        "badge_5": {
+          "type": "badge",
+          "settings": { "icon_type": "returns", "label": "Easy Returns" }
+        }
+      },
+      "block_order": ["badge_1", "badge_2", "badge_3", "badge_4", "badge_5"],
+      "settings": {
+        "aria_label": "Our values"
+      }
+    },
+    "category_tiles_acs": {
+      "type": "category-tiles",
+      "blocks": {
+        "tile_1": {
+          "type": "tile",
+          "settings": { "label": "Tops" }
+        },
+        "tile_2": {
+          "type": "tile",
+          "settings": { "label": "Kurtas" }
+        },
+        "tile_3": {
+          "type": "tile",
+          "settings": { "label": "Dresses" }
+        },
+        "tile_4": {
+          "type": "tile",
+          "settings": { "label": "Jewellery" }
+        }
+      },
+      "block_order": ["tile_1", "tile_2", "tile_3", "tile_4"],
+      "settings": {
+        "title": "Shop by Category",
+        "subtitle": "Explore our collections"
+      }
+    },
+    "new_arrivals_acs": {
+      "type": "product-carousel",
+      "settings": {
+        "title": "New Arrivals",
+        "max_products": 8,
+        "view_all_text": "View all →"
+      }
+    },
+    "fcb_clothing_acs": {
+      "type": "featured-collection-banner",
+      "settings": {
+        "eyebrow": "Clothing Collection",
+        "title": "Clothing that tells a story",
+        "tagline": "From our looms to your wardrobe",
+        "description": "Each piece is hand-blocked, hand-stitched, and finished by artisans who have inherited their craft across generations.",
+        "cta_label": "Shop Clothing",
+        "reverse_layout": false
+      }
+    },
+    "craft_types_acs": {
+      "type": "craft-types",
+      "blocks": {
+        "craft_1": { "type": "craft", "settings": { "name": "Ajrakh", "region": "Kutch, Gujarat" } },
+        "craft_2": { "type": "craft", "settings": { "name": "Block Printing", "region": "Rajasthan" } },
+        "craft_3": { "type": "craft", "settings": { "name": "Chikankari", "region": "Lucknow, UP" } },
+        "craft_4": { "type": "craft", "settings": { "name": "Mirror Work", "region": "Kutch, Gujarat" } },
+        "craft_5": { "type": "craft", "settings": { "name": "Kalamkari", "region": "Andhra Pradesh" } },
+        "craft_6": { "type": "craft", "settings": { "name": "Ikat", "region": "Odisha & Telangana" } }
+      },
+      "block_order": ["craft_1", "craft_2", "craft_3", "craft_4", "craft_5", "craft_6"],
+      "settings": {
+        "title": "Shop by Craft",
+        "explore_text": "Explore all crafts →"
+      }
+    },
+    "bestsellers_acs": {
+      "type": "product-carousel",
+      "settings": {
+        "title": "Bestsellers",
+        "max_products": 8,
+        "view_all_text": "Shop bestsellers →"
+      }
+    },
+    "fcb_crafts_acs": {
+      "type": "featured-collection-banner",
+      "settings": {
+        "eyebrow": "Artisan Crafts",
+        "title": "Where craft meets conscience",
+        "tagline": "Handmade, naturally dyed, ethically sourced",
+        "description": "Every purchase supports artisan cooperatives and preserves India's rich textile heritage.",
+        "cta_label": "Explore Crafts",
+        "reverse_layout": true
+      }
+    },
+    "artisan_story_acs": {
+      "type": "artisan-story",
+      "blocks": {
+        "stat_1": { "type": "stat", "settings": { "number": "2,300+", "label": "Artisans" } },
+        "stat_2": { "type": "stat", "settings": { "number": "12", "label": "States" } },
+        "stat_3": { "type": "stat", "settings": { "number": "40+", "label": "Cooperatives" } }
+      },
+      "block_order": ["stat_1", "stat_2", "stat_3"],
+      "settings": {
+        "eyebrow": "The Artisan Collective",
+        "title": "2,300 hands craft every collection",
+        "body": "Every Acharkhastory product is handcrafted by skilled artisans from 40+ cooperatives. When you buy from us, you sustain a family, revive a dying craft, and wear a piece of living heritage.",
+        "cta_label": "Meet Our Artisans"
+      }
+    },
+    "reviews_acs": {
+      "type": "reviews-acs",
+      "blocks": {
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "name": "Priya S.",
+            "location": "Mumbai",
+            "rating": 5,
+            "review_text": "The Ajrakh kurta is stunning. The natural dyes give it such a rich, earthy tone. I can feel the craft in every stitch.",
+            "product_name": "Ajrakh Block Print Kurta"
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "name": "Ananya R.",
+            "location": "Bangalore",
+            "rating": 5,
+            "review_text": "Ordered the mirror work dupatta and it's absolutely gorgeous. The packaging was beautiful too — felt like receiving a gift.",
+            "product_name": "Kutchi Mirror Work Dupatta"
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "name": "Meera K.",
+            "location": "Delhi",
+            "rating": 4,
+            "review_text": "Love that each piece comes with a note about the artisan who made it. The chikankari top is my new favourite for office wear.",
+            "product_name": "Chikankari Cotton Top"
+          }
+        }
+      },
+      "block_order": ["review_1", "review_2", "review_3"],
+      "settings": {
+        "title": "What Our Community Says",
+        "subtitle": "Real stories from real customers",
+        "enable_judgeme": false
+      }
+    },
+    "instagram_feed_acs": {
+      "type": "instagram-feed",
+      "blocks": {
+        "img_1": { "type": "image" },
+        "img_2": { "type": "image" },
+        "img_3": { "type": "image" },
+        "img_4": { "type": "image" },
+        "img_5": { "type": "image" },
+        "img_6": { "type": "image" }
+      },
+      "block_order": ["img_1", "img_2", "img_3", "img_4", "img_5", "img_6"],
+      "settings": {
+        "title": "Follow the Story",
+        "handle": "acharkhastory",
+        "cta_label": "Follow Us on Instagram"
+      }
+    },
+    "email_signup_acs": {
+      "type": "email-signup",
+      "settings": {
+        "title": "Join the Acharkhastory Family",
+        "subtitle": "Be the first to know about new collections, craft stories, and exclusive offers.",
+        "placeholder": "Your email address",
+        "button_label": "Subscribe",
+        "fine_print": "No spam, ever. Unsubscribe anytime."
+      }
+    }
+  },
+  "order": [
+    "hero_slider_acs",
+    "trust_badges_acs",
+    "category_tiles_acs",
+    "new_arrivals_acs",
+    "fcb_clothing_acs",
+    "craft_types_acs",
+    "bestsellers_acs",
+    "fcb_crafts_acs",
+    "artisan_story_acs",
+    "reviews_acs",
+    "instagram_feed_acs",
+    "email_signup_acs"
+  ]
+}

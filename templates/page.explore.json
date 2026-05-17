@@ -1,0 +1,175 @@
+{
+  "sections": {
+    "explore_header_acs": {
+      "type": "explore-header",
+      "blocks": {
+        "link_all": { "type": "filter_link", "settings": { "title": "All", "link": "#" } },
+        "link_stories": { "type": "filter_link", "settings": { "title": "Stories", "link": "#explore-stories" } },
+        "link_crafts": { "type": "filter_link", "settings": { "title": "Craft Types", "link": "#explore-crafts" } },
+        "link_shop": { "type": "filter_link", "settings": { "title": "Shop by Craft", "link": "#explore-shop" } }
+      },
+      "block_order": ["link_all", "link_stories", "link_crafts", "link_shop"],
+      "settings": {
+        "title": "EXPLORE ACHARKHASTORY",
+        "subtitle": "From ancient craft traditions to contemporary handmade design.\nDiscover 20+ craft types, 40+ artisan groups, and 2300+ hands behind every piece."
+      }
+    },
+    "explore_stories_acs": {
+      "type": "explore-stories",
+      "blocks": {
+        "story_1": {
+          "type": "story",
+          "settings": {
+            "label": "Craft Spotlight",
+            "title": "The women of Kutch who keep Ajrakh alive",
+            "description": "Meet the artisans preserving a 3000-year-old tradition.",
+            "cta_label": "Explore Ajrakh"
+          }
+        },
+        "story_2": {
+          "type": "story",
+          "settings": {
+            "label": "New Season",
+            "title": "Block prints, natural dyes, and summer ease",
+            "description": "Airy cottons for the warmer months ahead.",
+            "cta_label": "Shop New Arrivals"
+          }
+        }
+      },
+      "block_order": ["story_1", "story_2"],
+      "settings": {}
+    },
+    "explore_crafts_grid_acs": {
+      "type": "explore-crafts-grid",
+      "blocks": {
+        "craft_1": { "type": "craft", "settings": { "title": "Ajrakh", "region": "Kutch, Gujarat & Sindh" } },
+        "craft_2": { "type": "craft", "settings": { "title": "Block Printing", "region": "Rajasthan & Gujarat" } },
+        "craft_3": { "type": "craft", "settings": { "title": "Chikankari", "region": "Lucknow, UP" } },
+        "craft_4": { "type": "craft", "settings": { "title": "Mirror Work", "region": "Kutch, Gujarat" } },
+        "craft_5": { "type": "craft", "settings": { "title": "Madhubani", "region": "Mithila, Bihar" } },
+        "craft_6": { "type": "craft", "settings": { "title": "Kalamkari", "region": "Andhra Pradesh" } },
+        "craft_7": { "type": "craft", "settings": { "title": "Hand Weaving", "region": "Pan India" } },
+        "craft_8": { "type": "craft", "settings": { "title": "Ikat", "region": "Odisha & Telangana" } },
+        "craft_9": { "type": "craft", "settings": { "title": "Batik", "region": "West Bengal & UP" } },
+        "craft_10": { "type": "craft", "settings": { "title": "Eco Printing", "region": "Pan India" } }
+      },
+      "block_order": ["craft_1", "craft_2", "craft_3", "craft_4", "craft_5", "craft_6", "craft_7", "craft_8", "craft_9", "craft_10"],
+      "settings": {
+        "title": "Crafts of India",
+        "subtitle": "Every craft has a region, a ritual, and a reason."
+      }
+    },
+    "explore_shop_by_craft_acs": {
+      "type": "explore-shop-by-craft",
+      "blocks": {
+        "shop_1": {
+          "type": "craft_collection",
+          "settings": {
+            "title": "Ajrakh",
+            "region": "Kutch, Gujarat & Sindh",
+            "description": "A centuries-old block printing technique using natural dyes and complex geometric patterns."
+          }
+        },
+        "shop_2": {
+          "type": "craft_collection",
+          "settings": {
+            "title": "Chikankari",
+            "region": "Lucknow, UP",
+            "description": "Delicate and artfully done hand embroidery on a variety of textile fabrics like muslin, silk, chiffon, organza, net, etc."
+          }
+        }
+      },
+      "block_order": ["shop_1", "shop_2"],
+      "settings": {}
+    },
+    "explore_artisans_acs": {
+      "type": "explore-artisans",
+      "blocks": {
+        "artisan_1": { "type": "artisan", "settings": { "name": "Rangsutra", "location": "Bikaner, Rajasthan", "tags": "Mirror Work · Embroidery" } },
+        "artisan_2": { "type": "artisan", "settings": { "name": "Okhai", "location": "Mithapur, Gujarat", "tags": "Appliqué · Handicrafts" } },
+        "artisan_3": { "type": "artisan", "settings": { "name": "Khamir", "location": "Kutch, Gujarat", "tags": "Kala Cotton · Weaving" } },
+        "artisan_4": { "type": "artisan", "settings": { "name": "Sadhna", "location": "Udaipur, Rajasthan", "tags": "Patchwork · Embroidery" } }
+      },
+      "block_order": ["artisan_1", "artisan_2", "artisan_3", "artisan_4"],
+      "settings": {
+        "title": "The Hands Behind Acharkhastory",
+        "subtitle": "We work with 40+ artisan groups across 12 Indian states.",
+        "cta_label": "View All Artisans"
+      }
+    },
+    "explore_map_acs": {
+      "type": "explore-craft-map",
+      "blocks": {
+        "region_1": { "type": "craft_region", "settings": { "name": "Ajrakh", "region": "Kutch, Gujarat & Sindh" } },
+        "region_2": { "type": "craft_region", "settings": { "name": "Block Printing", "region": "Rajasthan & Gujarat" } },
+        "region_3": { "type": "craft_region", "settings": { "name": "Chikankari", "region": "Lucknow, UP" } },
+        "region_4": { "type": "craft_region", "settings": { "name": "Mirror Work", "region": "Kutch, Gujarat" } },
+        "region_5": { "type": "craft_region", "settings": { "name": "Madhubani", "region": "Mithila, Bihar" } },
+        "region_6": { "type": "craft_region", "settings": { "name": "Kalamkari", "region": "Andhra Pradesh" } }
+      },
+      "block_order": ["region_1", "region_2", "region_3", "region_4", "region_5", "region_6"],
+      "settings": {
+        "title": "Tracing Our Roots",
+        "subtitle": "Discover the regions where our crafts are born."
+      }
+    },
+    "explore_gifting_acs": {
+      "type": "explore-gifting",
+      "blocks": {
+        "tab_1": { "type": "tab", "settings": { "title": "Under ₹500" } },
+        "tab_2": { "type": "tab", "settings": { "title": "Under ₹1500" } },
+        "tab_3": { "type": "tab", "settings": { "title": "Under ₹2500" } },
+        "tab_4": { "type": "tab", "settings": { "title": "Under ₹5000" } },
+        "tab_5": { "type": "tab", "settings": { "title": "For Her" } },
+        "tab_6": { "type": "tab", "settings": { "title": "For Kids" } }
+      },
+      "block_order": ["tab_1", "tab_2", "tab_3", "tab_4", "tab_5", "tab_6"],
+      "settings": {
+        "title": "Thoughtful Gifting",
+        "subtitle": "Give something made by hand, kept for life."
+      }
+    },
+    "explore_blog_acs": {
+      "type": "explore-blog-preview",
+      "blocks": {
+        "article_1": { "type": "article_card", "settings": { "tag": "Craft Story", "title": "The story of Ajrakh: 3000 years of a single pattern", "description": "Tracing the geometric legacy of the Indus Valley civilization." } },
+        "article_2": { "type": "article_card", "settings": { "tag": "Artisan Feature", "title": "Meet Rekha: the mirror worker from Kutch", "description": "How a traditional skill is empowering a new generation of women." } },
+        "article_3": { "type": "article_card", "settings": { "tag": "Style Guide", "title": "How to style a handblock kurta for the office", "description": "Three ways to wear our signature piece." } }
+      },
+      "block_order": ["article_1", "article_2", "article_3"],
+      "settings": {
+        "title": "Stories from the Studio"
+      }
+    },
+    "explore_impact_acs": {
+      "type": "explore-impact-counter",
+      "blocks": {
+        "count_1": { "type": "counter", "settings": { "target_number": "2,300", "suffix": "+", "label": "Artisans empowered" } },
+        "count_2": { "type": "counter", "settings": { "target_number": "12", "suffix": "", "label": "Indian states" } },
+        "count_3": { "type": "counter", "settings": { "target_number": "20", "suffix": "+", "label": "Craft traditions" } },
+        "count_4": { "type": "counter", "settings": { "target_number": "2", "prefix": "₹", "suffix": "Cr+", "label": "Artisan earnings" } }
+      },
+      "block_order": ["count_1", "count_2", "count_3", "count_4"],
+      "settings": {}
+    },
+    "email_signup_acs": {
+      "type": "email-signup",
+      "settings": {
+        "title": "Join the Acharkhastory Family",
+        "subtitle": "Be the first to know about new collections, craft stories, and exclusive offers."
+      }
+    }
+  },
+  "order": [
+    "explore_header_acs",
+    "explore_stories_acs",
+    "explore_crafts_grid_acs",
+    "explore_shop_by_craft_acs",
+    "explore_artisans_acs",
+    "explore_map_acs",
+    "explore_gifting_acs",
+    "explore_blog_acs",
+    "explore_impact_acs",
+    "email_signup_acs"
+  ]
+}

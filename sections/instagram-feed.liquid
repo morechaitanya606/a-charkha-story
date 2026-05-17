@@ -1,0 +1,244 @@
+{% comment %}
+  ACHARKHASTORY — Instagram Feed
+  6 square images from @acharkhastory via Instafeed.js.
+  Falls back to manual image blocks if no token provided.
+{% endcomment %}
+
+{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .insta-feed {
+    padding-block: var(--acs-section-py);
+    background: var(--acs-bg);
+  }
+
+  .insta-feed__inner {
+    max-width: var(--acs-container);
+    margin-inline: auto;
+    padding-inline: var(--acs-edge);
+  }
+
+  .insta-feed__header {
+    text-align: center;
+    margin-bottom: var(--acs-sp-lg);
+  }
+
+  .insta-feed__title {
+    font-family: var(--acs-font-display);
+    font-size: var(--acs-fs-h2);
+    font-weight: 500;
+    color: var(--acs-primary);
+    margin: 0;
+  }
+
+  .insta-feed__handle {
+    font-family: var(--acs-font-body);
+    font-size: var(--acs-fs-nav);
+    color: var(--acs-secondary);
+    text-decoration: none;
+    margin-top: var(--acs-sp-xxs);
+    display: inline-block;
+  }
+
+  .insta-feed__handle:hover {
+    text-decoration: underline;
+  }
+
+  .insta-feed__grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+  }
+
+  .insta-feed__item {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+  }
+
+  .insta-feed__item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s var(--acs-ease), opacity 0.3s var(--acs-ease);
+  }
+
+  .insta-feed__item:hover img {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+
+  .insta-feed__item-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(61, 34, 16, 0.4);
+    opacity: 0;
+    transition: opacity 0.3s var(--acs-ease);
+  }
+
+  .insta-feed__item:hover .insta-feed__item-overlay {
+    opacity: 1;
+  }
+
+  .insta-feed__item-overlay svg {
+    width: 28px;
+    height: 28px;
+    fill: var(--acs-ivory);
+  }
+
+  .insta-feed__cta {
+    text-align: center;
+    margin-top: var(--acs-sp-lg);
+  }
+
+  @media (max-width: 768px) {
+    .insta-feed__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
+
+<section class="insta-feed" id="insta-feed-{{ section.id }}">
+  <div class="insta-feed__inner">
+    <div class="insta-feed__header">
+      <h2 class="insta-feed__title">{{ section.settings.title }}</h2>
+      {%- if section.settings.handle != blank -%}
+        <a href="https://instagram.com/{{ section.settings.handle }}" class="insta-feed__handle" target="_blank" rel="noopener">
+          @{{ section.settings.handle }}
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%}
+      Dynamic feed via Instafeed.js — renders into #instafeed when token is set.
+      Falls back to manual block images below.
+    {%- endcomment -%}
+    {%- if section.settings.access_token != blank -%}
+      <div class="insta-feed__grid" id="instafeed-{{ section.id }}"></div>
+    {%- else -%}
+      <div class="insta-feed__grid">
+        {%- for block in section.blocks -%}
+          <a
+            class="insta-feed__item"
+            href="{{ block.settings.link | default: '#' }}"
+            target="_blank"
+            rel="noopener"
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.image != blank -%}
+              <img
+                src="{{ block.settings.image | image_url: width: 400 }}"
+                alt="Instagram post"
+                loading="lazy"
+                width="400"
+                height="400"
+              >
+            {%- else -%}
+              {{ 'lifestyle-1' | placeholder_svg_tag }}
+            {%- endif -%}
+            <div class="insta-feed__item-overlay">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/>
+              </svg>
+            </div>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.cta_label != blank -%}
+      <div class="insta-feed__cta">
+        <a href="https://instagram.com/{{ section.settings.handle }}" class="acs-btn acs-btn--ghost" target="_blank" rel="noopener">
+          {{ section.settings.cta_label }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{%- if section.settings.access_token != blank -%}
+  <script src="https://cdn.jsdelivr.net/npm/instafeed.js@2.0.0/dist/instafeed.min.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof Instafeed === 'undefined') return;
+      var feed = new Instafeed({
+        accessToken: '{{ section.settings.access_token }}',
+        target: 'instafeed-{{ section.id }}',
+        limit: 6,
+        template: '<a class="insta-feed__item" href="{% raw %}{{link}}{% endraw %}" target="_blank" rel="noopener"><img src="{% raw %}{{image}}{% endraw %}" alt="{% raw %}{{caption}}{% endraw %}" loading="lazy" width="400" height="400"><div class="insta-feed__item-overlay"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg></div></a>'
+      });
+      feed.run();
+    });
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Instagram Feed",
+  "tag": "section",
+  "class": "insta-feed-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Follow the Story"
+    },
+    {
+      "type": "text",
+      "id": "handle",
+      "label": "Instagram handle (without @)",
+      "default": "acharkhastory"
+    },
+    {
+      "type": "text",
+      "id": "access_token",
+      "label": "Instagram access token",
+      "info": "Get from Instagram Basic Display API. Leave blank to use manual images."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Follow Us on Instagram"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Instagram image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Post link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Instagram Feed",
+      "blocks": [
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" }
+      ]
+    }
+  ],
+  "max_blocks": 6
+}
+{% endschema %}

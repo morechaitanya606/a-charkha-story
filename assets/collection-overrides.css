@@ -1,0 +1,153 @@
+/* ==========================================================================
+   ACHARKHASTORY — Collection Page Overrides
+   Styles Horizon's built-in collection filters and grids.
+   ========================================================================== */
+
+/* ---------- 1. COLLECTION HEADER ---------- */
+.collection-heading {
+  padding-block: var(--acs-sp-4xl) !important;
+  background-color: var(--acs-bg) !important;
+  border-bottom: 1px solid var(--acs-border);
+}
+
+.collection-heading h1 {
+  font-family: var(--acs-font-display) !important;
+  font-size: 48px !important;
+  font-weight: 500 !important;
+  color: var(--acs-primary) !important;
+  margin-bottom: var(--acs-sp-xs);
+  text-align: center;
+}
+
+.collection-heading .rte {
+  font-family: var(--acs-font-body) !important;
+  font-size: 16px !important;
+  color: var(--acs-text-muted) !important;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* ---------- 2. FILTER & SORT BAR ---------- */
+.facets-container {
+  border-bottom: 1px solid var(--acs-border);
+  padding-block: var(--acs-sp-md);
+  margin-bottom: var(--acs-sp-2xl);
+  font-family: var(--acs-font-body);
+}
+
+.facets__summary {
+  font-family: var(--acs-font-body);
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--acs-text);
+}
+
+.facets__display {
+  background-color: var(--acs-white);
+  border: 1px solid var(--acs-border);
+  border-radius: var(--acs-r-md);
+  box-shadow: 0 12px 24px rgba(61, 34, 16, 0.08);
+}
+
+.facets__list {
+  padding: var(--acs-sp-md);
+}
+
+.facet-checkbox {
+  font-family: var(--acs-font-body);
+  font-size: 14px;
+  color: var(--acs-text);
+  padding-block: var(--acs-sp-xxs);
+}
+
+/* Custom checkbox styling */
+.facet-checkbox input[type='checkbox'] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--acs-border);
+  border-radius: 3px;
+  margin-right: 12px;
+  position: relative;
+  cursor: pointer;
+}
+
+.facet-checkbox input[type='checkbox']:checked {
+  background-color: var(--acs-primary);
+  border-color: var(--acs-primary);
+}
+
+.facet-checkbox input[type='checkbox']:checked::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 4px;
+  height: 9px;
+  border: solid var(--acs-ivory);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Active filters pills */
+.active-facets__button {
+  background-color: var(--acs-surface);
+  border: 1px solid var(--acs-border);
+  border-radius: var(--acs-r-full);
+  padding: 4px 12px;
+  font-family: var(--acs-font-body);
+  font-size: 12px;
+  color: var(--acs-primary);
+}
+
+.active-facets__button:hover {
+  background-color: var(--acs-border);
+}
+
+.active-facets__button-remove {
+  font-weight: 600;
+  color: var(--acs-primary);
+}
+
+/* Sort dropdown */
+.facet-filters__sort {
+  font-family: var(--acs-font-body);
+  font-size: 13px;
+  color: var(--acs-text);
+  border: 1px solid var(--acs-border);
+  border-radius: var(--acs-r-sm);
+  padding: 8px 32px 8px 12px;
+  background-color: transparent;
+}
+
+/* ---------- 3. PRODUCT GRID ---------- */
+#product-grid {
+  gap: var(--acs-sp-2xl) var(--acs-gutter);
+}
+
+.product-grid-item {
+  transition: transform 0.4s var(--acs-ease);
+}
+
+.product-grid-item:hover {
+  transform: translateY(-4px);
+}
+
+/* Ensure pagination uses Acharkhastory styling */
+.pagination__list {
+  font-family: var(--acs-font-body);
+}
+
+.pagination__item {
+  color: var(--acs-text-muted);
+}
+
+.pagination__item--current {
+  color: var(--acs-primary);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}

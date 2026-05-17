@@ -1,0 +1,210 @@
+{% comment %}
+  ACHARKHASTORY — Explore Crafts Grid (EX3)
+  5-column grid showing all craft types.
+{% endcomment %}
+
+{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .explore-crafts {
+    max-width: var(--acs-container);
+    margin-inline: auto;
+    padding-inline: var(--acs-edge);
+    padding-block: var(--acs-section-py);
+  }
+
+  .explore-crafts__header {
+    margin-bottom: var(--acs-sp-xl);
+  }
+
+  .explore-crafts__title {
+    font-family: var(--acs-font-display);
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--acs-primary);
+    margin: 0 0 var(--acs-sp-xs);
+  }
+
+  .explore-crafts__subtitle {
+    font-family: var(--acs-font-body);
+    font-size: 15px;
+    color: var(--acs-text-muted);
+    font-style: italic;
+    margin: 0;
+  }
+
+  .explore-crafts__grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--acs-gutter);
+  }
+
+  .explore-crafts__card {
+    position: relative;
+    aspect-ratio: 220 / 300;
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+    background: var(--acs-surface);
+  }
+
+  .explore-crafts__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--acs-ease), filter 0.4s var(--acs-ease);
+  }
+
+  .explore-crafts__card:hover .explore-crafts__img {
+    transform: scale(1.03);
+    filter: brightness(1.1);
+  }
+
+  .explore-crafts__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26, 16, 8, 0.7) 0%, rgba(26, 16, 8, 0) 50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--acs-sp-md);
+  }
+
+  .explore-crafts__name {
+    font-family: var(--acs-font-body);
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--acs-ivory);
+    margin: 0 0 2px;
+  }
+
+  .explore-crafts__region {
+    font-family: var(--acs-font-body);
+    font-size: 11px;
+    color: rgba(253, 246, 238, 0.7);
+    margin: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .explore-crafts__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .explore-crafts__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .explore-crafts__title {
+      font-size: 28px;
+    }
+  }
+</style>
+
+<section class="explore-crafts" id="explore-crafts">
+  <div class="explore-crafts__header">
+    <h2 class="explore-crafts__title">{{ section.settings.title }}</h2>
+    {%- if section.settings.subtitle != blank -%}
+      <p class="explore-crafts__subtitle">{{ section.settings.subtitle }}</p>
+    {%- endif -%}
+  </div>
+
+  <div class="explore-crafts__grid">
+    {%- for block in section.blocks -%}
+      <a href="{{ block.settings.collection.url | default: '#' }}" class="explore-crafts__card" {{ block.shopify_attributes }}>
+        {%- assign img = block.settings.image | default: block.settings.collection.image -%}
+        {%- if img != blank -%}
+          <img
+            class="explore-crafts__img"
+            src="{{ img | image_url: width: 400 }}"
+            alt="{{ block.settings.title | default: block.settings.collection.title | escape }}"
+            loading="lazy"
+            width="400"
+            height="545"
+          >
+        {%- else -%}
+          {{ 'collection-2' | placeholder_svg_tag: 'explore-crafts__img' }}
+        {%- endif -%}
+        
+        <div class="explore-crafts__overlay">
+          <h3 class="explore-crafts__name">{{ block.settings.title | default: block.settings.collection.title }}</h3>
+          {%- if block.settings.region != blank -%}
+            <p class="explore-crafts__region">{{ block.settings.region }}</p>
+          {%- endif -%}
+        </div>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Crafts Grid",
+  "tag": "section",
+  "class": "explore-crafts-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Crafts of India"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Every craft has a region, a ritual, and a reason."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "craft",
+      "name": "Craft Card",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom Image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Craft Name (optional override)"
+        },
+        {
+          "type": "text",
+          "id": "region",
+          "label": "Region Label",
+          "default": "Kutch, Gujarat"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Crafts Grid",
+      "blocks": [
+        { "type": "craft", "settings": { "title": "Ajrakh", "region": "Kutch, Gujarat & Sindh" } },
+        { "type": "craft", "settings": { "title": "Block Printing", "region": "Rajasthan & Gujarat" } },
+        { "type": "craft", "settings": { "title": "Chikankari", "region": "Lucknow, UP" } },
+        { "type": "craft", "settings": { "title": "Mirror Work", "region": "Kutch, Gujarat" } },
+        { "type": "craft", "settings": { "title": "Madhubani", "region": "Mithila, Bihar" } },
+        { "type": "craft", "settings": { "title": "Kalamkari", "region": "Andhra Pradesh" } },
+        { "type": "craft", "settings": { "title": "Hand Weaving", "region": "Pan India" } },
+        { "type": "craft", "settings": { "title": "Ikat", "region": "Odisha & Telangana" } },
+        { "type": "craft", "settings": { "title": "Batik", "region": "West Bengal & UP" } },
+        { "type": "craft", "settings": { "title": "Eco Printing", "region": "Pan India" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

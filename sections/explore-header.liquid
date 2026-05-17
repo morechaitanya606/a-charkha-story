@@ -1,0 +1,223 @@
+{% comment %}
+  ACHARKHASTORY — Explore Header & Filter Bar
+  Page header with texture and sticky filter bar.
+{% endcomment %}
+
+{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .explore-header {
+    position: relative;
+    background-color: var(--acs-surface);
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .explore-header__texture {
+    position: absolute;
+    inset: 0;
+    opacity: 0.08;
+    background-image: url('{{ "block-print-texture.png" | asset_url }}');
+    background-size: 400px;
+    background-repeat: repeat;
+    pointer-events: none;
+  }
+
+  .explore-header__content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    padding: 0 var(--acs-edge);
+  }
+
+  .explore-header__title {
+    font-family: var(--acs-font-display);
+    font-size: 52px;
+    font-weight: 500;
+    color: var(--acs-primary);
+    margin: 0 0 var(--acs-sp-xs);
+    line-height: 1.1;
+  }
+
+  .explore-header__subtitle {
+    font-family: var(--acs-font-body);
+    font-size: 16px;
+    color: var(--acs-text-muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Filter Bar */
+  .explore-filter-wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--acs-white);
+    border-bottom: 1px solid var(--acs-border);
+  }
+
+  .explore-filter {
+    max-width: var(--acs-container);
+    margin: 0 auto;
+    padding: 0 var(--acs-edge);
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .explore-filter::-webkit-scrollbar {
+    display: none;
+  }
+
+  .explore-filter__item {
+    font-family: var(--acs-font-body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--acs-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0 16px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all var(--acs-duration) var(--acs-ease);
+    text-decoration: none;
+  }
+
+  .explore-filter__item:hover {
+    color: var(--acs-primary);
+  }
+
+  .explore-filter__item.is-active {
+    color: var(--acs-primary);
+    border-bottom-color: var(--acs-secondary);
+  }
+
+  @media (max-width: 768px) {
+    .explore-header {
+      height: 220px;
+    }
+    .explore-header__title {
+      font-size: 36px;
+    }
+    .explore-header__content {
+      padding: 0 var(--acs-edge-m);
+    }
+    .explore-filter {
+      padding: 0 var(--acs-edge-m);
+    }
+  }
+</style>
+
+<div class="explore-header" id="explore-header-{{ section.id }}">
+  <div class="explore-header__texture"></div>
+  <div class="explore-header__content">
+    <h1 class="explore-header__title">{{ section.settings.title }}</h1>
+    {%- if section.settings.subtitle != blank -%}
+      <p class="explore-header__subtitle">{{ section.settings.subtitle }}</p>
+    {%- endif -%}
+  </div>
+</div>
+
+<div class="explore-filter-wrapper">
+  <nav class="explore-filter" aria-label="Explore categories">
+    {%- for block in section.blocks -%}
+      <a href="{{ block.settings.link }}" class="explore-filter__item{% if forloop.first %} is-active{% endif %}" {{ block.shopify_attributes }}>
+        {{ block.settings.title }}
+      </a>
+    {%- endfor -%}
+  </nav>
+</div>
+
+<script>
+  (function() {
+    var header = document.querySelector('header-component');
+    var filterWrapper = document.querySelector('.explore-filter-wrapper');
+    if (header && filterWrapper) {
+      // Adjust sticky top if site header is also sticky
+      var headerHeight = header.offsetHeight;
+      if (header.classList.contains('shopify-section-header-sticky') || header.getAttribute('stuck') !== null) {
+        filterWrapper.style.top = headerHeight + 'px';
+      }
+    }
+
+    var items = document.querySelectorAll('.explore-filter__item');
+    items.forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        var href = this.getAttribute('href');
+        if (href.startsWith('#')) {
+          e.preventDefault();
+          items.forEach(function(i) { i.classList.remove('is-active'); });
+          this.classList.add('is-active');
+          var target = document.querySelector(href);
+          if (target) {
+            var top = target.getBoundingClientRect().top + window.scrollY;
+            var offset = header ? header.offsetHeight : 0;
+            offset += filterWrapper.offsetHeight;
+            window.scrollTo({ top: top - offset, behavior: 'smooth' });
+          }
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Explore Header",
+  "tag": "section",
+  "class": "explore-header-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "EXPLORE ACHARKHASTORY"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "From ancient craft traditions to contemporary handmade design.\nDiscover 20+ craft types, 40+ artisan groups, and 2300+ hands behind every piece."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "filter_link",
+      "name": "Filter Link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Label",
+          "default": "Category"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (Use #id for smooth scrolling)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Explore Header",
+      "blocks": [
+        { "type": "filter_link", "settings": { "title": "All", "link": "#" } },
+        { "type": "filter_link", "settings": { "title": "Stories", "link": "#explore-stories" } },
+        { "type": "filter_link", "settings": { "title": "Craft Types", "link": "#explore-crafts" } },
+        { "type": "filter_link", "settings": { "title": "Shop by Craft", "link": "#explore-shop" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

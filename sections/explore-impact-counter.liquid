@@ -1,0 +1,185 @@
+{% comment %}
+  ACHARKHASTORY — Impact Counter Section (EX9)
+  Animated number counters that show artisan impact scale.
+{% endcomment %}
+
+{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .explore-impact {
+    background-color: var(--acs-primary);
+    padding-block: var(--acs-sp-4xl);
+    color: var(--acs-ivory);
+  }
+
+  .explore-impact__inner {
+    max-width: var(--acs-container);
+    margin-inline: auto;
+    padding-inline: var(--acs-edge);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--acs-sp-xl);
+    text-align: center;
+  }
+
+  .explore-impact__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--acs-sp-xs);
+    min-width: 160px;
+  }
+
+  .explore-impact__number {
+    font-family: var(--acs-font-display);
+    font-size: 48px;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--acs-ivory);
+  }
+
+  .explore-impact__label {
+    font-family: var(--acs-font-body);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(253, 246, 238, 0.7);
+  }
+
+  @media (max-width: 768px) {
+    .explore-impact {
+      padding-block: var(--acs-sp-2xl);
+    }
+    .explore-impact__inner {
+      gap: var(--acs-sp-lg);
+    }
+    .explore-impact__item {
+      min-width: 140px;
+      width: calc(50% - var(--acs-sp-lg));
+    }
+    .explore-impact__number {
+      font-size: 36px;
+    }
+  }
+</style>
+
+<section class="explore-impact" id="explore-impact-{{ section.id }}">
+  <div class="explore-impact__inner">
+    {%- for block in section.blocks -%}
+      <div class="explore-impact__item" {{ block.shopify_attributes }}>
+        <div class="explore-impact__number" data-target="{{ block.settings.target_number }}" data-prefix="{{ block.settings.prefix }}" data-suffix="{{ block.settings.suffix }}">
+          0
+        </div>
+        <div class="explore-impact__label">{{ block.settings.label }}</div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+<script>
+  (function() {
+    var section = document.getElementById('explore-impact-{{ section.id }}');
+    var counters = section.querySelectorAll('.explore-impact__number');
+    var hasAnimated = false;
+
+    var animateCounters = function() {
+      if (hasAnimated) return;
+      hasAnimated = true;
+
+      counters.forEach(function(counter) {
+        var targetStr = counter.getAttribute('data-target');
+        var target = parseInt(targetStr.replace(/,/g, ''), 10);
+        if (isNaN(target)) {
+          counter.innerText = (counter.getAttribute('data-prefix') || '') + targetStr + (counter.getAttribute('data-suffix') || '');
+          return;
+        }
+
+        var duration = 2000;
+        var start = null;
+
+        var step = function(timestamp) {
+          if (!start) start = timestamp;
+          var progress = Math.min((timestamp - start) / duration, 1);
+          // Ease out expo
+          var easeOut = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+          var current = Math.floor(easeOut * target);
+          
+          var formatted = current.toLocaleString('en-IN');
+          counter.innerText = (counter.getAttribute('data-prefix') || '') + formatted + (counter.getAttribute('data-suffix') || '');
+
+          if (progress < 1) {
+            window.requestAnimationFrame(step);
+          } else {
+            counter.innerText = (counter.getAttribute('data-prefix') || '') + targetStr + (counter.getAttribute('data-suffix') || '');
+          }
+        };
+
+        window.requestAnimationFrame(step);
+      });
+    };
+
+    var observer = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        animateCounters();
+        observer.disconnect();
+      }
+    }, { threshold: 0.5 });
+
+    observer.observe(section);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Impact Counter",
+  "tag": "section",
+  "class": "explore-impact-section",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "counter",
+      "name": "Stat Counter",
+      "settings": [
+        {
+          "type": "text",
+          "id": "target_number",
+          "label": "Number (e.g. 2,300)",
+          "default": "2,300"
+        },
+        {
+          "type": "text",
+          "id": "prefix",
+          "label": "Prefix (e.g. ₹)",
+          "default": ""
+        },
+        {
+          "type": "text",
+          "id": "suffix",
+          "label": "Suffix (e.g. +)",
+          "default": "+"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Artisans empowered"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Impact Counter",
+      "blocks": [
+        { "type": "counter", "settings": { "target_number": "2,300", "suffix": "+", "label": "Artisans empowered" } },
+        { "type": "counter", "settings": { "target_number": "12", "suffix": "", "label": "Indian states" } },
+        { "type": "counter", "settings": { "target_number": "20", "suffix": "+", "label": "Craft traditions" } },
+        { "type": "counter", "settings": { "target_number": "2", "prefix": "₹", "suffix": "Cr+", "label": "Artisan earnings" } }
+      ]
+    }
+  ],
+  "max_blocks": 4
+}
+{% endschema %}

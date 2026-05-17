@@ -1,0 +1,61 @@
+{% comment %}
+  ACHARKHASTORY — Artisan Credit Block
+  Displays artisan info on PDP.
+  Uses product metafields: product.metafields.custom.artisan_name,
+  product.metafields.custom.artisan_region, product.metafields.custom.artisan_craft,
+  product.metafields.custom.artisan_photo, product.metafields.custom.artisan_link.
+  Falls back to vendor name if no metafields set.
+{% endcomment %}
+
+{% liquid
+  assign artisan_name = product.metafields.custom.artisan_name
+  assign artisan_region = product.metafields.custom.artisan_region
+  assign artisan_craft = product.metafields.custom.artisan_craft
+  assign artisan_photo = product.metafields.custom.artisan_photo
+  assign artisan_link = product.metafields.custom.artisan_link
+%}
+
+{%- if artisan_name != blank or product.vendor != blank -%}
+  <div class="product__artisan">
+    <div class="product__artisan-heading">Artisan</div>
+    <div class="product__artisan-card">
+      {%- if artisan_photo != blank -%}
+        <img
+          class="product__artisan-photo"
+          src="{{ artisan_photo | image_url: width: 96 }}"
+          alt="{{ artisan_name | default: product.vendor | escape }}"
+          loading="lazy"
+          width="48"
+          height="48"
+        >
+      {%- else -%}
+        <div
+          class="product__artisan-photo"
+          style="
+            background: var(--acs-surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--acs-font-display);
+            font-size: 20px;
+            color: var(--acs-secondary);
+          "
+        >
+          {{ artisan_name | default: product.vendor | slice: 0 }}
+        </div>
+      {%- endif -%}
+      <div class="product__artisan-info">
+        <span class="product__artisan-name">{{ artisan_name | default: product.vendor }}</span>
+        {%- if artisan_region != blank -%}
+          <span class="product__artisan-region">{{ artisan_region }}</span>
+        {%- endif -%}
+        {%- if artisan_craft != blank -%}
+          <span class="product__artisan-region" style="font-style: italic;">{{ artisan_craft }}</span>
+        {%- endif -%}
+      </div>
+    </div>
+    {%- if artisan_link != blank -%}
+      <a href="{{ artisan_link }}" class="product__artisan-link">View Artisan Profile →</a>
+    {%- endif -%}
+  </div>
+{%- endif -%}

@@ -1,0 +1,252 @@
+{% comment %}
+  ACHARKHASTORY — Gifting Section (EX7)
+  Curated gift guide with price/category filter tabs.
+{% endcomment %}
+
+{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .explore-gifting {
+    max-width: var(--acs-container);
+    margin-inline: auto;
+    padding-inline: var(--acs-edge);
+    padding-block: var(--acs-section-py);
+  }
+
+  .explore-gifting__header {
+    text-align: center;
+    margin-bottom: var(--acs-sp-xl);
+  }
+
+  .explore-gifting__title {
+    font-family: var(--acs-font-display);
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--acs-primary);
+    margin: 0 0 var(--acs-sp-xs);
+  }
+
+  .explore-gifting__subtitle {
+    font-family: var(--acs-font-body);
+    font-size: 15px;
+    color: var(--acs-text-muted);
+    font-style: italic;
+    margin: 0;
+  }
+
+  .explore-gifting__tabs {
+    display: flex;
+    justify-content: center;
+    gap: var(--acs-sp-sm);
+    flex-wrap: wrap;
+    margin-bottom: var(--acs-sp-xl);
+  }
+
+  .explore-gifting__tab {
+    font-family: var(--acs-font-body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--acs-text-muted);
+    background: transparent;
+    border: 1px solid var(--acs-border);
+    border-radius: var(--acs-r-full);
+    padding: 10px 24px;
+    cursor: pointer;
+    transition: all var(--acs-duration) var(--acs-ease);
+  }
+
+  .explore-gifting__tab:hover {
+    border-color: var(--acs-primary);
+    color: var(--acs-primary);
+  }
+
+  .explore-gifting__tab.is-active {
+    background: var(--acs-primary);
+    border-color: var(--acs-primary);
+    color: var(--acs-ivory);
+  }
+
+  .explore-gifting__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--acs-gutter);
+  }
+
+  .explore-gifting__grid-item {
+    display: none;
+  }
+
+  .explore-gifting__grid-item.is-visible {
+    display: block;
+    animation: fadeIn 0.4s var(--acs-ease);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 1024px) {
+    .explore-gifting__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .explore-gifting__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .explore-gifting__tabs {
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 8px;
+      margin-inline: calc(-1 * var(--acs-edge-m));
+      padding-inline: var(--acs-edge-m);
+    }
+    .explore-gifting__tabs::-webkit-scrollbar {
+      display: none;
+    }
+    .explore-gifting__tab {
+      white-space: nowrap;
+    }
+    .explore-gifting__title {
+      font-size: 28px;
+    }
+  }
+</style>
+
+<section class="explore-gifting" id="explore-gifting">
+  <div class="explore-gifting__header">
+    <h2 class="explore-gifting__title">{{ section.settings.title }}</h2>
+    {%- if section.settings.subtitle != blank -%}
+      <p class="explore-gifting__subtitle">{{ section.settings.subtitle }}</p>
+    {%- endif -%}
+  </div>
+
+  <div class="explore-gifting__tabs">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'tab' -%}
+        <button class="explore-gifting__tab{% if forloop.first %} is-active{% endif %}" data-filter="{{ block.id }}">
+          {{ block.settings.title }}
+        </button>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  <div class="explore-gifting__grid">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'tab' -%}
+        {%- assign collection = block.settings.collection -%}
+        {%- if collection != blank and collection.products_count > 0 -%}
+          {%- for product in collection.products limit: 8 -%}
+            <div class="explore-gifting__grid-item{% if forloop.parentloop.first %} is-visible{% endif %}" data-category="{{ block.id }}">
+              {% render 'product-card-acs', product: product %}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for i in (1..4) -%}
+            <div class="explore-gifting__grid-item{% if forloop.parentloop.first %} is-visible{% endif %}" data-category="{{ block.id }}">
+              <div class="acs-card">
+                <div style="aspect-ratio: 3/4; background: var(--acs-surface); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--acs-border);">
+                  {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+                <div style="padding: 16px;">
+                  <div style="font-family: var(--acs-font-body); font-size: 14px; font-weight: 500;">Gift Idea {{ i }}</div>
+                  <div style="font-family: var(--acs-font-body); font-size: 13px; color: var(--acs-text-muted); margin-top: 4px;">₹1,499</div>
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+<script>
+  (function() {
+    var section = document.getElementById('explore-gifting');
+    if (!section) return;
+
+    var tabs = section.querySelectorAll('.explore-gifting__tab');
+    var items = section.querySelectorAll('.explore-gifting__grid-item');
+
+    tabs.forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        var filter = this.getAttribute('data-filter');
+        
+        // Update active tab
+        tabs.forEach(function(t) { t.classList.remove('is-active'); });
+        this.classList.add('is-active');
+
+        // Update visible items
+        items.forEach(function(item) {
+          if (item.getAttribute('data-category') === filter) {
+            item.classList.add('is-visible');
+          } else {
+            item.classList.remove('is-visible');
+          }
+        });
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Thoughtful Gifting",
+  "tag": "section",
+  "class": "explore-gifting-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Thoughtful Gifting"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Give something made by hand, kept for life."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Gift Category",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Tab Name",
+          "default": "Under ₹1500"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection to pull products from"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Thoughtful Gifting",
+      "blocks": [
+        { "type": "tab", "settings": { "title": "Under ₹500" } },
+        { "type": "tab", "settings": { "title": "Under ₹1500" } },
+        { "type": "tab", "settings": { "title": "Under ₹2500" } },
+        { "type": "tab", "settings": { "title": "Under ₹5000" } },
+        { "type": "tab", "settings": { "title": "For Her" } },
+        { "type": "tab", "settings": { "title": "For Kids" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

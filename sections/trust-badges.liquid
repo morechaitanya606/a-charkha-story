@@ -1,0 +1,224 @@
+{% comment %}
+  ACHARKHASTORY — Trust Badge Strip
+  5 value propositions directly below the hero.
+  72px height, bordered top/bottom, horizontal scroll on mobile.
+{% endcomment %}
+
+{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .trust-badges {
+    border-top: 1px solid var(--acs-border);
+    border-bottom: 1px solid var(--acs-border);
+    background: var(--acs-bg);
+    padding-block: var(--acs-sp-md);
+  }
+
+  .trust-badges__list {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: var(--acs-sp-xl);
+    max-width: var(--acs-container);
+    margin-inline: auto;
+    padding-inline: var(--acs-edge);
+    list-style: none;
+    margin-block: 0;
+  }
+
+  .trust-badges__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--acs-sp-xs);
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .trust-badges__icon {
+    width: 32px;
+    height: 32px;
+    color: var(--acs-primary);
+  }
+
+  .trust-badges__icon svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .trust-badges__label {
+    font-family: var(--acs-font-body);
+    font-size: var(--acs-fs-small);
+    color: var(--acs-text-muted);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    .trust-badges__list {
+      justify-content: flex-start;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-inline: var(--acs-edge-m);
+      gap: var(--acs-sp-lg);
+    }
+
+    .trust-badges__list::-webkit-scrollbar {
+      display: none;
+    }
+
+    .trust-badges__item {
+      min-width: 110px;
+    }
+
+    .trust-badges__icon {
+      width: 28px;
+      height: 28px;
+    }
+
+    .trust-badges__label {
+      font-size: 11px;
+    }
+  }
+</style>
+
+<section
+  class="trust-badges"
+  id="trust-badges-{{ section.id }}"
+  aria-label="{{ section.settings.aria_label | default: 'Trust badges' }}"
+>
+  <ul class="trust-badges__list" role="list">
+    {%- for block in section.blocks -%}
+      <li class="trust-badges__item" {{ block.shopify_attributes }}>
+        <div class="trust-badges__icon">
+          {%- if block.settings.custom_icon != blank -%}
+            {{ block.settings.custom_icon | image_url: width: 64 | image_tag: loading: 'lazy', alt: block.settings.label }}
+          {%- else -%}
+            {%- case block.settings.icon_type -%}
+              {%- when 'empowerment' -%}
+                <svg viewBox="0 0 32 32" aria-hidden="true">
+                  <path d="M10 22c-2-1-4-3.5-4-6.5C6 11.5 9 8 13 8c1.5 0 2.8.5 4 1.3C18.2 8.5 19.5 8 21 8c4 0 7 3.5 7 7.5 0 3-2 5.5-4 6.5"/>
+                  <path d="M16 14v10M12 18h8"/>
+                  <path d="M8 26c2-1 5-2 8-2s6 1 8 2"/>
+                </svg>
+              {%- when 'circular' -%}
+                <svg viewBox="0 0 32 32" aria-hidden="true">
+                  <path d="M16 4a12 12 0 0 1 0 24"/>
+                  <path d="M16 28a12 12 0 0 1 0-24"/>
+                  <polyline points="12 8 16 4 20 8"/>
+                  <polyline points="20 24 16 28 12 24"/>
+                </svg>
+              {%- when 'sustainable' -%}
+                <svg viewBox="0 0 32 32" aria-hidden="true">
+                  <path d="M16 28V14"/>
+                  <path d="M16 14c0-6 6-10 12-10-2 8-6 12-12 10"/>
+                  <path d="M16 18c0-4-4-7-9-7 1.5 6 4.5 9 9 7"/>
+                </svg>
+              {%- when 'heirloom' -%}
+                <svg viewBox="0 0 32 32" aria-hidden="true">
+                  <circle cx="16" cy="16" r="11"/>
+                  <path d="M16 5v22M5 16h22"/>
+                  <path d="M8.5 8.5l15 15M23.5 8.5l-15 15"/>
+                  <circle cx="16" cy="16" r="5"/>
+                </svg>
+              {%- when 'returns' -%}
+                <svg viewBox="0 0 32 32" aria-hidden="true">
+                  <polyline points="8 12 4 16 8 20"/>
+                  <path d="M4 16h18a6 6 0 0 0 0-12H12"/>
+                  <rect x="10" y="22" width="14" height="6" rx="1"/>
+                </svg>
+              {%- else -%}
+                <svg viewBox="0 0 32 32" aria-hidden="true">
+                  <circle cx="16" cy="16" r="11"/>
+                  <polyline points="12 16 15 19 21 13"/>
+                </svg>
+            {%- endcase -%}
+          {%- endif -%}
+        </div>
+        <span class="trust-badges__label">{{ block.settings.label }}</span>
+      </li>
+    {%- endfor -%}
+  </ul>
+</section>
+
+{% schema %}
+{
+  "name": "Trust Badges",
+  "tag": "section",
+  "class": "trust-badges-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Section accessible label",
+      "default": "Our values"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Badge",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon_type",
+          "label": "Icon",
+          "options": [
+            { "value": "empowerment", "label": "Women Empowerment" },
+            { "value": "circular", "label": "Circular Fashion" },
+            { "value": "sustainable", "label": "Sustainable" },
+            { "value": "heirloom", "label": "Heirloom Crafts" },
+            { "value": "returns", "label": "Easy Returns" },
+            { "value": "checkmark", "label": "Checkmark (default)" }
+          ],
+          "default": "checkmark"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom icon (overrides selected icon)"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Badge label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust Badges",
+      "blocks": [
+        {
+          "type": "badge",
+          "settings": { "icon_type": "empowerment", "label": "Women Empowerment" }
+        },
+        {
+          "type": "badge",
+          "settings": { "icon_type": "circular", "label": "Circular Fashion" }
+        },
+        {
+          "type": "badge",
+          "settings": { "icon_type": "sustainable", "label": "Sustainable" }
+        },
+        {
+          "type": "badge",
+          "settings": { "icon_type": "heirloom", "label": "Heirloom Crafts" }
+        },
+        {
+          "type": "badge",
+          "settings": { "icon_type": "returns", "label": "Easy Returns" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,210 @@
+{% comment %}
+  ACHARKHASTORY — Category Tiles
+  4-column grid of collection tiles with hover effects.
+  Portrait 3:4 ratio, 12px radius, mobile 2×2.
+{% endcomment %}
+
+{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .category-tiles {
+    padding-block: var(--acs-section-py);
+  }
+
+  .category-tiles__inner {
+    max-width: var(--acs-container);
+    margin-inline: auto;
+    padding-inline: var(--acs-edge);
+  }
+
+  .category-tiles__header {
+    text-align: center;
+    margin-bottom: var(--acs-sp-xl);
+  }
+
+  .category-tiles__title {
+    font-family: var(--acs-font-display);
+    font-size: var(--acs-fs-h2);
+    font-weight: 500;
+    color: var(--acs-primary);
+    margin: 0;
+  }
+
+  .category-tiles__subtitle {
+    font-family: var(--acs-font-body);
+    font-size: 14px;
+    color: var(--acs-text-muted);
+    margin-top: var(--acs-sp-xs);
+  }
+
+  .category-tiles__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--acs-sp-md);
+  }
+
+  .category-tiles__tile {
+    position: relative;
+    border-radius: var(--acs-r-lg);
+    overflow: hidden;
+    aspect-ratio: 3 / 4;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+
+  .category-tiles__tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s var(--acs-ease);
+  }
+
+  .category-tiles__tile:hover img {
+    transform: scale(1.04);
+  }
+
+  .category-tiles__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(61, 34, 16, 0.5) 0%, transparent 50%);
+    transition: background var(--acs-duration) var(--acs-ease);
+  }
+
+  .category-tiles__tile:hover .category-tiles__overlay {
+    background: rgba(61, 34, 16, 0.35);
+  }
+
+  .category-tiles__label {
+    position: absolute;
+    bottom: var(--acs-sp-lg);
+    left: var(--acs-sp-lg);
+    font-family: var(--acs-font-body);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--acs-ivory);
+    z-index: 1;
+  }
+
+  @media (max-width: 768px) {
+    .category-tiles__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .category-tiles__tile {
+      aspect-ratio: 1 / 1;
+    }
+
+    .category-tiles__label {
+      bottom: var(--acs-sp-md);
+      left: var(--acs-sp-md);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .category-tiles__grid {
+      gap: var(--acs-sp-sm);
+    }
+  }
+</style>
+
+<section class="category-tiles" id="category-tiles-{{ section.id }}">
+  <div class="category-tiles__inner">
+    <div class="category-tiles__header">
+      {%- if section.settings.title != blank -%}
+        <h2 class="category-tiles__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subtitle != blank -%}
+        <p class="category-tiles__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="category-tiles__grid">
+      {%- for block in section.blocks -%}
+        <a
+          class="category-tiles__tile"
+          href="{{ block.settings.link }}"
+          {{ block.shopify_attributes }}
+        >
+          {%- if block.settings.image != blank -%}
+            <img
+              src="{{ block.settings.image | image_url: width: 600 }}"
+              srcset="
+                {{ block.settings.image | image_url: width: 400 }} 400w,
+                {{ block.settings.image | image_url: width: 600 }} 600w,
+                {{ block.settings.image | image_url: width: 800 }} 800w
+              "
+              sizes="(max-width: 768px) 50vw, 25vw"
+              alt="{{ block.settings.label | escape }}"
+              loading="lazy"
+              width="600"
+              height="800"
+            >
+          {%- else -%}
+            {{ 'collection-1' | placeholder_svg_tag }}
+          {%- endif -%}
+          <div class="category-tiles__overlay"></div>
+          <span class="category-tiles__label">{{ block.settings.label }}</span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Category Tiles",
+  "tag": "section",
+  "class": "category-tiles-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Shop by Category"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Explore our collections"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Category tile",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Category"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Tiles",
+      "blocks": [
+        { "type": "tile", "settings": { "label": "Tops" } },
+        { "type": "tile", "settings": { "label": "Kurtas" } },
+        { "type": "tile", "settings": { "label": "Dresses" } },
+        { "type": "tile", "settings": { "label": "Jewellery" } }
+      ]
+    }
+  ],
+  "max_blocks": 8
+}
+{% endschema %}

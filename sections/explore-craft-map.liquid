@@ -1,0 +1,257 @@
+{% comment %}
+  ACHARKHASTORY — The Craft Map (EX6)
+  Interactive map of India showing craft regions.
+{% endcomment %}
+
+{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .explore-map {
+    background-color: var(--acs-cream);
+    padding-block: var(--acs-section-py);
+    overflow: hidden;
+  }
+
+  .explore-map__inner {
+    max-width: var(--acs-container);
+    margin-inline: auto;
+    padding-inline: var(--acs-edge);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--acs-sp-4xl);
+    align-items: center;
+  }
+
+  .explore-map__header {
+    margin-bottom: var(--acs-sp-xl);
+  }
+
+  .explore-map__title {
+    font-family: var(--acs-font-display);
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--acs-primary);
+    margin: 0 0 var(--acs-sp-xs);
+  }
+
+  .explore-map__subtitle {
+    font-family: var(--acs-font-body);
+    font-size: 15px;
+    color: var(--acs-text-muted);
+    font-style: italic;
+    margin: 0;
+  }
+
+  /* Map Container */
+  .explore-map__visual {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    background: var(--acs-surface);
+    border-radius: var(--acs-r-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Placeholder for actual map svg */
+  .explore-map__svg-placeholder {
+    width: 80%;
+    height: 80%;
+    fill: none;
+    stroke: var(--acs-warm-mid);
+    stroke-width: 2;
+    opacity: 0.5;
+  }
+
+  /* List Container */
+  .explore-map__list-wrapper {
+    height: 600px;
+    overflow-y: auto;
+    padding-right: var(--acs-sp-md);
+    scroll-behavior: smooth;
+  }
+
+  .explore-map__list-wrapper::-webkit-scrollbar {
+    width: 6px;
+  }
+  .explore-map__list-wrapper::-webkit-scrollbar-track {
+    background: var(--acs-border);
+    border-radius: 3px;
+  }
+  .explore-map__list-wrapper::-webkit-scrollbar-thumb {
+    background: var(--acs-secondary);
+    border-radius: 3px;
+  }
+
+  .explore-map__item {
+    display: flex;
+    align-items: center;
+    gap: var(--acs-sp-md);
+    padding: var(--acs-sp-md);
+    border-bottom: 1px solid var(--acs-border);
+    cursor: pointer;
+    transition: background-color var(--acs-duration) var(--acs-ease);
+  }
+
+  .explore-map__item:hover {
+    background-color: rgba(255,255,255,0.4);
+  }
+
+  .explore-map__item-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--acs-bg);
+  }
+
+  .explore-map__item-info {
+    flex: 1;
+  }
+
+  .explore-map__item-name {
+    font-family: var(--acs-font-body);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--acs-primary);
+    margin: 0 0 2px;
+  }
+
+  .explore-map__item-region {
+    font-family: var(--acs-font-body);
+    font-size: 12px;
+    color: var(--acs-text-muted);
+    margin: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .explore-map__inner {
+      gap: var(--acs-sp-xl);
+    }
+    .explore-map__list-wrapper {
+      height: 500px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .explore-map__inner {
+      grid-template-columns: 1fr;
+    }
+    .explore-map__visual {
+      display: none; /* Hide map on mobile as per spec */
+    }
+    .explore-map__list-wrapper {
+      height: auto;
+      max-height: 400px;
+    }
+    .explore-map__title {
+      font-size: 28px;
+    }
+  }
+</style>
+
+<section class="explore-map" id="explore-map">
+  <div class="explore-map__inner">
+    <div class="explore-map__visual">
+      {%- comment -%} Placeholder for the actual illustrated map of India SVG {%- endcomment -%}
+      <svg class="explore-map__svg-placeholder" viewBox="0 0 100 100">
+        <path d="M50,5 L80,30 L70,70 L50,95 L30,70 L20,30 Z" />
+        <circle cx="50" cy="50" r="2" fill="var(--acs-primary)" />
+        <text x="50" y="50" text-anchor="middle" font-family="var(--acs-font-body)" font-size="6" fill="var(--acs-primary)" dy="-5">Map of India</text>
+      </svg>
+    </div>
+
+    <div>
+      <div class="explore-map__header">
+        <h2 class="explore-map__title">{{ section.settings.title }}</h2>
+        {%- if section.settings.subtitle != blank -%}
+          <p class="explore-map__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </div>
+
+      <div class="explore-map__list-wrapper">
+        {%- for block in section.blocks -%}
+          <div class="explore-map__item" {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              <img
+                class="explore-map__item-img"
+                src="{{ block.settings.image | image_url: width: 96 }}"
+                alt="{{ block.settings.name | escape }}"
+                loading="lazy"
+                width="48"
+                height="48"
+              >
+            {%- else -%}
+              <div class="explore-map__item-img" style="display:flex;align-items:center;justify-content:center;color:var(--acs-secondary);font-family:var(--acs-font-display);">{{ block.settings.name | slice: 0 }}</div>
+            {%- endif -%}
+            <div class="explore-map__item-info">
+              <h3 class="explore-map__item-name">{{ block.settings.name }}</h3>
+              <p class="explore-map__item-region">{{ block.settings.region }}</p>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "The Craft Map",
+  "tag": "section",
+  "class": "explore-map-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Tracing Our Roots"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Discover the regions where our crafts are born."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "craft_region",
+      "name": "Craft Region",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Icon/Image"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Craft Name",
+          "default": "Ajrakh"
+        },
+        {
+          "type": "text",
+          "id": "region",
+          "label": "Region",
+          "default": "Kutch, Gujarat"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "The Craft Map",
+      "blocks": [
+        { "type": "craft_region", "settings": { "name": "Ajrakh", "region": "Kutch, Gujarat & Sindh" } },
+        { "type": "craft_region", "settings": { "name": "Block Printing", "region": "Rajasthan & Gujarat" } },
+        { "type": "craft_region", "settings": { "name": "Chikankari", "region": "Lucknow, UP" } },
+        { "type": "craft_region", "settings": { "name": "Mirror Work", "region": "Kutch, Gujarat" } },
+        { "type": "craft_region", "settings": { "name": "Madhubani", "region": "Mithila, Bihar" } },
+        { "type": "craft_region", "settings": { "name": "Kalamkari", "region": "Andhra Pradesh" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

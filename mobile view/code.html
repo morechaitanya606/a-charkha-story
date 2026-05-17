@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>acharkhastory</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=EB+Garamond:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#ffdcc2",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb4a9",
+                        "surface-container-highest": "#efe0cd",
+                        "primary-fixed-dim": "#dec1ac",
+                        "on-tertiary-container": "#ff7f6d",
+                        "tertiary": "#530000",
+                        "on-tertiary-fixed-variant": "#8e130c",
+                        "on-primary-container": "#bba08c",
+                        "surface-variant": "#efe0cd",
+                        "primary-fixed": "#fbddc7",
+                        "background": "#fff8f3",
+                        "on-primary": "#ffffff",
+                        "on-background": "#221a0f",
+                        "surface-dim": "#e6d8c5",
+                        "secondary": "#7c5636",
+                        "error-container": "#ffdad6",
+                        "primary": "#322214",
+                        "on-tertiary-fixed": "#410000",
+                        "inverse-primary": "#dec1ac",
+                        "secondary-fixed-dim": "#efbd95",
+                        "on-secondary-container": "#795334",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#ffdad5",
+                        "secondary-container": "#fecaa2",
+                        "on-surface-variant": "#4e453e",
+                        "inverse-surface": "#372f22",
+                        "surface-tint": "#705a49",
+                        "inverse-on-surface": "#feefdb",
+                        "tertiary-container": "#7c0202",
+                        "primary-container": "#4a3728",
+                        "on-surface": "#221a0f",
+                        "on-error-container": "#93000a",
+                        "outline": "#80756d",
+                        "on-secondary-fixed-variant": "#623f21",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#fff8f3",
+                        "outline-variant": "#d2c4bb",
+                        "surface-container-low": "#fff2e2",
+                        "surface-bright": "#fff8f3",
+                        "surface-container-high": "#f5e6d3",
+                        "on-primary-fixed-variant": "#574333",
+                        "on-primary-fixed": "#28180b",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#2e1500",
+                        "surface-container": "#fbecd9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "sm": "12px",
+                        "xs": "4px",
+                        "lg": "48px",
+                        "xl": "80px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "max-width": "1280px",
+                        "margin-desktop": "64px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["DM Sans"],
+                        "headline-md": ["EB Garamond"],
+                        "headline-lg": ["EB Garamond"],
+                        "headline-sm": ["EB Garamond"],
+                        "body-sm": ["DM Sans"],
+                        "display-lg": ["EB Garamond"],
+                        "body-md": ["DM Sans"],
+                        "label-caps": ["DM Sans"],
+                        "headline-lg-mobile": ["EB Garamond"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "500" }],
+                        "headline-sm": ["20px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased pb-20">
+<!-- TopNavBar -->
+<header class="bg-background dark:bg-background docked full-width top-0 sticky z-50 flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto h-20 border-b border-outline-variant dark:border-outline flat no shadows">
+<div class="flex items-center gap-xs md:hidden">
+<button class="p-xs text-on-surface-variant hover:text-primary transition-colors duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+</div>
+<div class="font-headline-lg text-headline-lg font-medium text-primary dark:text-primary-fixed flex-1 text-center md:text-left">
+            acharkhastory
+        </div>
+<nav class="hidden md:flex gap-md items-center h-full Headlines: font-headline-md text-headline-md. Labels: font-label-caps text-label-caps. flex-1 justify-center">
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 scale-95 active:opacity-80 transition-all h-full flex items-center" href="#">Clothing</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 scale-95 active:opacity-80 transition-all h-full flex items-center" href="#">Kurtas</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 scale-95 active:opacity-80 transition-all h-full flex items-center" href="#">Sarees</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 scale-95 active:opacity-80 transition-all h-full flex items-center" href="#">Accessories</a>
+<a class="text-primary dark:text-primary-fixed border-b-2 border-primary pb-1 h-full flex items-center" href="#">Home</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 scale-95 active:opacity-80 transition-all h-full flex items-center" href="#">Artisans</a>
+</nav>
+<div class="flex items-center gap-sm flex-1 justify-end text-primary dark:text-primary-fixed">
+<button class="p-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 scale-95 active:opacity-80 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">search</span>
+</button>
+<button class="p-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 scale-95 active:opacity-80 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</button>
+<button class="p-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 scale-95 active:opacity-80 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">shopping_bag</span>
+</button>
+<button class="hidden md:block p-xs hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 scale-95 active:opacity-80 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person</span>
+</button>
+</div>
+</header>
+<main class="max-w-max-width mx-auto">
+<!-- Hero Section -->
+<section class="relative w-full aspect-[3/4] md:aspect-[21/9] bg-surface-container-high overflow-hidden">
+<img alt="The Indigo Edit" class="absolute inset-0 w-full h-full object-cover" data-alt="A high-resolution editorial photograph of a model wearing handwoven indigo-dyed khadi fabric. The setting is a minimalist, sunlit heritage space with raw sandstone walls. Deep walnut and parchment tones complement the rich blue of the textile. The lighting is natural and directional, highlighting the tactile texture of the handcrafted garment in a serene, premium boutique atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx8XImXZfxKLA7gitgusBuLeXYx8N-cJ1CeOrju2m1deBDboLrq-JXOTdXyCVRZDVYxKjo0MtC5wQ0je8q8pESEmlwPqr_d4HSsS16l9i2pKSm0Y4NR7nsl8sYwHsu0SxNNzZFFVGJsVkRQoDCKV_OieWzQ7QTFV4M2AIo2BQVY3s3GsDYr8CY_UFXrzHIOcSPEmtYOP8H3RfHXU2V4Uv1iHauJMGGdZtI8wqZrcafvVM6aZqw81HIpU8MMcCCvoFsvYMQlQ6espWw"/>
+<div class="absolute inset-0 bg-black/20"></div>
+<div class="absolute inset-0 flex flex-col justify-end p-margin-mobile md:p-margin-desktop text-on-primary">
+<h1 class="font-headline-lg-mobile md:font-display-lg mb-sm">The Indigo Edit</h1>
+<p class="font-body-lg mb-md max-w-md">Embrace the deep hues of natural indigo, block-printed by hand on breathable summer khadi.</p>
+<a class="inline-flex items-center justify-center bg-primary text-on-primary px-lg py-sm font-label-caps w-fit transition-opacity hover:opacity-90" href="#">
+                    SHOP NOW
+                </a>
+</div>
+</section>
+<!-- Trust Badges -->
+<section class="py-sm px-margin-mobile md:px-margin-desktop border-b border-surface-variant bg-surface-container-low overflow-x-auto hide-scrollbar">
+<div class="flex items-center justify-between md:justify-center gap-gutter min-w-max md:min-w-0">
+<div class="flex items-center gap-xs text-on-surface-variant font-label-caps">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">handshake</span>
+<span>Handcrafted</span>
+</div>
+<div class="flex items-center gap-xs text-on-surface-variant font-label-caps">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">diversity_1</span>
+<span>Women Owned</span>
+</div>
+<div class="flex items-center gap-xs text-on-surface-variant font-label-caps">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">eco</span>
+<span>Sustainable</span>
+</div>
+</div>
+</section>
+<!-- Shop by Category -->
+<section class="py-xl px-margin-mobile md:px-margin-desktop">
+<h2 class="font-headline-md text-center mb-lg text-primary">Shop by Category</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-sm md:gap-gutter">
+<a class="group relative aspect-square overflow-hidden border border-outline-variant rounded bg-surface-container-low" href="#">
+<img alt="Kurtas" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A close-up, high-quality macro shot of a meticulously embroidered cotton kurta. The fabric has a subtle, raw texture indicative of slow fashion. The color palette features warm parchment and deep walnut accents. Soft, directional natural light casts delicate shadows, creating a tactile, minimalist aesthetic suitable for a premium ethical fashion brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE4PiHCwZWokpcDxj3h0GdTWsLlGIKlcAkSiGJG6dVKF2acqkNa2K1Mr9TDMg5DrHW4WwYunqbVlJ_NwgLEY51ehU3Su4gwnmQc6oLkoZ5dMjcGQkLqVhqfb6_ze05zHrOL_3CL2OAv3-8YPGMLmvSjWmC4P4gMTcJkWTpxrUPJyVrjyR-jmomKmurbM7JDLXs8_QPmDNj_IhPNZ_-UHU7-CqI2q-hTUgmBp8GVTjvjeBewpygpVjIAFiObw9poEMEfXTdCNdlS3mp"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+<div class="absolute bottom-base left-base right-base text-center">
+<span class="font-headline-sm text-on-primary">Kurtas</span>
+</div>
+</a>
+<a class="group relative aspect-square overflow-hidden border border-outline-variant rounded bg-surface-container-low" href="#">
+<img alt="Sarees" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="An elegant detail shot of a draped silk saree with intricate handcrafted borders. The luxurious fabric catches the natural light, highlighting its fine weave and deep, rich colors. The setting implies a high-end boutique environment with a tactile minimalism approach, featuring soft ambient shadows and a sophisticated, uncluttered composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCA2Rh-cBukXb_mUgr4d_oJyu8jpEj1SFme-fgkzXVk-H8peD1aYMcZWV4nQgqwUI5WrIoyrCyJZYZx8V0xb56stQLjzFWfckhMAJ0AtEyuRXIhDb9quHV94RkQaiizzk_QzYpN2F_19um34D9iyz279F8Sq2fYMn1oL-bZ2m6NgpmCDPgAMPYouw1GLpDaQmVjDyKIPkb1Bq-2OxAt3CDwJGywB9tx79W-w4zNVzJRnYrN5nVB-qsbPikWYB0WRJlgP9noVLgxC2H3"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+<div class="absolute bottom-base left-base right-base text-center">
+<span class="font-headline-sm text-on-primary">Sarees</span>
+</div>
+</a>
+<a class="group relative aspect-square overflow-hidden border border-outline-variant rounded bg-surface-container-low" href="#">
+<img alt="Accessories" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A curated arrangement of artisanal jewelry and handcrafted accessories resting on a piece of aged parchment paper. The items feature raw brass and semi-precious stones, embodying ancestral craftsmanship. The lighting is crisp and directional, emphasizing the materiality and intricate details of the pieces within a serene, sophisticated digital interface style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbVH4Hr193z24HLKHwcKhb-gvvMJyiXcOJLkFVJURFp1znWbCX3lBbJs9tLTpPw_Kv3e_d8hICiPFmfc-u3VqD3L_48VCzT-58HE8Kj2odhUQ78Ko5Y7tZ-JykyOdjdpHv5vrzn79rgOPLkPbGD_iNL5Nmtx554y9LO6c65QLYhX4ISDAJgDg15-y0IS5XgHvpCCFs3y1vqO53awHYFEZciQjYHcZViwA_Tx56IovkoZU7gY_h2C7WGPLZk4833skchpD0f4Mj5Lnl"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+<div class="absolute bottom-base left-base right-base text-center">
+<span class="font-headline-sm text-on-primary">Accessories</span>
+</div>
+</a>
+<a class="group relative aspect-square overflow-hidden border border-outline-variant rounded bg-surface-container-low" href="#">
+<img alt="Home" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A beautifully styled interior vignette featuring handcrafted clay ceramics and handwoven linen throws. The scene is bathed in warm, natural sunlight that highlights the raw, tactile textures of the materials. The minimalist composition reflects a grounded, premium aesthetic inspired by slow living and ancestral Indian craftsmanship." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxwhROwyBiyMZOpuxcJNcDNW3_7kk_8vnCGHvQX1_9F685r5a5CptQ5eRZUIYg8myOTosFzkFPg2wSu_MNP-aVyQAPcjZcDw8UxvHnM1v-R-J6UtWhi-lkEr48A_OOxJlibYwIZruVDUJAFqZX4mQAR2lChu8ehd1C_3ifWeQwBJSjJ5x4wx751iAGH7bRoJAL-ygA9TDoYuDT4QJkup_UAC9RwCjPBJEQspBmVt1Wc-WU9pFI5w6gw-yET07ov7o4uZLrxjfhEfpJ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+<div class="absolute bottom-base left-base right-base text-center">
+<span class="font-headline-sm text-on-primary">Home</span>
+</div>
+</a>
+</div>
+</section>
+<!-- New Arrivals Carousel -->
+<section class="py-xl pl-margin-mobile md:pl-margin-desktop overflow-hidden">
+<div class="flex items-end justify-between pr-margin-mobile md:pr-margin-desktop mb-lg">
+<h2 class="font-headline-md text-primary">New Arrivals</h2>
+<a class="font-label-caps text-on-surface-variant hover:text-primary transition-colors" href="#">VIEW ALL</a>
+</div>
+<div class="flex gap-sm md:gap-gutter overflow-x-auto hide-scrollbar pb-sm snap-x">
+<!-- Product Card 1 -->
+<div class="min-w-[240px] md:min-w-[300px] snap-start group cursor-pointer">
+<div class="relative aspect-[4/5] bg-surface-container-high border border-outline-variant mb-sm overflow-hidden rounded">
+<div class="absolute top-sm left-sm bg-surface/90 text-on-surface px-2 py-1 font-label-caps text-[9px] z-10 border border-outline-variant uppercase tracking-widest">New</div>
+<button class="absolute top-sm right-sm z-10 p-xs text-on-surface-variant/70 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</button>
+<img alt="Product" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A full-length editorial shot of a woman wearing a modern, handcrafted sustainable dress in earth tones. The background is a clean, textured surface resembling raw clay or parchment. The lighting is soft and flattering, emphasizing the drape and tactile quality of the slow-fashion garment in a sophisticated, minimalist setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkgfSv4bM142v59eLwX-QgwxiD-OtFt0NCxLyhym03lPveT1IY0mdZeVBVrsGsuaxyFq3ZjaQJWr5DbpIzFNxufR8zGj29HcwsGMRqBPduV0CiyuiWjyuO4o-ifcvBgs79aCEzWw30dGuQcFsRac1_rhZu35TohZA51cosdtVO3BjcDC0WdC6iVDstvomChljbqmMxsyM1vpx6FdkFVnY7uFsR4qszIJQwUbjXtawrcTsuY8ortPWKPzWAFcgM6RsS6PL0ynZ32Tpv"/>
+<button class="absolute bottom-0 left-0 right-0 bg-primary/10 backdrop-blur-md text-primary py-2 font-label-caps text-[10px] opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest">
+    Add to Bag
+</button>
+</div>
+<div class="text-center px-xs">
+<h3 class="font-headline-sm text-on-surface text-[16px] leading-tight mb-1">Ajrakh Print Cotton Dress</h3>
+<p class="font-label-caps text-on-surface-variant text-[12px] opacity-80">₹ 3,490</p>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="min-w-[240px] md:min-w-[300px] snap-start group cursor-pointer">
+<div class="relative aspect-[4/5] bg-surface-container-high border border-outline-variant mb-sm overflow-hidden rounded">
+<button class="absolute top-sm right-sm z-10 p-xs text-on-surface-variant/70 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</button>
+<img alt="Product" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A close-up view of an intricately hand-embroidered tunic in deep walnut and cream colors. The fabric's raw, tactile texture is highlighted by warm, natural sunlight. The composition is uncluttered and highly detailed, reflecting the ancestral Indian craftsmanship and contemporary elegance of a premium, sustainable fashion brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBy77LWjgmQEGa36RZ72BDOq9gVR8PdpytY6dYKBQVj7xBqARVMLDUAdJ8R4IXDMJUZhe4Nw22eY6IwDB75UzsUwb1Ks7dG12eGk7IZNK36iukftrnOuoO-dO7b4uCjkyIMkm7zB7J13wr-wuAPzvAID-0jM7CU-sKaOa8VuUJJwv43c3FzARkaLWmdK-QhkZyoESseFWW_H8hNWTr_IR-lmAUAtRUWA-7xZ4OhtNn4tm7lDyo9MmZ-I3XDJhWSB_teavVPcbGBOw0E"/>
+<button class="absolute bottom-0 left-0 right-0 bg-primary/10 backdrop-blur-md text-primary py-2 font-label-caps text-[10px] opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest">
+    Add to Bag
+</button>
+</div>
+<div class="text-center px-xs">
+<h3 class="font-headline-sm text-on-surface text-[16px] leading-tight mb-1">Hand Embroidered Linen Tunic</h3>
+<p class="font-label-caps text-on-surface-variant text-[12px] opacity-80">₹ 4,200</p>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="min-w-[240px] md:min-w-[300px] snap-start group cursor-pointer">
+<div class="relative aspect-[4/5] bg-surface-container-high border border-outline-variant mb-sm overflow-hidden rounded">
+<div class="absolute top-sm left-sm bg-surface/90 text-on-surface px-2 py-1 font-label-caps text-[9px] z-10 border border-outline-variant uppercase tracking-widest">New</div>
+<button class="absolute top-sm right-sm z-10 p-xs text-on-surface-variant/70 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</button>
+<img alt="Product" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A beautifully styled shot of a handwoven silk stole draped elegantly over a wooden chair. The deep, rich colors of the textile contrast with the warm, sand-toned background. Natural light creates subtle depth and highlights the fine weave, perfectly capturing the tactile minimalism and premium quality of the handcrafted accessory." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpEIJBNyQVoVmlRYfCGBPSJfsi3Zb-Zd7JOj1Gc5M8-DQ1BFFucX2S3enViSpyvPdvpOgaBpLaq69ZhUjJmz87aqyZ8jcigu8NtzUY2gSbhcbyhToDiGUWm7W-wWlFu5v_hdCo4ShymBxRY4hiXwlgyKEn_i63vqnOKRKfwdI0sM8xYPot8x1O0wLklDNgrBh5e7hR_1G9KqgaRhnMYtBO7vK_wF1sLpR85DpMR_N2eXA6UzWXT9wRo2zyiqyMMSAfOgktaOss0Tfo"/>
+<button class="absolute bottom-0 left-0 right-0 bg-primary/10 backdrop-blur-md text-primary py-2 font-label-caps text-[10px] opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest">
+    Add to Bag
+</button>
+</div>
+<div class="text-center px-xs">
+<h3 class="font-headline-sm text-on-surface text-[16px] leading-tight mb-1">Woven Silk Blend Stole</h3>
+<p class="font-label-caps text-on-surface-variant text-[12px] opacity-80">₹ 2,150</p>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="min-w-[240px] md:min-w-[300px] snap-start group cursor-pointer pr-margin-mobile md:pr-margin-desktop">
+<div class="relative aspect-[4/5] bg-surface-container-high border border-outline-variant mb-sm overflow-hidden rounded">
+<button class="absolute top-sm right-sm z-10 p-xs text-on-surface-variant/70 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</button>
+<img alt="Product" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="An artistic photograph of a block-printed cotton scarf featuring traditional motifs. The fabric is arranged in soft folds on a surface that resembles aged parchment. The lighting is gentle and diffused, enhancing the tactile beauty and slow-fashion ethos of the piece within a highly refined, minimalist digital design language." src="https://lh3.googleusercontent.com/aida-public/AB6AXuANirV5jZBrmf3CcW9hBG4-ae6B0j1SqKgJGU9rd2r8t4bS8iR7FGNWvoOrzLOwNNzo6kKYHHKt5V5Tt1yhnqoKd5EW8dwOoUzj8kZR16zlYun-ddrqQP2zc9YJH_1AOkkKzJfk3DAWBmIv5fkCObwneZo8v7ZCjcXd1N28FaCydCE6rjOGcRquR6J7kvlEu4gJI8ECs2xmpGpdKrkCWRXJUT_edKZTwcfD1kKcJir6VOlxHozIJRTLJITc-doSVguJA2XCZpkvRO74"/>
+<button class="absolute bottom-0 left-0 right-0 bg-primary/10 backdrop-blur-md text-primary py-2 font-label-caps text-[10px] opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest">
+    Add to Bag
+</button>
+</div>
+<div class="text-center px-xs">
+<h3 class="font-headline-sm text-on-surface text-[16px] leading-tight mb-1">Indigo Block Print Scarf</h3>
+<p class="font-label-caps text-on-surface-variant text-[12px] opacity-80">₹ 1,850</p>
+</div>
+</div>
+</div>
+</section>
+<!-- The Artisan's Hand -->
+<section class="py-xl px-margin-mobile md:px-margin-desktop bg-surface-container-low my-xl border-y border-surface-variant">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg items-center">
+<div class="order-2 md:order-1 text-center md:text-left">
+<h2 class="font-headline-lg text-primary mb-md">The Artisan's Hand</h2>
+<blockquote class="font-headline-sm text-on-surface-variant italic mb-lg relative">
+<span class="absolute -top-sm -left-md text-4xl text-outline-variant opacity-50">"</span>
+                        Every piece tells a story of generations, woven into the very fabric of our heritage. Our hands translate ancient traditions into contemporary elegance.
+                        <span class="absolute -bottom-sm -right-sm text-4xl text-outline-variant opacity-50">"</span>
+</blockquote>
+<a class="inline-flex items-center justify-center border border-primary text-primary px-lg py-sm font-label-caps w-fit transition-colors hover:bg-surface-container-highest" href="#">
+                        OUR STORY
+                    </a>
+</div>
+<div class="order-1 md:order-2 relative aspect-[4/5] md:aspect-square overflow-hidden rounded border border-outline-variant">
+<img alt="Artisan working" class="w-full h-full object-cover" data-alt="A high-resolution, candid editorial photograph of an Indian artisan deeply focused on hand-carving a wooden printing block. The scene is illuminated by beautiful, directional sunlight streaming through a window, highlighting the dust motes in the air and the deep walnut tones of the wood. The mood is authentic, grounded, and deeply reverent of slow craftsmanship." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBk3mfbWySqzygwgxU5VJ1hzUzAO9e4KOpI2eKROmL54x1jf8IAX3p6B7FduXD8503N_3U0MkyuEsy-ziNMhhF9naDp34Wb1uWrMgw8Xoi7Gp5zz2LYeKi002VqPa7XKn590sgXRYsMdIrnfdBoUkutr9jPmBLneCCevV6Ax10qLK9g0dWJ5NGPvIgQJxAhZLzF0JDPx82ZjCC5VHa0KYBdZP0DnGbUaibBQbwVU07UeHVDui9I2npFoFEJOoUfhgyAJbeTd2jokoxi"/>
+<!-- Artisan Badge -->
+<div class="absolute bottom-md right-md w-24 h-24 bg-surface-container-high rounded-full border border-primary flex items-center justify-center shadow-md shadow-primary/10">
+<span class="font-label-caps text-primary text-center leading-tight">HAND<br/>CRAFTED</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Email Signup -->
+<section class="py-xl px-margin-mobile md:px-margin-desktop bg-primary-container text-on-primary-container text-center rounded mx-margin-mobile md:mx-margin-desktop mb-xl border border-outline/30">
+<h2 class="font-headline-md mb-xs text-on-primary">Subscribe &amp; Save 10%</h2>
+<p class="font-body-md mb-lg max-w-md mx-auto text-on-primary/80">Join our community to receive updates on new collections, artisan stories, and exclusive offers.</p>
+<form class="flex flex-col sm:flex-row gap-sm max-w-md mx-auto">
+<input class="flex-1 bg-surface-container-high text-on-surface border-b border-primary focus:ring-0 focus:border-primary font-body-sm px-sm py-sm outline-none placeholder:text-on-surface-variant/50 rounded-t" placeholder="Email Address" type="email"/>
+<button class="bg-primary text-on-primary px-lg py-sm font-label-caps whitespace-nowrap transition-opacity hover:opacity-90" type="submit">
+                    SUBSCRIBE
+                </button>
+</form>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-primary dark:bg-primary-container w-full py-xl px-margin-desktop grid grid-cols-1 md:grid-cols-4 gap-gutter max-w-max-width mx-auto border-t border-primary-container flat no shadows mt-auto">
+<div class="col-span-1 md:col-span-4 mb-md">
+<span class="font-headline-md text-headline-md text-on-primary">acharkhastory</span>
+</div>
+<div class="flex flex-col gap-sm">
+<a class="font-body-sm text-body-sm text-on-primary/80 hover:text-secondary-fixed transition-colors opacity-90 hover:opacity-100" href="#">Our Story</a>
+<a class="font-body-sm text-body-sm text-on-primary/80 hover:text-secondary-fixed transition-colors opacity-90 hover:opacity-100" href="#">Artisan Groups</a>
+</div>
+<div class="flex flex-col gap-sm">
+<a class="font-body-sm text-body-sm text-on-primary/80 hover:text-secondary-fixed transition-colors opacity-90 hover:opacity-100" href="#">Shipping &amp; Returns</a>
+<a class="font-body-sm text-body-sm text-on-primary/80 hover:text-secondary-fixed transition-colors opacity-90 hover:opacity-100" href="#">Sustainability</a>
+</div>
+<div class="col-span-1 md:col-span-4 mt-lg pt-sm border-t border-primary-container/30">
+<p class="font-body-sm text-body-sm text-on-primary/60">© 2024 acharkhastory. Empowering Craft.</p>
+</div>
+</footer>
+<!-- Bottom Navigation Bar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-surface-variant flex justify-between items-center px-sm py-xs pb-safe z-50 h-[64px]">
+<a class="flex flex-col items-center justify-center w-full gap-1 text-primary" href="#">
+<div class="px-4 py-1 bg-secondary-container rounded-full">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">home</span>
+</div>
+<span class="font-label-caps text-[10px] font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<div class="px-4 py-1 rounded-full transparent">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 0;">search</span>
+</div>
+<span class="font-label-caps text-[10px]">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<div class="px-4 py-1 rounded-full transparent">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 0;">diversity_3</span>
+</div>
+<span class="font-label-caps text-[10px]">Artisans</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<div class="px-4 py-1 rounded-full transparent">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</div>
+<span class="font-label-caps text-[10px]">Wishlist</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<div class="px-4 py-1 rounded-full transparent">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 0;">person</span>
+</div>
+<span class="font-label-caps text-[10px]">Account</span>
+</a>
+</nav>
+</body></html>
