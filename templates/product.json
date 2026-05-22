@@ -1,453 +1,219 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */{
+{
   "sections": {
     "main": {
-      "type": "product-information",
-      "blocks": {
-        "media-gallery": {
-          "type": "_product-media-gallery",
-          "static": true,
-          "settings": {
-            "media_presentation": "slideshow",
-            "media_columns": "two",
-            "image_gap": 4,
-            "large_first_image": false,
-            "icons_style": "none",
-            "slideshow_controls_style": "counter",
-            "slideshow_mobile_controls_style": "dots",
-            "thumbnail_position": "bottom",
-            "thumbnail_width": 72,
-            "aspect_ratio": "2/3",
-            "constrain_to_viewport": true,
-            "media_fit": "cover",
-            "media_radius": 8,
-            "extend_media": false,
-            "zoom": true,
-            "video_loop": false,
-            "hide_variants": true,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "product-details": {
-          "type": "_product-details",
-          "static": true,
-          "settings": {
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "details_position": "flex-start",
-            "gap": 28,
-            "sticky_details_desktop": true,
-            "inherit_color_scheme": true,
-            "color_scheme": "scheme-1",
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 24,
-            "padding-block-end": 24,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "group_icgrde": {
-              "type": "group",
-              "name": "Header",
-              "settings": {
-                "open_in_new_tab": false,
-                "content_direction": "column",
-                "vertical_on_mobile": true,
-                "horizontal_alignment": "flex-start",
-                "vertical_alignment": "center",
-                "align_baseline": false,
-                "horizontal_alignment_flex_direction_column": "flex-start",
-                "vertical_alignment_flex_direction_column": "center",
-                "gap": 12,
-                "width": "fill",
-                "custom_width": 100,
-                "width_mobile": "fill",
-                "custom_width_mobile": 100,
-                "height": "fit",
-                "custom_height": 100,
-                "inherit_color_scheme": true,
-                "color_scheme": "",
-                "background_media": "none",
-                "video_position": "cover",
-                "background_image_position": "cover",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "toggle_overlay": false,
-                "overlay_color": "#00000026",
-                "overlay_style": "solid",
-                "gradient_direction": "to top",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {
-                "text_xrnftG": {
-                  "type": "text",
-                  "name": "Product title",
-                  "settings": {
-                    "text": "<h1>{{ closest.product.title }}</h1>",
-                    "width": "100%",
-                    "max_width": "normal",
-                    "alignment": "left",
-                    "type_preset": "h3",
-                    "font": "var(--font-primary--family)",
-                    "font_size": "",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "wrap": "pretty",
-                    "color": "",
-                    "background": false,
-                    "background_color": "#00000026",
-                    "corner_radius": 0,
-                    "padding-block-start": 0,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                },
-                "price_tVjtKg": {
-                  "type": "price",
-                  "settings": {
-                    "show_sale_price_first": true,
-                    "show_installments": false,
-                    "show_tax_info": false,
-                    "type_preset": "paragraph",
-                    "width": "100%",
-                    "alignment": "left",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "color": "var(--color-foreground)",
-                    "padding-block-start": 4,
-                    "padding-block-end": 0,
-                    "padding-inline-start": 0,
-                    "padding-inline-end": 0
-                  },
-                  "blocks": {}
-                }
-              },
-              "block_order": [
-                "text_xrnftG",
-                "price_tVjtKg"
-              ]
-            },
-            "divider_VJhene": {
-              "type": "_divider",
-              "name": "t:names.divider",
-              "settings": {
-                "thickness": 1,
-                "corner_radius": "square",
-                "width_percent": 100,
-                "padding-block-start": 0,
-                "padding-block-end": 0
-              },
-              "blocks": {}
-            },
-            "variant_picker_R3rGDr": {
-              "type": "variant-picker",
-              "settings": {
-                "variant_style": "buttons",
-                "show_swatches": false,
-                "alignment": "left",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "buy_buttons_eYQEYi": {
-              "type": "buy-buttons",
-              "settings": {
-                "stacking": true,
-                "show_pickup_availability": false,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {
-                "quantity": {
-                  "type": "quantity",
-                  "static": true,
-                  "settings": {},
-                  "blocks": {}
-                },
-                "add-to-cart": {
-                  "type": "add-to-cart",
-                  "static": true,
-                  "settings": {
-                    "style_class": "button"
-                  },
-                  "blocks": {}
-                },
-                "accelerated-checkout": {
-                  "type": "accelerated-checkout",
-                  "static": true,
-                  "settings": {},
-                  "blocks": {}
-                }
-              },
-              "block_order": []
-            },
-            "text_aEtTtq": {
-              "type": "text",
-              "name": "Product description",
-              "settings": {
-                "text": "{{ closest.product.description }}",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-primary--family)",
-                "font_size": "",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "group_icgrde",
-            "divider_VJhene",
-            "variant_picker_R3rGDr",
-            "buy_buttons_eYQEYi",
-            "text_aEtTtq"
-          ]
-        }
-      },
+      "type": "acs-product-main",
+      "blocks": {},
+      "block_order": [],
       "settings": {
-        "content_width": "content-center-aligned",
-        "desktop_media_position": "left",
-        "equal_columns": false,
-        "limit_details_width": false,
-        "gap": 48,
-        "color_scheme": "",
-        "padding-block-start": 0,
-        "padding-block-end": 0
+        "home_label": "Home",
+        "enable_judgeme_badge": false,
+        "free_shipping_threshold": 1499,
+        "low_stock_threshold": 5,
+        "size_guide_label": "Size Guide",
+        "reviews_label": "4.3 - 52 reviews",
+        "save_label": "Save",
+        "tax_note": "Inclusive of all taxes",
+        "free_delivery_label": "Free delivery on this order",
+        "low_stock_prefix": "Only",
+        "low_stock_suffix": "left in this option",
+        "quantity_label": "Quantity",
+        "decrease_label": "Decrease quantity",
+        "increase_label": "Increase quantity",
+        "add_to_bag_label": "Add to Bag",
+        "sold_out_label": "Sold Out",
+        "unavailable_label": "Unavailable",
+        "wishlist_label": "Save to Wishlist",
+        "trust_label": "Product promises",
+        "shipping_promise": "Free delivery above Rs. 1,499",
+        "returns_promise": "15-day easy returns",
+        "handmade_promise": "Handmade and sustainable",
+        "supports_label": "Supports",
+        "artisan_name": "Acharkhastory Artisans",
+        "artisan_region": "India",
+        "artisan_craft": "Handcrafted",
+        "artisan_card_label": "Artisan Card",
+        "artisan_link_label": "View artisan profile",
+        "thumbnail_label": "Product media thumbnails",
+        "thumbnail_button_label": "Show product image",
+        "open_media_label": "Open image gallery",
+        "video_label": "See it worn",
+        "lightbox_label": "Product image viewer",
+        "close_label": "Close gallery",
+        "previous_label": "Previous image",
+        "next_label": "Next image",
+        "sticky_bar_label": "Quick add to bag"
       }
     },
-    "product_recommendations_qggXJq": {
-      "type": "product-recommendations",
-      "blocks": {
-        "text_cbcgyb": {
-          "type": "text",
-          "name": "t:names.header",
-          "settings": {
-            "text": "<h3>You may also like </h3>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h4",
-            "font": "var(--font-primary--family)",
-            "font_size": "",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "color": "",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "static-product-card": {
-          "type": "_product-card",
-          "name": "t:names.product_card",
-          "static": true,
-          "settings": {
-            "product_card_gap": 8,
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 8,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "product_card_gallery_DNizbJ": {
-              "type": "_product-card-gallery",
-              "name": "t:names.product_card_media",
-              "settings": {
-                "image_ratio": "adapt",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "product_title_M7MJkb": {
-              "type": "product-title",
-              "name": "t:names.product_title",
-              "settings": {
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "color": "var(--color-foreground)",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 4,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
-            "price_gLWgA6": {
-              "type": "price",
-              "settings": {
-                "show_sale_price_first": true,
-                "show_installments": false,
-                "show_tax_info": false,
-                "type_preset": "h6",
-                "width": "100%",
-                "alignment": "left",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "color": "var(--color-foreground)",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            }
-          },
-          "block_order": [
-            "product_card_gallery_DNizbJ",
-            "product_title_M7MJkb",
-            "price_gLWgA6"
-          ]
-        }
-      },
-      "block_order": [
-        "text_cbcgyb"
-      ],
-      "name": "t:names.product_recommendations",
+    "complete_the_look_acs": {
+      "type": "complete-the-look",
+      "blocks": {},
+      "block_order": [],
       "settings": {
-        "product": "{{ closest.product }}",
-        "recommendation_type": "related",
-        "layout_type": "grid",
-        "carousel_on_mobile": false,
-        "max_products": 4,
-        "columns": 4,
-        "mobile_columns": "2",
-        "columns_gap": 12,
-        "rows_gap": 24,
-        "icons_style": "arrow",
-        "icons_shape": "none",
-        "section_width": "page-width",
-        "gap": 28,
-        "color_scheme": "scheme-1",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "eyebrow": "Style it with",
+        "heading": "Complete the Look",
+        "subheading": "Pair this piece with artisan-made accessories and layers chosen to lift your full outfit.",
+        "max_products": 3,
+        "preselect_products": true,
+        "redirect_after_add": false,
+        "badge_label": "Pairs well",
+        "selected_label": "selected",
+        "add_label": "Add selected to bag",
+        "adding_label": "Adding...",
+        "added_label": "Added to bag",
+        "details_label": "View details",
+        "variant_label": "Choose option for",
+        "select_product_label": "Select",
+        "sold_out_label": "Sold Out",
+        "default_craft_label": "Handcrafted",
+        "empty_selection_message": "Choose at least one product to add.",
+        "error_message": "Something went wrong. Please try again.",
+        "empty_heading": "Choose complementary products",
+        "empty_text": "Add products in this section or set product metafield custom.complete_the_look to show live upsells."
       }
-    }
-  },
+    },
+    "frequently_bought_together_acs": {
+      "type": "frequently-bought-together",
+      "blocks": {},
+      "block_order": [],
+      "settings": {
+        "eyebrow": "Bundle and save time",
+        "heading": "Frequently Bought Together",
+        "subheading": "Add the full set in one step: the piece you are viewing plus customer-favourite companions.",
+        "include_main_product": true,
+        "max_products": 3,
+        "preselect_products": true,
+        "redirect_after_add": false,
+        "main_product_badge": "This item",
+        "companion_product_badge": "Often paired",
+        "summary_label": "Frequently bought together bundle summary",
+        "summary_title": "Bundle total",
+        "selected_label": "selected",
+        "add_label": "Add all to bag",
+        "adding_label": "Adding...",
+        "added_label": "Added to bag",
+        "variant_label": "Choose option for",
+        "select_product_label": "Select",
+        "sold_out_label": "Sold Out",
+        "empty_selection_message": "Choose at least one product to add.",
+        "error_message": "Something went wrong. Please try again.",
+        "empty_heading": "Choose bundle products",
+        "empty_text": "Add fallback products here or set product metafield custom.frequently_bought_together."
+      }
+    },
     "product_tabs_acs": {
       "type": "product-tabs",
       "blocks": {
         "tab_description": {
           "type": "description",
           "settings": {
-            "title": "Description"
+            "title": "Description",
+            "open_by_default": true
+          }
+        },
+        "tab_fabric_care": {
+          "type": "fabric_care",
+          "settings": {
+            "title": "Fabric & Care",
+            "open_by_default": false,
+            "fabric_label": "Fabric",
+            "fabric": "Handwoven cotton",
+            "care_label": "Wash Care",
+            "care": "Gentle hand wash separately in cold water",
+            "fit_label": "Fit",
+            "fit": "Comfort fit",
+            "origin_label": "Origin",
+            "origin": "India",
+            "handmade_note": "Small colour and pattern variations are natural markers of handmade craft."
           }
         },
         "tab_size_guide": {
           "type": "size_guide",
           "settings": {
             "title": "Size Guide",
-            "note": "This garment runs true to size. For a relaxed fit, size up."
+            "open_by_default": false,
+            "size_columns": "Size|Bust|Waist|Hip|Length",
+            "size_rows": "XS|32|26|36|44\nS|34|28|38|45\nM|36|30|40|46\nL|38|32|42|47\nXL|40|34|44|48\nXXL|42|36|46|49",
+            "note": "If you are between sizes, choose the larger size for a relaxed fit.",
+            "measurement_image_alt": "How to measure bust waist hip and garment length",
+            "measurement_placeholder": "How to measure"
+          }
+        },
+        "tab_craft_story": {
+          "type": "craft_story",
+          "settings": {
+            "title": "Craft Story",
+            "open_by_default": false,
+            "craft_type": "Handcrafted",
+            "region": "India",
+            "artisan_name": "Acharkhastory Artisans",
+            "fallback_story": "This piece is rooted in Indian artisan traditions and finished by hand.",
+            "link_label": "View artisan profile"
           }
         },
         "tab_shipping": {
-          "type": "shipping",
+          "type": "shipping_returns",
           "settings": {
             "title": "Shipping & Returns",
-            "handmade_note": "As each piece is handcrafted, slight variations in colour and pattern are a feature, not a defect."
+            "open_by_default": false,
+            "handmade_note": "Handmade items may show slight variations in colour, weave, or print placement."
           }
         }
       },
-      "block_order": ["tab_description", "tab_size_guide", "tab_shipping"],
-      "settings": {}
+      "block_order": [
+        "tab_description",
+        "tab_fabric_care",
+        "tab_size_guide",
+        "tab_craft_story",
+        "tab_shipping"
+      ],
+      "settings": {
+        "heading": "Product Details",
+        "subheading": "Everything to know before this handcrafted piece becomes yours."
+      }
     },
     "reviews_pdp_acs": {
       "type": "reviews-acs",
-      "blocks": {},
-      "block_order": [],
+      "blocks": {
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "name": "Priya S.",
+            "location": "Mumbai",
+            "verified_label": "Verified purchase",
+            "rating": 5,
+            "review_text": "The craft detail is even richer in person and the fit feels easy for daily wear.",
+            "product_name": "Ajrakh Block Print Kurta"
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "name": "Ananya R.",
+            "location": "Bengaluru",
+            "verified_label": "Verified purchase",
+            "rating": 5,
+            "review_text": "The handmade finish makes it feel special without being delicate. I wore it all day and it was comfortable.",
+            "product_name": "Handcrafted Cotton Dress"
+          }
+        }
+      },
+      "block_order": [
+        "review_1",
+        "review_2"
+      ],
       "settings": {
         "title": "Customer Reviews",
-        "subtitle": "",
-        "enable_judgeme": true
+        "subtitle": "Real stories from real customers.",
+        "enable_judgeme": true,
+        "purchased_prefix": "Purchased:"
       }
     }
   },
   "order": [
     "main",
+    "complete_the_look_acs",
+    "frequently_bought_together_acs",
     "product_tabs_acs",
-    "reviews_pdp_acs",
-    "product_recommendations_qggXJq"
+    "reviews_pdp_acs"
   ]
 }

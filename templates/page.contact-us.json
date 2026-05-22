@@ -1,0 +1,49 @@
+{
+  "sections": {
+    "contact_hero_acs": {
+      "type": "acs-contact-hero",
+      "settings": {
+        "eyebrow": "Get in Touch",
+        "title": "We'd love to hear from you",
+        "body": "Whether you have a question about a product, need help with an order, or want to collaborate — we're here for you."
+      }
+    },
+    "contact_form_acs": {
+      "type": "acs-contact-form",
+      "settings": {
+        "form_title": "Send us a message",
+        "submit_label": "Send Message",
+        "success_heading": "Message sent!",
+        "success_body": "Thank you for reaching out. We'll get back to you within 24 hours.",
+        "email": "hello@acharkhastory.com",
+        "phone": "+91 98765 43210",
+        "hours": "Mon–Sat, 10 am–6 pm IST",
+        "location": "Mumbai, India",
+        "whatsapp_number": "+919876543210",
+        "whatsapp_message": "Hi! I need help with my Acharkhastory order.",
+        "faq_text": "Looking for quick answers? Check our FAQ.",
+        "faq_label": "View FAQ",
+        "faq_link": "/pages/faq"
+      }
+    },
+    "email_signup_acs": {
+      "type": "email-signup",
+      "settings": {
+        "title": "Stay Connected",
+        "subtitle": "Get updates on new collections, craft stories, and exclusive offers.",
+        "klaviyo_form_id": "",
+        "placeholder": "Your email address",
+        "email_label": "Email address",
+        "button_label": "Subscribe",
+        "success_message": "Thank you. Welcome to the story.",
+        "fine_print": "No spam. Unsubscribe anytime.",
+        "customer_tags": "newsletter"
+      }
+    }
+  },
+  "order": [
+    "contact_hero_acs",
+    "contact_form_acs",
+    "email_signup_acs"
+  ]
+}

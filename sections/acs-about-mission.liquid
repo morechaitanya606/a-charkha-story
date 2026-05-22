@@ -1,0 +1,29 @@
+{% comment %}
+  About Page — Mission Statement
+  Centered pull-quote style mission statement.
+  Usage: Include via templates/page.about.json
+{% endcomment %}
+
+<section class="acs-mission acs-section" id="about-mission">
+  <div class="acs-page-width">
+    <blockquote class="acs-mission__quote">
+      {{ section.settings.quote }}
+    </blockquote>
+    {%- if section.settings.attribution != blank -%}
+      <p class="acs-mission__attribution">— {{ section.settings.attribution }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Mission Quote",
+  "tag": "section",
+  "class": "acs-mission-section",
+  "settings": [
+    { "type": "textarea", "id": "quote", "label": "Quote", "default": "We believe clothing should carry meaning. Every thread, every colour, every pattern is a conversation between the maker and the wearer." },
+    { "type": "text", "id": "attribution", "label": "Attribution", "default": "A Charkha Story" }
+  ],
+  "presets": [{ "name": "Mission Quote" }]
+}
+{% endschema %}

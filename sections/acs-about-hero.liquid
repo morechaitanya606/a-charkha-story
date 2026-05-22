@@ -1,0 +1,68 @@
+{% comment %}
+  About Page — Hero Section
+  Full-bleed editorial hero with brand tagline and mission statement.
+  Usage: Include via templates/page.about.json
+{% endcomment %}
+
+<section class="acs-about-hero acs-section" id="about-hero">
+  {%- if section.settings.hero_image != blank -%}
+    <div class="acs-about-hero__media">
+      {{ section.settings.hero_image
+         | image_url: width: 1920
+         | image_tag:
+           loading: 'eager',
+           fetchpriority: 'high',
+           widths: '800, 1200, 1600, 1920',
+           sizes: '100vw',
+           alt: section.settings.hero_image_alt | default: section.settings.title }}
+    </div>
+    <div class="acs-about-hero__overlay"></div>
+  {%- endif -%}
+
+  <div class="acs-about-hero__content acs-page-width">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="acs-eyebrow acs-about-hero__eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+
+    <h1 class="acs-about-hero__title">{{ section.settings.title }}</h1>
+
+    {%- if section.settings.body != blank -%}
+      <p class="acs-about-hero__body">{{ section.settings.body }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.cta1_label != blank or section.settings.cta2_label != blank -%}
+      <div class="acs-about-hero__ctas">
+        {%- if section.settings.cta1_label != blank -%}
+          <a href="{{ section.settings.cta1_link | default: '/collections/all' }}" class="acs-btn acs-btn--ivory">
+            {{ section.settings.cta1_label }}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.cta2_label != blank -%}
+          <a href="{{ section.settings.cta2_link | default: '/pages/artisans' }}" class="acs-btn acs-btn--ghost-ivory">
+            {{ section.settings.cta2_label }}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Hero",
+  "tag": "section",
+  "class": "acs-about-hero-section",
+  "settings": [
+    { "type": "image_picker", "id": "hero_image", "label": "Hero background image" },
+    { "type": "text", "id": "hero_image_alt", "label": "Hero image alt text", "default": "Artisans working on handcrafted textiles" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow text", "default": "Our Story" },
+    { "type": "text", "id": "title", "label": "Heading", "default": "Every thread tells a story of hands, heritage, and hope" },
+    { "type": "textarea", "id": "body", "label": "Body text", "default": "A Charkha Story began with a single question: what if clothing could carry meaning? We connect you directly with artisan families across India, so every piece you wear supports a livelihood and preserves a living tradition." },
+    { "type": "text", "id": "cta1_label", "label": "Primary CTA label", "default": "Shop the Collection" },
+    { "type": "url", "id": "cta1_link", "label": "Primary CTA link" },
+    { "type": "text", "id": "cta2_label", "label": "Secondary CTA label", "default": "Meet Our Artisans" },
+    { "type": "url", "id": "cta2_link", "label": "Secondary CTA link" }
+  ],
+  "presets": [{ "name": "About Hero" }]
+}
+{% endschema %}

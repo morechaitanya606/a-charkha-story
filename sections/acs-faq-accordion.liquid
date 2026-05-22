@@ -1,0 +1,103 @@
+{% comment %}
+  FAQ Section — Accordion
+  Categorized FAQ with expand/collapse using native <details> element.
+  Usage: Include via templates/page.faq.json
+{% endcomment %}
+
+<section class="acs-section" id="faq">
+  <div class="acs-page-width">
+    <div class="acs-section-header acs-section-header--center">
+      <h1 class="acs-h2">{{ section.settings.title }}</h1>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="acs-section-header__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="acs-faq">
+      {%- assign current_category = '' -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'category' -%}
+          {%- if current_category != '' -%}
+            </div>
+          {%- endif -%}
+          {%- assign current_category = block.settings.title -%}
+          <div class="acs-faq__category" {{ block.shopify_attributes }}>
+            <h2 class="acs-faq__category-title">{{ block.settings.title }}</h2>
+        {%- elsif block.type == 'faq_item' -%}
+          {%- if current_category == '' -%}
+            <div class="acs-faq__category">
+            {%- assign current_category = 'default' -%}
+          {%- endif -%}
+          <details class="acs-faq__item" {{ block.shopify_attributes }}>
+            <summary class="acs-faq__question">
+              <span>{{ block.settings.question }}</span>
+              <svg class="acs-faq__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </summary>
+            <div class="acs-faq__answer">
+              {{ block.settings.answer }}
+            </div>
+          </details>
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if current_category != '' -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.contact_text != blank -%}
+      <div class="acs-policy__contact">
+        <h3 class="acs-policy__contact-title">{{ section.settings.contact_title }}</h3>
+        <p class="acs-policy__contact-body">{{ section.settings.contact_text }}</p>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FAQ Accordion",
+  "tag": "section",
+  "class": "acs-faq-section",
+  "max_blocks": 30,
+  "settings": [
+    { "type": "text", "id": "title", "label": "Heading", "default": "Frequently Asked Questions" },
+    { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "Everything you need to know about shopping with A Charkha Story." },
+    { "type": "text", "id": "contact_title", "label": "Contact box title", "default": "Still have questions?" },
+    { "type": "richtext", "id": "contact_text", "label": "Contact box text", "default": "<p>Reach out to us at <a href=\"mailto:hello@acharkhastory.com\">hello@acharkhastory.com</a> or WhatsApp us at <a href=\"https://wa.me/919999999999\">+91-99999-99999</a></p>" }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category Heading",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Category title", "default": "Orders & Shipping" }
+      ]
+    },
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "How long does delivery take?" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>Handcrafted orders typically ship within 5-7 business days. Delivery takes an additional 3-5 days depending on your location. We ship across India and internationally.</p>" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "FAQ Accordion",
+    "blocks": [
+      { "type": "category", "settings": { "title": "Orders & Shipping" }},
+      { "type": "faq_item", "settings": { "question": "How long does delivery take?", "answer": "<p>Handcrafted orders typically ship within 5-7 business days. Delivery takes an additional 3-5 days depending on your location.</p>" }},
+      { "type": "faq_item", "settings": { "question": "Do you ship internationally?", "answer": "<p>Yes! We ship to over 30 countries worldwide. International shipping takes 7-14 business days.</p>" }},
+      { "type": "faq_item", "settings": { "question": "Can I track my order?", "answer": "<p>Absolutely. You'll receive a tracking link via email and WhatsApp once your order ships.</p>" }},
+      { "type": "category", "settings": { "title": "Returns & Exchanges" }},
+      { "type": "faq_item", "settings": { "question": "What is your return policy?", "answer": "<p>We offer 15-day easy returns on all non-sale items. Items must be unused, unwashed, and in original packaging.</p>" }},
+      { "type": "faq_item", "settings": { "question": "How do I initiate a return?", "answer": "<p>Simply WhatsApp us or email hello@acharkhastory.com with your order number. We'll arrange a pickup at no extra cost.</p>" }},
+      { "type": "category", "settings": { "title": "Product & Care" }},
+      { "type": "faq_item", "settings": { "question": "How should I care for handwoven fabrics?", "answer": "<p>Hand wash in cold water with mild detergent. Do not wring — lay flat to dry. Iron on low heat. Store in a cool, dry place.</p>" }},
+      { "type": "faq_item", "settings": { "question": "Are your products truly handmade?", "answer": "<p>Yes, 100%. Every product is handcrafted by artisan families across India. No machines are used in the making of our textiles.</p>" }}
+    ]
+  }]
+}
+{% endschema %}

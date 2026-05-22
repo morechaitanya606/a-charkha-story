@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "shipping_policy": {
+      "type": "acs-policy-content",
+      "settings": {
+        "title": "Shipping Policy",
+        "updated_date": "May 2026",
+        "body": "<h2>Domestic Shipping (India)</h2><p>We ship to all serviceable pin codes across India. Orders are processed within 5-7 business days as each item is handcrafted to order.</p><h3>Shipping Rates</h3><ul><li><strong>Free shipping</strong> on all orders above Rs. 1,499</li><li><strong>Standard shipping:</strong> Rs. 99 (5-7 business days after dispatch)</li><li><strong>Express shipping:</strong> Rs. 199 (2-3 business days after dispatch)</li></ul><h3>Delivery Timeline</h3><p>Once your order is dispatched, you will receive a tracking link via email and WhatsApp. Please allow 1-2 extra days for remote locations.</p><h2>International Shipping</h2><p>We ship to over 30 countries worldwide via tracked international courier.</p><h3>International Rates</h3><ul><li><strong>Asia (SAARC countries):</strong> $12 USD (7-10 business days)</li><li><strong>Rest of World:</strong> $18 USD (10-14 business days)</li><li><strong>Free international shipping</strong> on orders above $150 USD</li></ul><h3>Customs & Duties</h3><p>International orders may be subject to import taxes, customs duties, and fees levied by the destination country. These charges are the buyer's responsibility and are not included in our pricing.</p><h2>Order Processing</h2><p>All products are handcrafted, so please allow 5-7 business days for preparation before dispatch. During festive seasons, processing times may extend to 10-12 business days.</p><h2>Packaging</h2><p>Every order is carefully wrapped in eco-friendly packaging — recycled paper, cotton pouches, and minimal plastic. We believe beautiful packaging should not cost the earth.</p>",
+        "contact_title": "Questions about your shipment?",
+        "contact_text": "<p>Email us at <a href=\"mailto:hello@acharkhastory.com\">hello@acharkhastory.com</a> or WhatsApp <a href=\"https://wa.me/919999999999\">+91-99999-99999</a></p>"
+      }
+    }
+  },
+  "order": ["shipping_policy"]
+}

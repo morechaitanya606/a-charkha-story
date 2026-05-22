@@ -58,9 +58,14 @@
             data-product-id="{{ product.id }}"
             ref="cards[]"
           >
-            {% # theme-check-disable %}
-            {% content_for 'block', type: '_product-card', id: 'product-card', closest.product: product %}
-            {% # theme-check-enable %}
+            {% render 'product-card-acs',
+              product: product,
+              show_badge: true,
+              show_craft_tag: true,
+              show_quick_add: true,
+              show_wishlist: true,
+              card_index: forloop.index
+            %}
           </li>
         {% endfor %}
       {% endcapture %}

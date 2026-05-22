@@ -1,0 +1,79 @@
+{% comment %}
+  Artisans Page — Featured Artisan Story
+  Editorial deep-dive on a single artisan with pull quote.
+  Usage: Include via templates/page.artisans.json
+{% endcomment %}
+
+<section class="acs-artisan-feature acs-section" id="artisan-story-feature">
+  <div class="acs-page-width">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="acs-eyebrow" style="margin-bottom:var(--acs-space-xl);">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+
+    <div class="acs-artisan-feature__layout">
+      <div class="acs-artisan-feature__image-wrap">
+        {%- if section.settings.image != blank -%}
+          {{ section.settings.image
+             | image_url: width: 900
+             | image_tag:
+               loading: 'lazy',
+               widths: '400, 600, 900',
+               sizes: '(max-width: 768px) 100vw, 45vw',
+               alt: section.settings.name | default: 'Featured artisan' }}
+        {%- else -%}
+          <div style="width:100%;height:100%;background:var(--acs-color-surface);display:flex;align-items:center;justify-content:center;">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--acs-color-muted)" stroke-width="1" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="acs-artisan-feature__content">
+        <h3 class="acs-h3">{{ section.settings.name }}</h3>
+
+        {%- if section.settings.subtitle != blank -%}
+          <p class="acs-muted" style="font-size:var(--acs-type-small);">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.quote != blank -%}
+          <blockquote class="acs-artisan-feature__pull-quote">
+            "{{ section.settings.quote }}"
+          </blockquote>
+        {%- endif -%}
+
+        <div class="acs-artisan-feature__body">
+          {{ section.settings.body }}
+        </div>
+
+        {%- if section.settings.cta_label != blank -%}
+          <div>
+            <a href="{{ section.settings.cta_link | default: '/collections/all' }}" class="acs-btn acs-btn--primary">
+              {{ section.settings.cta_label }}
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Artisan Story",
+  "tag": "section",
+  "class": "acs-artisan-feature-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Artisan Spotlight" },
+    { "type": "image_picker", "id": "image", "label": "Artisan photo" },
+    { "type": "text", "id": "name", "label": "Artisan name", "default": "The Weavers of Shantipur" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Nadia District, West Bengal — Handloom Muslin" },
+    { "type": "textarea", "id": "quote", "label": "Pull quote", "default": "We weave not just cloth, but the stories of our ancestors. Each thread carries five hundred years of tradition." },
+    { "type": "richtext", "id": "body", "label": "Story body", "default": "<p>In the narrow lanes of Shantipur, the rhythmic clatter of wooden looms has been a constant for over five centuries. These master weavers create some of the finest muslin and jamdani fabrics in India — each piece taking days or even weeks to complete.</p><p>A Charkha Story works directly with 12 weaving families in Shantipur, ensuring fair wages and creative independence. When you wear our muslin collection, you're wearing a piece of living history.</p>" },
+    { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Shop Muslin Collection" },
+    { "type": "url", "id": "cta_link", "label": "CTA link" }
+  ],
+  "presets": [{ "name": "Featured Artisan Story" }]
+}
+{% endschema %}

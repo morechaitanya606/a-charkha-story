@@ -37,6 +37,7 @@ declare global {
 
   interface Window {
     Shopify: Shopify;
+    gtag?: (...args: unknown[]) => void;
   }
 
   declare const Shopify: Shopify;

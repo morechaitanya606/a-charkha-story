@@ -1,171 +1,90 @@
 {% comment %}
-  ACHARKHASTORY — Shop by Craft
-  Horizontal scroll of craft type cards (200×280px portrait).
-  Dark gradient overlay, name bottom-left, hover scale.
+  Acharkhastory shop by craft.
+  Discovery grid for undecided buyers who shop by textile technique.
 {% endcomment %}
 
-{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+{% liquid
+  assign heading = section.settings.title | strip
+  assign subtitle = section.settings.subtitle | strip
+  assign has_crafts = false
 
-<style>
-  .craft-types {
-    padding-block: var(--acs-section-py);
-    background: var(--acs-bg);
-    overflow: hidden;
-  }
+  for block in section.blocks
+    assign craft_name = block.settings.name | strip
 
-  .craft-types__inner {
-    max-width: var(--acs-container);
-    margin-inline: auto;
-    padding-inline: var(--acs-edge);
-  }
+    if craft_name != blank
+      assign has_crafts = true
+      break
+    endif
+  endfor
+%}
 
-  .craft-types__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: var(--acs-sp-lg);
-  }
-
-  .craft-types__title {
-    font-family: var(--acs-font-display);
-    font-size: var(--acs-fs-h2);
-    font-weight: 500;
-    color: var(--acs-primary);
-    margin: 0;
-  }
-
-  .craft-types__explore {
-    font-family: var(--acs-font-body);
-    font-size: var(--acs-fs-nav);
-    color: var(--acs-secondary);
-    text-decoration: none;
-  }
-
-  .craft-types__explore:hover {
-    text-decoration: underline;
-  }
-
-  .craft-types__track {
-    display: flex;
-    gap: var(--acs-sp-md);
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: var(--acs-sp-xs);
-  }
-
-  .craft-types__track::-webkit-scrollbar {
-    display: none;
-  }
-
-  .craft-types__card {
-    flex: 0 0 200px;
-    height: 280px;
-    position: relative;
-    border-radius: var(--acs-r-lg);
-    overflow: hidden;
-    text-decoration: none;
-    display: block;
-    cursor: pointer;
-  }
-
-  .craft-types__card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s var(--acs-ease);
-  }
-
-  .craft-types__card:hover img {
-    transform: scale(1.03);
-  }
-
-  .craft-types__gradient {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(26, 16, 8, 0.6) 0%, transparent 50%);
-  }
-
-  .craft-types__info {
-    position: absolute;
-    bottom: var(--acs-sp-md);
-    left: var(--acs-sp-md);
-    z-index: 1;
-  }
-
-  .craft-types__name {
-    font-family: var(--acs-font-body);
-    font-size: var(--acs-fs-nav);
-    font-weight: 500;
-    text-transform: uppercase;
-    color: var(--acs-ivory);
-    letter-spacing: 0.04em;
-  }
-
-  .craft-types__region {
-    font-family: var(--acs-font-body);
-    font-size: 11px;
-    color: rgba(253, 246, 238, 0.7);
-    margin-top: 2px;
-  }
-
-  @media (max-width: 768px) {
-    .craft-types__card {
-      flex: 0 0 160px;
-      height: 220px;
-    }
-
-    .craft-types__header {
-      flex-direction: column;
-      gap: var(--acs-sp-xs);
-    }
-  }
-</style>
-
-<section class="craft-types" id="craft-types-{{ section.id }}">
-  <div class="craft-types__inner">
-    <div class="craft-types__header">
-      <h2 class="craft-types__title">{{ section.settings.title }}</h2>
-      {%- if section.settings.explore_link != blank -%}
-        <a href="{{ section.settings.explore_link }}" class="craft-types__explore">
-          {{ section.settings.explore_text | default: 'Explore all crafts →' }}
-        </a>
-      {%- endif -%}
-    </div>
-
-    <div class="craft-types__track">
-      {%- for block in section.blocks -%}
-        <a class="craft-types__card" href="{{ block.settings.link }}" {{ block.shopify_attributes }}>
-          {%- if block.settings.image != blank -%}
-            <img
-              src="{{ block.settings.image | image_url: width: 400 }}"
-              alt="{{ block.settings.name | escape }}"
-              loading="lazy"
-              width="400"
-              height="560"
-            >
-          {%- else -%}
-            {{ 'collection-3' | placeholder_svg_tag }}
+{%- if has_crafts -%}
+  <section class="acs-section acs-craft-grid" id="CraftTypes-{{ section.id }}">
+    <div class="acs-container">
+      <header class="acs-product-carousel__header">
+        <div class="acs-section-header">
+          {%- if heading != blank -%}
+            <h2 class="acs-h2">{{ heading | escape }}</h2>
           {%- endif -%}
-          <div class="craft-types__gradient"></div>
-          <div class="craft-types__info">
-            <div class="craft-types__name">{{ block.settings.name }}</div>
-            {%- if block.settings.region != blank -%}
-              <div class="craft-types__region">{{ block.settings.region }}</div>
-            {%- endif -%}
-          </div>
-        </a>
-      {%- endfor -%}
+
+          {%- if subtitle != blank -%}
+            <p class="acs-section-header__subtitle">{{ subtitle | escape }}</p>
+          {%- endif -%}
+        </div>
+
+        {%- if section.settings.explore_text != blank and section.settings.explore_link != blank -%}
+          <a class="acs-button acs-button--link" href="{{ section.settings.explore_link }}">
+            {{ section.settings.explore_text | escape }}
+          </a>
+        {%- endif -%}
+      </header>
+
+      <div class="acs-craft-grid__items">
+        {%- for block in section.blocks -%}
+          {% liquid
+            assign craft_name = block.settings.name | strip
+            assign region = block.settings.region | strip
+            assign image = block.settings.image
+            assign link = block.settings.link | default: routes.all_products_collection_url
+          %}
+
+          {%- if craft_name != blank -%}
+            <a class="acs-craft-card" href="{{ link }}" {{ block.shopify_attributes }}>
+              <span class="acs-craft-card__media">
+                {%- if image != blank -%}
+                  <img
+                    src="{{ image | image_url: width: 420 }}"
+                    srcset="{{ image | image_url: width: 240 }} 240w, {{ image | image_url: width: 420 }} 420w, {{ image | image_url: width: 640 }} 640w"
+                    sizes="(max-width: 768px) 50vw, 20vw"
+                    width="{{ image.width }}"
+                    height="{{ image.height }}"
+                    alt="{{ block.settings.image_alt | default: craft_name | escape }}"
+                    loading="lazy"
+                  >
+                {%- else -%}
+                  {{ 'collection-3' | placeholder_svg_tag }}
+                {%- endif -%}
+              </span>
+
+              <span>
+                <span class="acs-craft-card__title">{{ craft_name | escape }}</span>
+                {%- if region != blank -%}
+                  <span class="acs-craft-card__meta">{{ region | escape }}</span>
+                {%- endif -%}
+              </span>
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+{%- endif -%}
 
 {% schema %}
 {
-  "name": "Craft Types",
+  "name": "ACS Craft Types",
   "tag": "section",
-  "class": "craft-types-section",
+  "class": "shopify-section--acs-craft-types",
   "settings": [
     {
       "type": "text",
@@ -175,9 +94,15 @@
     },
     {
       "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Choose by technique, region, and the story behind the piece."
+    },
+    {
+      "type": "text",
       "id": "explore_text",
       "label": "Explore link text",
-      "default": "Explore all crafts →"
+      "default": "Explore all crafts"
     },
     {
       "type": "url",
@@ -194,6 +119,11 @@
           "type": "image_picker",
           "id": "image",
           "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image alt text"
         },
         {
           "type": "text",
@@ -215,19 +145,55 @@
       ]
     }
   ],
+  "max_blocks": 12,
   "presets": [
     {
-      "name": "Craft Types",
+      "name": "ACS Craft Types",
       "blocks": [
-        { "type": "craft", "settings": { "name": "Ajrakh", "region": "Kutch, Gujarat" } },
-        { "type": "craft", "settings": { "name": "Block Printing", "region": "Rajasthan" } },
-        { "type": "craft", "settings": { "name": "Chikankari", "region": "Lucknow, UP" } },
-        { "type": "craft", "settings": { "name": "Mirror Work", "region": "Kutch, Gujarat" } },
-        { "type": "craft", "settings": { "name": "Kalamkari", "region": "Andhra Pradesh" } },
-        { "type": "craft", "settings": { "name": "Ikat", "region": "Odisha & Telangana" } }
+        {
+          "type": "craft",
+          "settings": {
+            "name": "Ajrakh",
+            "region": "Kutch, Gujarat"
+          }
+        },
+        {
+          "type": "craft",
+          "settings": {
+            "name": "Block Printing",
+            "region": "Rajasthan"
+          }
+        },
+        {
+          "type": "craft",
+          "settings": {
+            "name": "Chikankari",
+            "region": "Lucknow, Uttar Pradesh"
+          }
+        },
+        {
+          "type": "craft",
+          "settings": {
+            "name": "Mirror Work",
+            "region": "Kutch, Gujarat"
+          }
+        },
+        {
+          "type": "craft",
+          "settings": {
+            "name": "Kalamkari",
+            "region": "Andhra Pradesh"
+          }
+        },
+        {
+          "type": "craft",
+          "settings": {
+            "name": "Ikat",
+            "region": "Odisha and Telangana"
+          }
+        }
       ]
     }
-  ],
-  "max_blocks": 12
+  ]
 }
 {% endschema %}

@@ -1,0 +1,46 @@
+{% comment %}
+  Contact Page — Hero Section
+  Full-width hero with headline and subtitle.
+  Usage: Include via templates/page.contact-us.json
+{% endcomment %}
+
+<section class="acs-contact-hero acs-section" id="contact-hero">
+  {%- if section.settings.hero_image != blank -%}
+    <div class="acs-contact-hero__media">
+      {{ section.settings.hero_image
+         | image_url: width: 1920
+         | image_tag:
+           loading: 'eager',
+           fetchpriority: 'high',
+           widths: '800, 1200, 1600, 1920',
+           sizes: '100vw',
+           alt: section.settings.title }}
+    </div>
+    <div class="acs-contact-hero__overlay"></div>
+  {%- endif -%}
+
+  <div class="acs-contact-hero__content acs-page-width">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="acs-eyebrow" style="color:var(--acs-color-warm);">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="acs-contact-hero__title">{{ section.settings.title }}</h1>
+    {%- if section.settings.body != blank -%}
+      <p class="acs-contact-hero__body">{{ section.settings.body }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact Hero",
+  "tag": "section",
+  "class": "acs-contact-hero-section",
+  "settings": [
+    { "type": "image_picker", "id": "hero_image", "label": "Hero background image" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Get in Touch" },
+    { "type": "text", "id": "title", "label": "Heading", "default": "We'd love to hear from you" },
+    { "type": "textarea", "id": "body", "label": "Body", "default": "Whether you have a question about a product, need help with an order, or want to collaborate — we're here for you." }
+  ],
+  "presets": [{ "name": "Contact Hero" }]
+}
+{% endschema %}

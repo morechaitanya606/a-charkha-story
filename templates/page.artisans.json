@@ -1,0 +1,75 @@
+{
+  "sections": {
+    "artisans_hero_acs": {
+      "type": "acs-artisans-hero",
+      "blocks": {
+        "stat_1": { "type": "stat", "settings": { "number": "2,300", "suffix": "+", "label": "Artisans" }},
+        "stat_2": { "type": "stat", "settings": { "number": "12", "label": "States" }},
+        "stat_3": { "type": "stat", "settings": { "number": "40", "suffix": "+", "label": "Cooperatives" }}
+      },
+      "block_order": ["stat_1", "stat_2", "stat_3"],
+      "settings": {
+        "eyebrow": "The Artisan Collective",
+        "title": "The Hands Behind Every Piece",
+        "body": "We work directly with artisan cooperatives across India. Every purchase sustains a family, revives a craft, and preserves a living heritage."
+      }
+    },
+    "artisan_profiles_acs": {
+      "type": "acs-artisan-profiles",
+      "blocks": {
+        "artisan_1": { "type": "artisan", "settings": { "name": "Rangsutra", "location": "Bikaner, Rajasthan", "tags": "Mirror Work - Embroidery", "bio": "A social enterprise empowering over 2,000 rural artisans, primarily women, through traditional embroidery and mirror work." }},
+        "artisan_2": { "type": "artisan", "settings": { "name": "Okhai", "location": "Mithapur, Gujarat", "tags": "Applique - Handicrafts", "bio": "Established to provide livelihood opportunities to rural women artisans through traditional embroidery and appliqué work." }},
+        "artisan_3": { "type": "artisan", "settings": { "name": "Khamir", "location": "Bhuj, Gujarat", "tags": "Weaving - Kala Cotton", "bio": "Dedicated to the preservation and promotion of traditional crafts of Kutch, working directly with master craftspeople." }},
+        "artisan_4": { "type": "artisan", "settings": { "name": "Sadhna", "location": "Udaipur, Rajasthan", "tags": "Patchwork - Embroidery", "bio": "A women-led cooperative bringing together traditional patchwork and embroidery artisans from rural Rajasthan." }},
+        "artisan_5": { "type": "artisan", "settings": { "name": "Shantipur Weavers", "location": "Nadia, West Bengal", "tags": "Handloom - Muslin", "bio": "Master weavers continuing the 500-year legacy of Shantipur's handloom muslin and jamdani traditions." }},
+        "artisan_6": { "type": "artisan", "settings": { "name": "Bishnupur Artisans", "location": "Bishnupur, West Bengal", "tags": "Baluchari - Silk Weaving", "bio": "Artisan families preserving the ancient Baluchari saree weaving tradition with mythological motifs on silk." }}
+      },
+      "block_order": ["artisan_1", "artisan_2", "artisan_3", "artisan_4", "artisan_5", "artisan_6"],
+      "settings": {
+        "title": "Meet Our Artisans",
+        "subtitle": "Each artisan brings generations of craft knowledge to every piece they create."
+      }
+    },
+    "artisan_story_acs": {
+      "type": "acs-artisan-story-feature",
+      "settings": {
+        "eyebrow": "Artisan Spotlight",
+        "name": "The Weavers of Shantipur",
+        "subtitle": "Nadia District, West Bengal — Handloom Muslin",
+        "quote": "We weave not just cloth, but the stories of our ancestors. Each thread carries five hundred years of tradition.",
+        "body": "<p>In the narrow lanes of Shantipur, the rhythmic clatter of wooden looms has been a constant for over five centuries. These master weavers create some of the finest muslin and jamdani fabrics in India — each piece taking days or even weeks to complete.</p><p>A Charkha Story works directly with 12 weaving families in Shantipur, ensuring fair wages and creative independence. When you wear our muslin collection, you're wearing a piece of living history.</p>",
+        "cta_label": "Shop Muslin Collection"
+      }
+    },
+    "explore_map_reuse": {
+      "type": "explore-craft-map",
+      "blocks": {
+        "region_1": { "type": "craft_region", "settings": { "name": "Ajrakh", "region": "Kutch, Gujarat & Sindh" }},
+        "region_2": { "type": "craft_region", "settings": { "name": "Block Printing", "region": "Rajasthan & Gujarat" }},
+        "region_3": { "type": "craft_region", "settings": { "name": "Chikankari", "region": "Lucknow, UP" }},
+        "region_4": { "type": "craft_region", "settings": { "name": "Mirror Work", "region": "Kutch, Gujarat" }},
+        "region_5": { "type": "craft_region", "settings": { "name": "Handloom", "region": "West Bengal" }},
+        "region_6": { "type": "craft_region", "settings": { "name": "Baluchari", "region": "Bishnupur, West Bengal" }}
+      },
+      "block_order": ["region_1", "region_2", "region_3", "region_4", "region_5", "region_6"],
+      "settings": {
+        "title": "Where Our Crafts Are Born",
+        "subtitle": "From Kutch to Bengal — tracing the regions behind every piece."
+      }
+    },
+    "email_signup_acs": {
+      "type": "email-signup",
+      "settings": {
+        "title": "Stay Connected",
+        "subtitle": "Get artisan stories, new collections, and exclusive offers delivered to your inbox."
+      }
+    }
+  },
+  "order": [
+    "artisans_hero_acs",
+    "artisan_profiles_acs",
+    "artisan_story_acs",
+    "explore_map_reuse",
+    "email_signup_acs"
+  ]
+}

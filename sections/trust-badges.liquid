@@ -1,221 +1,297 @@
 {% comment %}
-  ACHARKHASTORY — Trust Badge Strip
-  5 value propositions directly below the hero.
-  72px height, bordered top/bottom, horizontal scroll on mobile.
+  Acharkhastory trust badge strip.
+  Designed to sit directly below the hero and reduce buying hesitation quickly.
 {% endcomment %}
 
-{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+{% liquid
+  assign aria_label = section.settings.aria_label | strip
+  assign has_badges = false
 
-<style>
-  .trust-badges {
-    border-top: 1px solid var(--acs-border);
-    border-bottom: 1px solid var(--acs-border);
-    background: var(--acs-bg);
-    padding-block: var(--acs-sp-md);
-  }
+  for block in section.blocks
+    assign badge_label = block.settings.label | strip
 
-  .trust-badges__list {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    gap: var(--acs-sp-xl);
-    max-width: var(--acs-container);
-    margin-inline: auto;
-    padding-inline: var(--acs-edge);
-    list-style: none;
-    margin-block: 0;
-  }
+    if badge_label != blank
+      assign has_badges = true
+      break
+    endif
+  endfor
+%}
 
-  .trust-badges__item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--acs-sp-xs);
-    flex-shrink: 0;
-    text-align: center;
-  }
+{%- if has_badges -%}
+  <section
+    class="acs-trust acs-trust--{{ section.settings.density }} acs-reveal"
+    id="acs-trust-{{ section.id }}"
+    {% if aria_label != blank %}
+      aria-label="{{ aria_label | escape }}"
+    {% endif %}
+  >
+    <ul class="acs-trust__list" role="list">
+      {%- for block in section.blocks -%}
+        {% liquid
+          assign badge_label = block.settings.label | strip
+          assign custom_icon = block.settings.custom_icon
+        %}
 
-  .trust-badges__icon {
-    width: 32px;
-    height: 32px;
-    color: var(--acs-primary);
-  }
-
-  .trust-badges__icon svg {
-    width: 100%;
-    height: 100%;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .trust-badges__label {
-    font-family: var(--acs-font-body);
-    font-size: var(--acs-fs-small);
-    color: var(--acs-text-muted);
-    white-space: nowrap;
-  }
-
-  @media (max-width: 768px) {
-    .trust-badges__list {
-      justify-content: flex-start;
-      overflow-x: auto;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      padding-inline: var(--acs-edge-m);
-      gap: var(--acs-sp-lg);
-    }
-
-    .trust-badges__list::-webkit-scrollbar {
-      display: none;
-    }
-
-    .trust-badges__item {
-      min-width: 110px;
-    }
-
-    .trust-badges__icon {
-      width: 28px;
-      height: 28px;
-    }
-
-    .trust-badges__label {
-      font-size: 11px;
-    }
-  }
-</style>
-
-<section
-  class="trust-badges"
-  id="trust-badges-{{ section.id }}"
-  aria-label="{{ section.settings.aria_label | default: 'Trust badges' }}"
->
-  <ul class="trust-badges__list" role="list">
-    {%- for block in section.blocks -%}
-      <li class="trust-badges__item" {{ block.shopify_attributes }}>
-        <div class="trust-badges__icon">
-          {%- if block.settings.custom_icon != blank -%}
-            {{ block.settings.custom_icon | image_url: width: 64 | image_tag: loading: 'lazy', alt: block.settings.label }}
-          {%- else -%}
-            {%- case block.settings.icon_type -%}
-              {%- when 'empowerment' -%}
-                <svg viewBox="0 0 32 32" aria-hidden="true">
-                  <path d="M10 22c-2-1-4-3.5-4-6.5C6 11.5 9 8 13 8c1.5 0 2.8.5 4 1.3C18.2 8.5 19.5 8 21 8c4 0 7 3.5 7 7.5 0 3-2 5.5-4 6.5"/>
-                  <path d="M16 14v10M12 18h8"/>
-                  <path d="M8 26c2-1 5-2 8-2s6 1 8 2"/>
-                </svg>
-              {%- when 'circular' -%}
-                <svg viewBox="0 0 32 32" aria-hidden="true">
-                  <path d="M16 4a12 12 0 0 1 0 24"/>
-                  <path d="M16 28a12 12 0 0 1 0-24"/>
-                  <polyline points="12 8 16 4 20 8"/>
-                  <polyline points="20 24 16 28 12 24"/>
-                </svg>
-              {%- when 'sustainable' -%}
-                <svg viewBox="0 0 32 32" aria-hidden="true">
-                  <path d="M16 28V14"/>
-                  <path d="M16 14c0-6 6-10 12-10-2 8-6 12-12 10"/>
-                  <path d="M16 18c0-4-4-7-9-7 1.5 6 4.5 9 9 7"/>
-                </svg>
-              {%- when 'heirloom' -%}
-                <svg viewBox="0 0 32 32" aria-hidden="true">
-                  <circle cx="16" cy="16" r="11"/>
-                  <path d="M16 5v22M5 16h22"/>
-                  <path d="M8.5 8.5l15 15M23.5 8.5l-15 15"/>
-                  <circle cx="16" cy="16" r="5"/>
-                </svg>
-              {%- when 'returns' -%}
-                <svg viewBox="0 0 32 32" aria-hidden="true">
-                  <polyline points="8 12 4 16 8 20"/>
-                  <path d="M4 16h18a6 6 0 0 0 0-12H12"/>
-                  <rect x="10" y="22" width="14" height="6" rx="1"/>
-                </svg>
+        {%- if badge_label != blank -%}
+          <li class="acs-trust__item" {{ block.shopify_attributes }}>
+            <span class="acs-trust__icon" aria-hidden="true">
+              {%- if custom_icon != blank -%}
+                <img
+                  src="{{ custom_icon | image_url: width: 96 }}"
+                  srcset="{{ custom_icon | image_url: width: 48 }} 48w, {{ custom_icon | image_url: width: 96 }} 96w"
+                  width="32"
+                  height="32"
+                  loading="lazy"
+                  alt=""
+                >
               {%- else -%}
-                <svg viewBox="0 0 32 32" aria-hidden="true">
-                  <circle cx="16" cy="16" r="11"/>
-                  <polyline points="12 16 15 19 21 13"/>
-                </svg>
-            {%- endcase -%}
+                {%- case block.settings.icon -%}
+                  {%- when 'delivery' -%}
+                    <svg viewBox="0 0 32 32" focusable="false">
+                      <path d="M4 9h15v13H4z"/>
+                      <path d="M19 13h5l4 4v5h-9z"/>
+                      <circle cx="10" cy="24" r="2.5"/>
+                      <circle cx="24" cy="24" r="2.5"/>
+                      <path d="M7 13h8"/>
+                    </svg>
+                  {%- when 'returns' -%}
+                    <svg viewBox="0 0 32 32" focusable="false">
+                      <path d="M10 10H5v5"/>
+                      <path d="M5 10l6 6"/>
+                      <path d="M6 18a10 10 0 1 0 4-8"/>
+                      <path d="M13 16h8"/>
+                    </svg>
+                  {%- when 'secure' -%}
+                    <svg viewBox="0 0 32 32" focusable="false">
+                      <rect x="7" y="14" width="18" height="13" rx="2"/>
+                      <path d="M11 14V9a5 5 0 0 1 10 0v5"/>
+                      <path d="M16 19v4"/>
+                    </svg>
+                  {%- when 'artisan' -%}
+                    <svg viewBox="0 0 32 32" focusable="false">
+                      <path d="M8 25c2-3 5-5 8-5s6 2 8 5"/>
+                      <circle cx="16" cy="12" r="4"/>
+                      <path d="M5 12c1-4 4-7 8-8"/>
+                      <path d="M19 4c4 1 7 4 8 8"/>
+                      <path d="M16 2v4"/>
+                    </svg>
+                  {%- when 'handmade' -%}
+                    <svg viewBox="0 0 32 32" focusable="false">
+                      <path d="M8 25V12a3 3 0 0 1 6 0v8"/>
+                      <path d="M14 20V9a3 3 0 0 1 6 0v11"/>
+                      <path d="M20 20v-7a3 3 0 0 1 6 0v7c0 5-4 9-9 9h-2c-4 0-7-3-7-7"/>
+                    </svg>
+                  {%- when 'gift' -%}
+                    <svg viewBox="0 0 32 32" focusable="false">
+                      <rect x="5" y="13" width="22" height="14" rx="2"/>
+                      <path d="M5 13h22M16 13v14"/>
+                      <path d="M16 11c-5 0-7-1-7-4a3 3 0 0 1 5-2c1 1 2 3 2 6z"/>
+                      <path d="M16 11c5 0 7-1 7-4a3 3 0 0 0-5-2c-1 1-2 3-2 6z"/>
+                    </svg>
+                  {%- when 'support' -%}
+                    <svg viewBox="0 0 32 32" focusable="false">
+                      <path d="M7 17a9 9 0 0 1 18 0"/>
+                      <path d="M7 17v4a3 3 0 0 0 3 3h2v-7H7z"/>
+                      <path d="M25 17v4a3 3 0 0 1-3 3h-2v-7h5z"/>
+                      <path d="M20 25c-1 2-2 3-4 3"/>
+                    </svg>
+                  {%- else -%}
+                    <svg viewBox="0 0 32 32" focusable="false">
+                      <circle cx="16" cy="16" r="11"/>
+                      <path d="M11 16l4 4 7-8"/>
+                    </svg>
+                {%- endcase -%}
+              {%- endif -%}
+            </span>
+
+            <span class="acs-trust__label">{{ badge_label | escape }}</span>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- comment %} Stat counters (merged social proof) {% endcomment -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'stat' -%}
+          {%- liquid
+            assign stat_number = block.settings.number
+            assign stat_suffix = block.settings.suffix
+            assign stat_label = block.settings.label | strip
+          -%}
+          {%- if stat_number != blank and stat_label != blank -%}
+            <li class="acs-trust__item acs-trust__item--stat" {{ block.shopify_attributes }}>
+              <span class="acs-trust__stat-number acs-counter" data-acs-count-target="{{ stat_number }}">0</span>
+              {%- if stat_suffix != blank -%}
+                <span class="acs-trust__stat-suffix">{{ stat_suffix | escape }}</span>
+              {%- endif -%}
+              <span class="acs-trust__label">{{ stat_label | escape }}</span>
+            </li>
           {%- endif -%}
-        </div>
-        <span class="trust-badges__label">{{ block.settings.label }}</span>
-      </li>
-    {%- endfor -%}
-  </ul>
-</section>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </section>
+{%- endif -%}
 
 {% schema %}
 {
-  "name": "Trust Badges",
+  "name": "ACS Trust Badges",
   "tag": "section",
-  "class": "trust-badges-section",
+  "class": "shopify-section--acs-trust",
   "settings": [
     {
       "type": "text",
       "id": "aria_label",
-      "label": "Section accessible label",
-      "default": "Our values"
+      "label": "Accessible label",
+      "default": "Store promises"
+    },
+    {
+      "type": "select",
+      "id": "density",
+      "label": "Density",
+      "options": [
+        {
+          "value": "comfortable",
+          "label": "Comfortable"
+        },
+        {
+          "value": "compact",
+          "label": "Compact"
+        }
+      ],
+      "default": "comfortable"
     }
   ],
   "blocks": [
     {
       "type": "badge",
-      "name": "Badge",
+      "name": "Trust badge",
       "settings": [
         {
           "type": "select",
-          "id": "icon_type",
+          "id": "icon",
           "label": "Icon",
           "options": [
-            { "value": "empowerment", "label": "Women Empowerment" },
-            { "value": "circular", "label": "Circular Fashion" },
-            { "value": "sustainable", "label": "Sustainable" },
-            { "value": "heirloom", "label": "Heirloom Crafts" },
-            { "value": "returns", "label": "Easy Returns" },
-            { "value": "checkmark", "label": "Checkmark (default)" }
+            {
+              "value": "delivery",
+              "label": "Delivery"
+            },
+            {
+              "value": "returns",
+              "label": "Returns"
+            },
+            {
+              "value": "secure",
+              "label": "Secure checkout"
+            },
+            {
+              "value": "artisan",
+              "label": "Artisan support"
+            },
+            {
+              "value": "handmade",
+              "label": "Handmade"
+            },
+            {
+              "value": "gift",
+              "label": "Gift"
+            },
+            {
+              "value": "support",
+              "label": "Support"
+            },
+            {
+              "value": "check",
+              "label": "Check"
+            }
           ],
-          "default": "checkmark"
+          "default": "check"
         },
         {
           "type": "image_picker",
           "id": "custom_icon",
-          "label": "Custom icon (overrides selected icon)"
+          "label": "Custom icon"
         },
         {
           "type": "text",
           "id": "label",
           "label": "Label",
-          "default": "Badge label"
+          "default": "Store promise"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "name": "Stat counter",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Number",
+          "default": "2300"
+        },
+        {
+          "type": "text",
+          "id": "suffix",
+          "label": "Suffix (e.g. +, %)",
+          "default": "+"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Artisans Supported"
         }
       ]
     }
   ],
+  "max_blocks": 10,
   "presets": [
     {
-      "name": "Trust Badges",
+      "name": "ACS Trust Badges",
       "blocks": [
         {
           "type": "badge",
-          "settings": { "icon_type": "empowerment", "label": "Women Empowerment" }
+          "settings": {
+            "icon": "delivery",
+            "label": "Free delivery above Rs. 1499"
+          }
         },
         {
           "type": "badge",
-          "settings": { "icon_type": "circular", "label": "Circular Fashion" }
+          "settings": {
+            "icon": "returns",
+            "label": "15-day easy returns"
+          }
         },
         {
           "type": "badge",
-          "settings": { "icon_type": "sustainable", "label": "Sustainable" }
+          "settings": {
+            "icon": "secure",
+            "label": "Secure checkout"
+          }
         },
         {
           "type": "badge",
-          "settings": { "icon_type": "heirloom", "label": "Heirloom Crafts" }
+          "settings": {
+            "icon": "artisan",
+            "label": "Supports Indian artisans"
+          }
         },
         {
-          "type": "badge",
-          "settings": { "icon_type": "returns", "label": "Easy Returns" }
+          "type": "stat",
+          "settings": {
+            "number": "2300",
+            "suffix": "+",
+            "label": "Artisans Supported"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "number": "12",
+            "suffix": "+",
+            "label": "Craft Traditions"
+          }
         }
       ]
     }

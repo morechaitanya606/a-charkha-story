@@ -4,14 +4,43 @@
       "type": "explore-header",
       "blocks": {
         "link_all": { "type": "filter_link", "settings": { "title": "All", "link": "#" } },
-        "link_stories": { "type": "filter_link", "settings": { "title": "Stories", "link": "#explore-stories" } },
+        "link_picks": { "type": "filter_link", "settings": { "title": "Editor's Picks", "link": "#explore-curated" } },
+        "link_categories": { "type": "filter_link", "settings": { "title": "Categories", "link": "#explore-categories" } },
         "link_crafts": { "type": "filter_link", "settings": { "title": "Craft Types", "link": "#explore-crafts" } },
-        "link_shop": { "type": "filter_link", "settings": { "title": "Shop by Craft", "link": "#explore-shop" } }
+        "link_stories": { "type": "filter_link", "settings": { "title": "Stories", "link": "#explore-stories" } },
+        "link_artisans": { "type": "filter_link", "settings": { "title": "Artisans", "link": "#explore-artisans" } }
       },
-      "block_order": ["link_all", "link_stories", "link_crafts", "link_shop"],
+      "block_order": ["link_all", "link_picks", "link_categories", "link_crafts", "link_stories", "link_artisans"],
       "settings": {
         "title": "EXPLORE ACHARKHASTORY",
         "subtitle": "From ancient craft traditions to contemporary handmade design.\nDiscover 20+ craft types, 40+ artisan groups, and 2300+ hands behind every piece."
+      }
+    },
+    "explore_category_nav_acs": {
+      "type": "explore-category-nav",
+      "blocks": {
+        "nav_all": { "type": "category_link", "settings": { "label": "All", "link": "/pages/explore" } },
+        "nav_sarees": { "type": "category_link", "settings": { "label": "Sarees", "link": "/collections/sarees" } },
+        "nav_kurtis": { "type": "category_link", "settings": { "label": "Kurtis", "link": "/collections/kurtis" } },
+        "nav_clothing": { "type": "category_link", "settings": { "label": "Clothing", "link": "/collections/clothing" } },
+        "nav_accessories": { "type": "category_link", "settings": { "label": "Accessories", "link": "/collections/accessories" } },
+        "nav_home": { "type": "category_link", "settings": { "label": "Home", "link": "/collections/home" } },
+        "nav_sale": { "type": "category_link", "settings": { "label": "Sale", "link": "/collections/sale" } }
+      },
+      "block_order": ["nav_all", "nav_sarees", "nav_kurtis", "nav_clothing", "nav_accessories", "nav_home", "nav_sale"],
+      "settings": {
+        "aria_label": "Browse product categories"
+      }
+    },
+    "explore_curated_acs": {
+      "type": "explore-curated-picks",
+      "settings": {
+        "eyebrow": "Handpicked",
+        "title": "Editor's Picks",
+        "subtitle": "Our team's favorite pieces this season — chosen for their craft, quality, and story.",
+        "max_products": 8,
+        "view_all_text": "View All Picks",
+        "view_all_link": "/collections/editor-picks"
       }
     },
     "explore_stories_acs": {
@@ -38,6 +67,23 @@
       },
       "block_order": ["story_1", "story_2"],
       "settings": {}
+    },
+    "explore_shop_categories_acs": {
+      "type": "explore-shop-categories",
+      "blocks": {
+        "cat_sarees": { "type": "category", "settings": { "label": "Sarees" } },
+        "cat_kurtis": { "type": "category", "settings": { "label": "Kurtis" } },
+        "cat_clothing": { "type": "category", "settings": { "label": "Clothing" } },
+        "cat_accessories": { "type": "category", "settings": { "label": "Accessories" } },
+        "cat_home": { "type": "category", "settings": { "label": "Home" } },
+        "cat_sale": { "type": "category", "settings": { "label": "Sale", "meta": "Up to 50% off" } }
+      },
+      "block_order": ["cat_sarees", "cat_kurtis", "cat_clothing", "cat_accessories", "cat_home", "cat_sale"],
+      "settings": {
+        "eyebrow": "Collections",
+        "title": "Shop by Category",
+        "subtitle": "From everyday essentials to heirloom pieces."
+      }
     },
     "explore_crafts_grid_acs": {
       "type": "explore-crafts-grid",
@@ -75,7 +121,7 @@
           "settings": {
             "title": "Chikankari",
             "region": "Lucknow, UP",
-            "description": "Delicate and artfully done hand embroidery on a variety of textile fabrics like muslin, silk, chiffon, organza, net, etc."
+            "description": "Delicate hand embroidery on textile fabrics like muslin, silk, chiffon, organza, and cotton."
           }
         }
       },
@@ -86,7 +132,7 @@
       "type": "explore-artisans",
       "blocks": {
         "artisan_1": { "type": "artisan", "settings": { "name": "Rangsutra", "location": "Bikaner, Rajasthan", "tags": "Mirror Work · Embroidery" } },
-        "artisan_2": { "type": "artisan", "settings": { "name": "Okhai", "location": "Mithapur, Gujarat", "tags": "Appliqué · Handicrafts" } },
+        "artisan_2": { "type": "artisan", "settings": { "name": "Okhai", "location": "Mithapur, Gujarat", "tags": "Applique · Handicrafts" } },
         "artisan_3": { "type": "artisan", "settings": { "name": "Khamir", "location": "Kutch, Gujarat", "tags": "Kala Cotton · Weaving" } },
         "artisan_4": { "type": "artisan", "settings": { "name": "Sadhna", "location": "Udaipur, Rajasthan", "tags": "Patchwork · Embroidery" } }
       },
@@ -96,6 +142,17 @@
         "subtitle": "We work with 40+ artisan groups across 12 Indian states.",
         "cta_label": "View All Artisans"
       }
+    },
+    "explore_impact_acs": {
+      "type": "explore-impact-counter",
+      "blocks": {
+        "count_1": { "type": "counter", "settings": { "target_number": "2,300", "suffix": "+", "label": "Artisans empowered" } },
+        "count_2": { "type": "counter", "settings": { "target_number": "12", "suffix": "", "label": "Indian states" } },
+        "count_3": { "type": "counter", "settings": { "target_number": "20", "suffix": "+", "label": "Craft traditions" } },
+        "count_4": { "type": "counter", "settings": { "target_number": "2", "prefix": "Rs. ", "suffix": "Cr+", "label": "Artisan earnings" } }
+      },
+      "block_order": ["count_1", "count_2", "count_3", "count_4"],
+      "settings": {}
     },
     "explore_map_acs": {
       "type": "explore-craft-map",
@@ -116,10 +173,10 @@
     "explore_gifting_acs": {
       "type": "explore-gifting",
       "blocks": {
-        "tab_1": { "type": "tab", "settings": { "title": "Under ₹500" } },
-        "tab_2": { "type": "tab", "settings": { "title": "Under ₹1500" } },
-        "tab_3": { "type": "tab", "settings": { "title": "Under ₹2500" } },
-        "tab_4": { "type": "tab", "settings": { "title": "Under ₹5000" } },
+        "tab_1": { "type": "tab", "settings": { "title": "Under Rs. 500" } },
+        "tab_2": { "type": "tab", "settings": { "title": "Under Rs. 1500" } },
+        "tab_3": { "type": "tab", "settings": { "title": "Under Rs. 2500" } },
+        "tab_4": { "type": "tab", "settings": { "title": "Under Rs. 5000" } },
         "tab_5": { "type": "tab", "settings": { "title": "For Her" } },
         "tab_6": { "type": "tab", "settings": { "title": "For Kids" } }
       },
@@ -141,17 +198,6 @@
         "title": "Stories from the Studio"
       }
     },
-    "explore_impact_acs": {
-      "type": "explore-impact-counter",
-      "blocks": {
-        "count_1": { "type": "counter", "settings": { "target_number": "2,300", "suffix": "+", "label": "Artisans empowered" } },
-        "count_2": { "type": "counter", "settings": { "target_number": "12", "suffix": "", "label": "Indian states" } },
-        "count_3": { "type": "counter", "settings": { "target_number": "20", "suffix": "+", "label": "Craft traditions" } },
-        "count_4": { "type": "counter", "settings": { "target_number": "2", "prefix": "₹", "suffix": "Cr+", "label": "Artisan earnings" } }
-      },
-      "block_order": ["count_1", "count_2", "count_3", "count_4"],
-      "settings": {}
-    },
     "email_signup_acs": {
       "type": "email-signup",
       "settings": {
@@ -162,14 +208,17 @@
   },
   "order": [
     "explore_header_acs",
+    "explore_category_nav_acs",
+    "explore_curated_acs",
     "explore_stories_acs",
+    "explore_shop_categories_acs",
     "explore_crafts_grid_acs",
     "explore_shop_by_craft_acs",
     "explore_artisans_acs",
+    "explore_impact_acs",
     "explore_map_acs",
     "explore_gifting_acs",
     "explore_blog_acs",
-    "explore_impact_acs",
     "email_signup_acs"
   ]
 }

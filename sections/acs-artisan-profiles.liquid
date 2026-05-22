@@ -1,0 +1,181 @@
+{% comment %}
+  Artisans Page — Artisan Profile Directory
+  Filterable grid of artisan profile cards.
+  Usage: Include via templates/page.artisans.json
+{% endcomment %}
+
+<section class="acs-section" id="artisan-profiles">
+  <div class="acs-page-width">
+    <div class="acs-section-header acs-section-header--center">
+      <h2 class="acs-h2">{{ section.settings.title }}</h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="acs-section-header__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- comment %} Collect unique craft tags for filter {%- endcomment -%}
+    {%- assign all_crafts = '' -%}
+    {%- for block in section.blocks -%}
+      {%- if block.settings.tags != blank -%}
+        {%- assign block_tags = block.settings.tags | split: ' - ' -%}
+        {%- for tag in block_tags -%}
+          {%- assign stripped_tag = tag | strip -%}
+          {%- unless all_crafts contains stripped_tag -%}
+            {%- if all_crafts != '' -%}
+              {%- assign all_crafts = all_crafts | append: '|' | append: stripped_tag -%}
+            {%- else -%}
+              {%- assign all_crafts = stripped_tag -%}
+            {%- endif -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- assign craft_filter_list = all_crafts | split: '|' -%}
+
+    {%- if craft_filter_list.size > 1 -%}
+      <div class="acs-artisan-profiles__filter" role="group" aria-label="Filter by craft">
+        <button type="button" class="acs-artisan-filter-btn is-active" data-filter="all">All</button>
+        {%- for craft in craft_filter_list -%}
+          <button type="button" class="acs-artisan-filter-btn" data-filter="{{ craft | handleize }}">{{ craft }}</button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <div class="acs-artisan-profiles__grid" id="acs-artisan-grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign tag_handles = ''
+          if block.settings.tags != blank
+            assign block_tags = block.settings.tags | split: ' - '
+            for tag in block_tags
+              assign h = tag | strip | handleize
+              if tag_handles != ''
+                assign tag_handles = tag_handles | append: ' ' | append: h
+              else
+                assign tag_handles = h
+              endif
+            endfor
+          endif
+        -%}
+        <div class="acs-artisan-profile" data-craft-tags="{{ tag_handles }}" {{ block.shopify_attributes }}>
+          <div class="acs-artisan-profile__image">
+            {%- if block.settings.photo != blank -%}
+              {{ block.settings.photo
+                 | image_url: width: 600
+                 | image_tag:
+                   loading: 'lazy',
+                   widths: '300, 450, 600',
+                   sizes: '(max-width: 768px) 100vw, 33vw',
+                   alt: block.settings.name }}
+            {%- else -%}
+              <div class="acs-artisan-profile__placeholder" aria-hidden="true">
+                {{ block.settings.name | slice: 0 }}
+              </div>
+            {%- endif -%}
+          </div>
+
+          <div class="acs-artisan-profile__info">
+            <h3 class="acs-artisan-profile__name">{{ block.settings.name }}</h3>
+
+            {%- if block.settings.location != blank -%}
+              <p class="acs-artisan-profile__location">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                {{ block.settings.location }}
+              </p>
+            {%- endif -%}
+
+            {%- if block.settings.tags != blank -%}
+              <div class="acs-artisan-profile__tags">
+                {%- assign tag_list = block.settings.tags | split: ' - ' -%}
+                {%- for tag in tag_list -%}
+                  <span class="acs-artisan-profile__tag">{{ tag | strip }}</span>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.bio != blank -%}
+              <p class="acs-artisan-profile__bio">{{ block.settings.bio }}</p>
+            {%- endif -%}
+
+            {%- if block.settings.collection_link != blank -%}
+              <a href="{{ block.settings.collection_link }}" class="acs-artisan-profile__link">
+                Shop their craft →
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  'use strict';
+  var btns = document.querySelectorAll('.acs-artisan-filter-btn');
+  var cards = document.querySelectorAll('.acs-artisan-profile');
+  if (!btns.length || !cards.length) return;
+
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var filter = btn.dataset.filter;
+      btns.forEach(function(b) { b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+
+      cards.forEach(function(card) {
+        if (filter === 'all') {
+          card.style.display = '';
+          return;
+        }
+        var tags = card.dataset.craftTags || '';
+        if (tags.indexOf(filter) !== -1) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Artisan Profiles",
+  "tag": "section",
+  "class": "acs-artisan-profiles-section",
+  "max_blocks": 20,
+  "settings": [
+    { "type": "text", "id": "title", "label": "Heading", "default": "Meet Our Artisans" },
+    { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "Each artisan brings generations of craft knowledge to every piece they create." }
+  ],
+  "blocks": [
+    {
+      "type": "artisan",
+      "name": "Artisan",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Rangsutra" },
+        { "type": "text", "id": "location", "label": "Location", "default": "Bikaner, Rajasthan" },
+        { "type": "text", "id": "tags", "label": "Craft tags (dash separated)", "default": "Mirror Work - Embroidery" },
+        { "type": "image_picker", "id": "photo", "label": "Photo" },
+        { "type": "textarea", "id": "bio", "label": "Short bio", "default": "A social enterprise empowering rural artisans through traditional embroidery and mirror work." },
+        { "type": "url", "id": "collection_link", "label": "Collection link" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Artisan Profiles",
+    "blocks": [
+      { "type": "artisan", "settings": { "name": "Rangsutra", "location": "Bikaner, Rajasthan", "tags": "Mirror Work - Embroidery", "bio": "A social enterprise empowering over 2,000 rural artisans, primarily women, through traditional embroidery and mirror work." }},
+      { "type": "artisan", "settings": { "name": "Okhai", "location": "Mithapur, Gujarat", "tags": "Applique - Handicrafts", "bio": "Established to provide livelihood opportunities to rural women artisans through traditional embroidery and appliqué work." }},
+      { "type": "artisan", "settings": { "name": "Khamir", "location": "Bhuj, Gujarat", "tags": "Weaving - Kala Cotton", "bio": "Dedicated to the preservation and promotion of traditional crafts of Kutch, working directly with master craftspeople." }},
+      { "type": "artisan", "settings": { "name": "Sadhna", "location": "Udaipur, Rajasthan", "tags": "Patchwork - Embroidery", "bio": "A women-led cooperative bringing together traditional patchwork and embroidery artisans from rural Rajasthan." }},
+      { "type": "artisan", "settings": { "name": "Shantipur Weavers", "location": "Nadia, West Bengal", "tags": "Handloom - Muslin", "bio": "Master weavers continuing the 500-year legacy of Shantipur's handloom muslin and jamdani traditions." }},
+      { "type": "artisan", "settings": { "name": "Bishnupur Artisans", "location": "Bishnupur, West Bengal", "tags": "Baluchari - Silk Weaving", "bio": "Artisan families preserving the ancient Baluchari saree weaving tradition with mythological motifs on silk." }}
+    ]
+  }]
+}
+{% endschema %}

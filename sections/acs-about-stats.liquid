@@ -1,0 +1,53 @@
+{% comment %}
+  About Page — Stats Section
+  Full-width dark background with key numbers.
+  Usage: Include via templates/page.about.json
+{% endcomment %}
+
+<section class="acs-about-stats acs-section" id="about-stats">
+  <div class="acs-page-width">
+    <div class="acs-about-stats__grid">
+      {%- for block in section.blocks -%}
+        <div class="acs-about-stat" {{ block.shopify_attributes }}>
+          <div class="acs-about-stat__number">
+            {%- if block.settings.prefix != blank -%}{{ block.settings.prefix }}{%- endif -%}
+            {{ block.settings.number }}
+            {%- if block.settings.suffix != blank -%}{{ block.settings.suffix }}{%- endif -%}
+          </div>
+          <p class="acs-about-stat__label">{{ block.settings.label }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Stats",
+  "tag": "section",
+  "class": "acs-about-stats-section",
+  "max_blocks": 6,
+  "settings": [],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        { "type": "text", "id": "prefix", "label": "Prefix (e.g. Rs.)" },
+        { "type": "text", "id": "number", "label": "Number", "default": "2,300" },
+        { "type": "text", "id": "suffix", "label": "Suffix (e.g. +)", "default": "+" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Artisans supported" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "About Stats",
+    "blocks": [
+      { "type": "stat", "settings": { "number": "2,300", "suffix": "+", "label": "Artisans supported" }},
+      { "type": "stat", "settings": { "number": "12", "label": "Indian states" }},
+      { "type": "stat", "settings": { "number": "20", "suffix": "+", "label": "Craft traditions" }},
+      { "type": "stat", "settings": { "number": "25,000", "suffix": "+", "label": "Happy customers" }}
+    ]
+  }]
+}
+{% endschema %}

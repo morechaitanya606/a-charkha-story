@@ -1,0 +1,665 @@
+{% comment %}
+  Acharkhastory complete the look
+  PDP AOV section for complementary products with selectable bundle add.
+{% endcomment %}
+
+{% liquid
+  assign heading = section.settings.heading | strip
+  assign subheading = section.settings.subheading | strip
+  assign look_products = product.metafields.custom.complete_the_look.value
+  assign max_products = section.settings.max_products
+  assign has_products = false
+  assign initial_total = 0
+  assign initial_count = 0
+
+  if look_products == blank
+    assign look_products = section.settings.products
+  endif
+
+  for look_product in look_products limit: max_products
+    if look_product != blank and look_product.id != product.id
+      assign has_products = true
+      assign selected_variant = look_product.selected_or_first_available_variant
+      if section.settings.preselect_products and selected_variant.available
+        assign initial_total = initial_total | plus: selected_variant.price
+        assign initial_count = initial_count | plus: 1
+      endif
+    endif
+  endfor
+%}
+
+{%- if has_products or request.design_mode -%}
+  <style>
+    .acs-complete-look {
+      background: var(--acs-color-background);
+      color: var(--acs-color-ink);
+      padding-block: var(--acs-space-3xl);
+    }
+
+    .acs-complete-look__inner {
+      display: grid;
+      gap: var(--acs-space-xl);
+    }
+
+    .acs-complete-look__header {
+      display: flex;
+      gap: var(--acs-space-lg);
+      align-items: end;
+      justify-content: space-between;
+    }
+
+    .acs-complete-look__eyebrow {
+      color: var(--acs-color-accent);
+      font-size: var(--acs-type-micro);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+      margin: 0 0 var(--acs-space-xs);
+      text-transform: uppercase;
+    }
+
+    .acs-complete-look__heading {
+      color: var(--acs-color-primary);
+      font-family: var(--acs-font-display);
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 500;
+      line-height: var(--acs-line-heading);
+      margin: 0;
+    }
+
+    .acs-complete-look__subheading {
+      max-width: 40rem;
+      color: var(--acs-color-muted);
+      line-height: var(--acs-line-body);
+      margin: var(--acs-space-xs) 0 0;
+    }
+
+    .acs-complete-look__summary {
+      display: grid;
+      gap: var(--acs-space-xs);
+      min-width: 16rem;
+      border: var(--acs-border-subtle);
+      border-radius: var(--acs-radius-md);
+      background: rgb(var(--acs-color-white-rgb) / 0.56);
+      padding: var(--acs-space-md);
+    }
+
+    .acs-complete-look__summary-line {
+      display: flex;
+      gap: var(--acs-space-md);
+      align-items: baseline;
+      justify-content: space-between;
+      color: var(--acs-color-muted);
+      font-size: var(--acs-type-small);
+    }
+
+    .acs-complete-look__total {
+      color: var(--acs-color-primary);
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .acs-complete-look__button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3rem;
+      border: 1px solid var(--acs-color-primary);
+      border-radius: var(--acs-radius-sm);
+      background: var(--acs-color-primary);
+      color: var(--acs-color-background);
+      cursor: pointer;
+      font-size: var(--acs-type-small);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      padding: 0.9rem 1.1rem;
+      text-transform: uppercase;
+      transition: background var(--acs-duration-base) var(--acs-ease), border-color var(--acs-duration-base) var(--acs-ease), opacity var(--acs-duration-base) var(--acs-ease);
+    }
+
+    .acs-complete-look__button:hover {
+      border-color: var(--acs-color-accent);
+      background: var(--acs-color-accent);
+    }
+
+    .acs-complete-look__button:disabled {
+      cursor: not-allowed;
+      opacity: 0.52;
+    }
+
+    .acs-complete-look__message {
+      min-height: 1.25rem;
+      color: var(--acs-color-sale);
+      font-size: var(--acs-type-caption);
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    .acs-complete-look__grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--acs-space-lg);
+    }
+
+    .acs-complete-look__item {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      border: var(--acs-border-subtle);
+      border-radius: var(--acs-radius-md);
+      background: rgb(var(--acs-color-white-rgb) / 0.5);
+      overflow: hidden;
+    }
+
+    .acs-complete-look__media {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      background: var(--acs-color-cream);
+      overflow: hidden;
+    }
+
+    .acs-complete-look__media a,
+    .acs-complete-look__media img,
+    .acs-complete-look__placeholder {
+      width: 100%;
+      height: 100%;
+    }
+
+    .acs-complete-look__media img {
+      object-fit: cover;
+      transition: transform var(--acs-duration-slow) var(--acs-ease);
+    }
+
+    .acs-complete-look__item:hover .acs-complete-look__media img {
+      transform: scale(1.025);
+    }
+
+    .acs-complete-look__placeholder {
+      display: grid;
+      place-items: center;
+      color: var(--acs-color-accent);
+    }
+
+    .acs-complete-look__check {
+      position: absolute;
+      inset-block-start: var(--acs-space-sm);
+      inset-inline-start: var(--acs-space-sm);
+      z-index: 2;
+      display: inline-grid;
+      place-items: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: var(--acs-radius-full);
+      background: rgb(var(--acs-color-background-rgb) / 0.9);
+      box-shadow: var(--acs-shadow-soft);
+      cursor: pointer;
+    }
+
+    .acs-complete-look__checkbox {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+
+    .acs-complete-look__check-ui {
+      display: grid;
+      place-items: center;
+      width: 1.35rem;
+      height: 1.35rem;
+      border: 1px solid var(--acs-color-primary);
+      border-radius: var(--acs-radius-full);
+      color: var(--acs-color-background);
+      font-size: var(--acs-type-caption);
+      line-height: 1;
+    }
+
+    .acs-complete-look__checkbox:checked + .acs-complete-look__check-ui {
+      background: var(--acs-color-primary);
+    }
+
+    .acs-complete-look__checkbox:checked + .acs-complete-look__check-ui::before {
+      content: "\\2713";
+    }
+
+    .acs-complete-look__checkbox:disabled + .acs-complete-look__check-ui {
+      opacity: 0.42;
+    }
+
+    .acs-complete-look__badge {
+      position: absolute;
+      inset-block-start: var(--acs-space-sm);
+      inset-inline-end: var(--acs-space-sm);
+      border-radius: var(--acs-radius-full);
+      background: rgb(var(--acs-color-primary-rgb) / 0.86);
+      color: var(--acs-color-background);
+      font-size: var(--acs-type-micro);
+      font-weight: 700;
+      line-height: 1;
+      padding: 0.45rem 0.6rem;
+      text-transform: uppercase;
+    }
+
+    .acs-complete-look__content {
+      display: grid;
+      gap: var(--acs-space-sm);
+      align-content: start;
+      padding: var(--acs-space-md);
+    }
+
+    .acs-complete-look__craft {
+      color: var(--acs-color-accent);
+      font-size: var(--acs-type-micro);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .acs-complete-look__title {
+      color: var(--acs-color-primary);
+      font-family: var(--acs-font-display);
+      font-size: 1.3rem;
+      font-weight: 500;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .acs-complete-look__title a {
+      text-decoration: none;
+    }
+
+    .acs-complete-look__title a:hover {
+      text-decoration: underline;
+    }
+
+    .acs-complete-look__price-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--acs-space-xs);
+      align-items: baseline;
+      color: var(--acs-color-primary);
+      font-weight: 700;
+    }
+
+    .acs-complete-look__compare {
+      color: var(--acs-color-muted);
+      font-size: var(--acs-type-caption);
+      text-decoration: line-through;
+    }
+
+    .acs-complete-look__variant-select {
+      width: 100%;
+      min-height: 2.75rem;
+      border: 1px solid var(--acs-color-border);
+      border-radius: var(--acs-radius-sm);
+      background: var(--acs-color-background);
+      color: var(--acs-color-primary);
+      padding: 0 var(--acs-space-sm);
+    }
+
+    .acs-complete-look__details {
+      width: fit-content;
+      color: var(--acs-color-accent);
+      font-size: var(--acs-type-small);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .acs-complete-look__details:hover {
+      text-decoration: underline;
+    }
+
+    .acs-complete-look__empty {
+      border: var(--acs-border-subtle);
+      border-radius: var(--acs-radius-md);
+      background: rgb(var(--acs-color-white-rgb) / 0.5);
+      color: var(--acs-color-muted);
+      padding: var(--acs-space-xl);
+    }
+
+    @media (max-width: 768px) {
+      .acs-complete-look {
+        padding-block: var(--acs-space-2xl);
+      }
+
+      .acs-complete-look__inner {
+        width: min(100% - calc(var(--acs-edge) * 2), var(--acs-page-width));
+      }
+
+      .acs-complete-look__header {
+        display: grid;
+        gap: var(--acs-space-lg);
+      }
+
+      .acs-complete-look__summary {
+        min-width: 0;
+      }
+
+      .acs-complete-look__grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <section
+    class="acs-complete-look"
+    id="CompleteTheLook-{{ section.id }}"
+    data-acs-complete-look
+    data-cart-add-url="{{ routes.cart_add_url }}.js"
+    data-cart-url="{{ routes.cart_url }}"
+    data-money-format="{{ shop.money_format | escape }}"
+    data-currency="{{ cart.currency.iso_code | default: shop.currency }}"
+    data-adding-label="{{ section.settings.adding_label | escape }}"
+    data-added-label="{{ section.settings.added_label | escape }}"
+    data-add-label="{{ section.settings.add_label | escape }}"
+    data-empty-selection-message="{{ section.settings.empty_selection_message | escape }}"
+    data-error-message="{{ section.settings.error_message | escape }}"
+    data-redirect-after-add="{{ section.settings.redirect_after_add }}"
+  >
+    <div class="acs-complete-look__inner acs-page-width">
+      <header class="acs-complete-look__header">
+        <div>
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="acs-complete-look__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+          {%- endif -%}
+          {%- if heading != blank -%}
+            <h2 class="acs-complete-look__heading">{{ heading | escape }}</h2>
+          {%- endif -%}
+          {%- if subheading != blank -%}
+            <p class="acs-complete-look__subheading">{{ subheading | escape }}</p>
+          {%- endif -%}
+        </div>
+
+        {%- if has_products -%}
+          <div class="acs-complete-look__summary">
+            <div class="acs-complete-look__summary-line">
+              <span>
+                <span data-acs-look-count>{{ initial_count }}</span>
+                {{ section.settings.selected_label | escape }}
+              </span>
+              <strong class="acs-complete-look__total" data-acs-look-total>{{ initial_total | money }}</strong>
+            </div>
+            <button
+              type="button"
+              class="acs-complete-look__button"
+              data-acs-look-submit
+              {% if initial_count == 0 %}disabled{% endif %}
+            >
+              {{ section.settings.add_label | escape }}
+            </button>
+            <p class="acs-complete-look__message" data-acs-look-message aria-live="polite"></p>
+          </div>
+        {%- endif -%}
+      </header>
+
+      {%- if has_products -%}
+        <div class="acs-complete-look__grid">
+          {%- for look_product in look_products limit: max_products -%}
+            {%- if look_product != blank and look_product.id != product.id -%}
+              {%- liquid
+                assign look_variant = look_product.selected_or_first_available_variant
+                assign is_checked = false
+                assign craft_label = look_product.metafields.custom.craft_type.value | default: look_product.metafields.custom.artisan_craft.value | default: look_product.type | default: section.settings.default_craft_label
+
+                if section.settings.preselect_products and look_variant.available
+                  assign is_checked = true
+                endif
+              -%}
+
+              <article
+                class="acs-complete-look__item"
+                data-acs-look-item
+                data-price="{{ look_variant.price }}"
+                data-available="{{ look_variant.available }}"
+              >
+                <div class="acs-complete-look__media">
+                  <label class="acs-complete-look__check" aria-label="{{ section.settings.select_product_label | escape }} {{ look_product.title | escape }}">
+                    <input
+                      class="acs-complete-look__checkbox"
+                      type="checkbox"
+                      data-acs-look-checkbox
+                      value="{{ look_variant.id }}"
+                      {% if is_checked %}checked{% endif %}
+                      {% unless look_variant.available %}disabled{% endunless %}
+                    >
+                    <span class="acs-complete-look__check-ui" aria-hidden="true"></span>
+                  </label>
+
+                  {%- if section.settings.badge_label != blank -%}
+                    <span class="acs-complete-look__badge">{{ section.settings.badge_label | escape }}</span>
+                  {%- endif -%}
+
+                  <a href="{{ look_product.url }}" aria-label="{{ look_product.title | escape }}">
+                    {%- if look_product.featured_image != blank -%}
+                      <img
+                        src="{{ look_product.featured_image | image_url: width: 700 }}"
+                        srcset="{{ look_product.featured_image | image_url: width: 300 }} 300w, {{ look_product.featured_image | image_url: width: 500 }} 500w, {{ look_product.featured_image | image_url: width: 700 }} 700w"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        alt="{{ look_product.featured_image.alt | default: look_product.title | escape }}"
+                        loading="lazy"
+                        width="{{ look_product.featured_image.width }}"
+                        height="{{ look_product.featured_image.height }}"
+                      >
+                    {%- else -%}
+                      <div class="acs-complete-look__placeholder">
+                        {{ 'product-1' | placeholder_svg_tag }}
+                      </div>
+                    {%- endif -%}
+                  </a>
+                </div>
+
+                <div class="acs-complete-look__content">
+                  {%- if craft_label != blank -%}
+                    <span class="acs-complete-look__craft">{{ craft_label | escape }}</span>
+                  {%- endif -%}
+
+                  <h3 class="acs-complete-look__title">
+                    <a href="{{ look_product.url }}">{{ look_product.title | escape }}</a>
+                  </h3>
+
+                  <div class="acs-complete-look__price-row">
+                    <span data-acs-look-price>{{ look_variant.price | money }}</span>
+                    {%- if look_variant.compare_at_price > look_variant.price -%}
+                      <span class="acs-complete-look__compare" data-acs-look-compare>
+                        {{ look_variant.compare_at_price | money }}
+                      </span>
+                    {%- else -%}
+                      <span class="acs-complete-look__compare" data-acs-look-compare hidden></span>
+                    {%- endif -%}
+                  </div>
+
+                  {%- if look_product.variants.size > 1 -%}
+                    <label>
+                      <span class="visually-hidden">{{ section.settings.variant_label | escape }} {{ look_product.title | escape }}</span>
+                      <select class="acs-complete-look__variant-select" data-acs-look-variant-select>
+                        {%- for variant in look_product.variants -%}
+                          <option
+                            value="{{ variant.id }}"
+                            data-price="{{ variant.price }}"
+                            data-price-money="{{ variant.price | money | escape }}"
+                            data-compare-money="{{ variant.compare_at_price | money | escape }}"
+                            data-compare-visible="{% if variant.compare_at_price > variant.price %}true{% else %}false{% endif %}"
+                            {% unless variant.available %}disabled{% endunless %}
+                            {% if variant.id == look_variant.id %}selected{% endif %}
+                          >
+                            {{ variant.title | escape }} - {{ variant.price | money }}
+                          </option>
+                        {%- endfor -%}
+                      </select>
+                    </label>
+                  {%- endif -%}
+
+                  {%- unless look_variant.available -%}
+                    <span class="acs-complete-look__craft">{{ section.settings.sold_out_label | escape }}</span>
+                  {%- endunless -%}
+
+                  <a class="acs-complete-look__details" href="{{ look_product.url }}">
+                    {{ section.settings.details_label | escape }}
+                  </a>
+                </div>
+              </article>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        <div class="acs-complete-look__empty">
+          <h2 class="acs-complete-look__heading">{{ section.settings.empty_heading | escape }}</h2>
+          <p class="acs-complete-look__subheading">{{ section.settings.empty_text | escape }}</p>
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+
+  <script src="{{ 'complete-the-look.js' | asset_url }}" defer></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Complete the Look",
+  "tag": "section",
+  "class": "shopify-section--complete-the-look",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Style it with"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Complete the Look"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Pair this piece with artisan-made accessories and layers chosen to lift your full outfit."
+    },
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Fallback complementary products",
+      "limit": 6
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "label": "Maximum products to show",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "preselect_products",
+      "label": "Preselect available products",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "redirect_after_add",
+      "label": "Redirect to cart after add",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Labels"
+    },
+    {
+      "type": "text",
+      "id": "badge_label",
+      "label": "Badge label",
+      "default": "Pairs well"
+    },
+    {
+      "type": "text",
+      "id": "selected_label",
+      "label": "Selected count label",
+      "default": "selected"
+    },
+    {
+      "type": "text",
+      "id": "add_label",
+      "label": "Add button label",
+      "default": "Add selected to bag"
+    },
+    {
+      "type": "text",
+      "id": "adding_label",
+      "label": "Adding state label",
+      "default": "Adding..."
+    },
+    {
+      "type": "text",
+      "id": "added_label",
+      "label": "Added state label",
+      "default": "Added to bag"
+    },
+    {
+      "type": "text",
+      "id": "details_label",
+      "label": "Product details link label",
+      "default": "View details"
+    },
+    {
+      "type": "text",
+      "id": "variant_label",
+      "label": "Variant selector label",
+      "default": "Choose option for"
+    },
+    {
+      "type": "text",
+      "id": "select_product_label",
+      "label": "Checkbox label",
+      "default": "Select"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold out label",
+      "default": "Sold Out"
+    },
+    {
+      "type": "text",
+      "id": "default_craft_label",
+      "label": "Fallback craft label",
+      "default": "Handcrafted"
+    },
+    {
+      "type": "text",
+      "id": "empty_selection_message",
+      "label": "Empty selection message",
+      "default": "Choose at least one product to add."
+    },
+    {
+      "type": "text",
+      "id": "error_message",
+      "label": "Error message",
+      "default": "Something went wrong. Please try again."
+    },
+    {
+      "type": "text",
+      "id": "empty_heading",
+      "label": "Editor empty heading",
+      "default": "Choose complementary products"
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Editor empty text",
+      "default": "Add products in this section or set product metafield custom.complete_the_look to show live upsells."
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "Complete the Look"
+    }
+  ]
+}
+{% endschema %}

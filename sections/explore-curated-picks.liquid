@@ -1,0 +1,282 @@
+{% comment %}
+  Acharkhastory — Curated Editor's Picks
+  Premium product carousel from a selected collection with mobile 2-col grid fallback.
+{% endcomment %}
+
+{%- liquid
+  assign pick_collection = collections[section.settings.collection]
+  assign max = section.settings.max_products | default: 8
+  assign has_products = false
+  if pick_collection != blank and pick_collection.products.size > 0
+    assign has_products = true
+  endif
+-%}
+
+<section
+  class="acs-curated acs-section acs-reveal"
+  id="explore-curated-{{ section.id }}"
+  data-acs-curated
+>
+  <div class="acs-curated__container acs-page-width">
+    <div class="acs-curated__header">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="acs-eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+        <h2 class="acs-h2">{{ section.settings.title }}</h2>
+        {%- if section.settings.subtitle != blank -%}
+          <p class="acs-curated__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+      </div>
+      {%- if has_products -%}
+        <div class="acs-curated__controls">
+          {%- if section.settings.view_all_link != blank -%}
+            <a href="{{ section.settings.view_all_link }}" class="acs-button--link acs-curated__viewall-desktop">
+              {{ section.settings.view_all_text | default: 'View All' }} →
+            </a>
+          {%- endif -%}
+          <button type="button" class="acs-curated__arrow acs-curated__arrow--prev" data-curated-prev aria-label="Previous">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button type="button" class="acs-curated__arrow acs-curated__arrow--next" data-curated-next aria-label="Next">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if has_products -%}
+      <div class="acs-curated__track" data-curated-track>
+        {%- for product in pick_collection.products limit: max -%}
+          <div class="acs-curated__slide">
+            {% render 'product-card-acs',
+              product: product,
+              show_badge: true,
+              show_craft_tag: true,
+              show_quick_add: true,
+              show_wishlist: true,
+              card_index: forloop.index
+            %}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <div class="acs-curated__mobile-grid">
+        {%- for product in pick_collection.products limit: 4 -%}
+          {% render 'product-card-acs',
+            product: product,
+            show_badge: true,
+            show_craft_tag: true,
+            show_quick_add: false,
+            show_wishlist: true,
+            card_index: forloop.index
+          %}
+        {%- endfor -%}
+        {%- if section.settings.view_all_link != blank -%}
+          <a href="{{ section.settings.view_all_link }}" class="acs-btn acs-btn--ghost acs-btn--full acs-curated__viewall-mobile">
+            {{ section.settings.view_all_text | default: 'View All' }}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- else -%}
+      <div class="acs-curated__track">
+        {%- for i in (1..4) -%}
+          <div class="acs-curated__slide">
+            <div class="acs-curated__placeholder acs-skeleton" style="aspect-ratio: 3/4; border-radius: var(--acs-r-md);"></div>
+            <div style="padding: var(--acs-sp-sm) 0;">
+              <div class="acs-skeleton" style="height: 12px; width: 60%; border-radius: 4px; margin-bottom: 6px;"></div>
+              <div class="acs-skeleton" style="height: 16px; width: 80%; border-radius: 4px; margin-bottom: 6px;"></div>
+              <div class="acs-skeleton" style="height: 14px; width: 40%; border-radius: 4px;"></div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  .acs-curated__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--acs-sp-lg);
+    margin-bottom: var(--acs-sp-xl);
+  }
+
+  .acs-curated__subtitle {
+    max-width: 36rem;
+    margin: var(--acs-sp-2xs) 0 0;
+    color: var(--acs-text-muted);
+    font-size: var(--acs-type-small);
+    line-height: 1.6;
+  }
+
+  .acs-curated__controls {
+    display: flex;
+    align-items: center;
+    gap: var(--acs-sp-sm);
+    flex-shrink: 0;
+  }
+
+  .acs-curated__arrow {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--acs-border);
+    border-radius: var(--acs-r-full);
+    background: var(--acs-white);
+    color: var(--acs-primary);
+    cursor: pointer;
+    transition: all var(--acs-duration) var(--acs-ease);
+  }
+
+  .acs-curated__arrow:hover {
+    background: var(--acs-primary);
+    border-color: var(--acs-primary);
+    color: var(--acs-bg);
+  }
+
+  .acs-curated__track {
+    display: flex;
+    gap: var(--acs-gutter);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .acs-curated__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .acs-curated__slide {
+    flex: 0 0 calc(25% - var(--acs-gutter) * 3 / 4);
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+
+  .acs-curated__mobile-grid {
+    display: none;
+  }
+
+  .acs-curated__viewall-desktop {
+    white-space: nowrap;
+  }
+
+  @media (max-width: 989px) {
+    .acs-curated__slide {
+      flex: 0 0 calc(33.333% - var(--acs-gutter) * 2 / 3);
+    }
+  }
+
+  @media (max-width: 749px) {
+    .acs-curated__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--acs-sp-sm);
+    }
+
+    .acs-curated__controls,
+    .acs-curated__track,
+    .acs-curated__viewall-desktop {
+      display: none;
+    }
+
+    .acs-curated__mobile-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--acs-sp-sm);
+    }
+
+    .acs-curated__viewall-mobile {
+      grid-column: 1 / -1;
+      margin-top: var(--acs-sp-sm);
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    var section = document.querySelector('[data-acs-curated]');
+    if (!section) return;
+    var track = section.querySelector('[data-curated-track]');
+    var prevBtn = section.querySelector('[data-curated-prev]');
+    var nextBtn = section.querySelector('[data-curated-next]');
+    if (!track || !prevBtn || !nextBtn) return;
+
+    function getScrollAmount() {
+      var slide = track.querySelector('.acs-curated__slide');
+      if (!slide) return 300;
+      return slide.offsetWidth + parseInt(getComputedStyle(track).gap || '24', 10);
+    }
+
+    prevBtn.addEventListener('click', function () {
+      track.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+    });
+
+    nextBtn.addEventListener('click', function () {
+      track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Curated Picks",
+  "tag": "section",
+  "class": "acs-curated-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Handpicked"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Editor's Picks"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Our team's favorite pieces this season — chosen for their craft, quality, and story."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "label": "Max products",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "View all text",
+      "default": "View All Picks"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "View all link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Curated Picks"
+    }
+  ]
+}
+{% endschema %}

@@ -1,337 +1,213 @@
 {% comment %}
-  ACHARKHASTORY — Hero Banner Slider
-  Full-width cinematic hero with up to 8 slides.
-  Auto-advance, dot nav, arrow controls, touch/swipe.
+  Acharkhastory hero banner slider.
+  Full-bleed, image-first carousel for above-the-fold conversion.
 {% endcomment %}
 
-{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+{% liquid
+  assign aria_label = section.settings.aria_label | strip
+  assign slide_label = section.settings.slide_label | strip
+  assign dot_label = section.settings.dot_label | strip
+  assign previous_label = section.settings.previous_label | strip
+  assign next_label = section.settings.next_label | strip
+  assign slide_count = section.blocks.size
+  assign interval_ms = section.settings.interval | times: 1000
+%}
 
-<style>
-  .hero-slider {
-    position: relative;
-    width: 100%;
-    height: clamp(600px, 88vh, 800px);
-    overflow: hidden;
-    background: var(--acs-surface);
-  }
+{%- if slide_count > 0 -%}
+  <section
+    class="acs-hero hero-slider"
+    id="HeroSlider-{{ section.id }}"
+    {% if aria_label != blank %}
+      aria-label="{{ aria_label | escape }}"
+    {% endif %}
+    aria-roledescription="carousel"
+    data-hero-slider
+    data-autoplay="{{ section.settings.autoplay }}"
+    data-interval="{{ interval_ms }}"
+    tabindex="0"
+  >
+    <div class="acs-hero__track hero-slider__track">
+      {%- for block in section.blocks -%}
+        {% liquid
+          assign desktop_image = block.settings.desktop_image
+          assign mobile_image = block.settings.mobile_image
+          assign image_alt = block.settings.image_alt | default: block.settings.headline | strip
+          assign image_focus = block.settings.image_focus | default: 'center center'
+          assign primary_link = block.settings.cta1_link | default: routes.all_products_collection_url
+          assign secondary_link = block.settings.cta2_link | default: routes.root_url
+          assign loading = 'lazy'
+          assign fetch_priority = 'auto'
 
-  .hero-slider__track {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
+          if forloop.first
+            assign loading = 'eager'
+            assign fetch_priority = 'high'
+          endif
+        %}
 
-  .hero-slider__slide {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity var(--acs-duration-slow) var(--acs-ease);
-    z-index: 0;
-  }
+        <div
+          class="acs-hero__slide hero-slider__slide{% if forloop.first %} is-active{% endif %}"
+          id="HeroSlide-{{ section.id }}-{{ forloop.index }}"
+          role="group"
+          aria-roledescription="slide"
+          aria-label="{{ slide_label | escape }} {{ forloop.index }} / {{ slide_count }}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="acs-hero__media hero-slider__media">
+            {%- if desktop_image != blank or mobile_image != blank -%}
+              <picture>
+                {%- if mobile_image != blank -%}
+                  <source
+                    media="(max-width: 768px)"
+                    srcset="{{ mobile_image | image_url: width: 480 }} 480w, {{ mobile_image | image_url: width: 800 }} 800w"
+                    sizes="100vw"
+                  >
+                {%- endif -%}
 
-  .hero-slider__slide.is-active {
-    opacity: 1;
-    z-index: 1;
-  }
-
-  .hero-slider__media {
-    position: absolute;
-    inset: 0;
-  }
-
-  .hero-slider__media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
-
-  .hero-slider__overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to right,
-      rgba(61, 34, 16, 0.55) 0%,
-      rgba(61, 34, 16, 0) 60%
-    );
-    z-index: 1;
-  }
-
-  .hero-slider__content {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    z-index: 2;
-    max-width: 560px;
-    padding-left: var(--acs-edge);
-    display: flex;
-    flex-direction: column;
-    gap: var(--acs-sp-md);
-  }
-
-  .hero-slider__eyebrow {
-    font-family: var(--acs-font-body);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--acs-warm-mid);
-  }
-
-  .hero-slider__headline {
-    font-family: var(--acs-font-display);
-    font-size: clamp(32px, 4.5vw, 52px);
-    font-weight: 500;
-    line-height: 1.1;
-    color: var(--acs-ivory);
-    margin: 0;
-  }
-
-  .hero-slider__subtext {
-    font-family: var(--acs-font-body);
-    font-size: 16px;
-    font-weight: 400;
-    color: rgba(253, 246, 238, 0.8);
-    line-height: 1.5;
-    max-width: 440px;
-  }
-
-  .hero-slider__ctas {
-    display: flex;
-    gap: var(--acs-sp-sm);
-    margin-top: var(--acs-sp-xs);
-  }
-
-  /* Dots */
-  .hero-slider__dots {
-    position: absolute;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 3;
-    display: flex;
-    gap: var(--acs-sp-xs);
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .hero-slider__dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(253, 246, 238, 0.4);
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    transition: background var(--acs-duration) var(--acs-ease);
-  }
-
-  .hero-slider__dot.is-active {
-    background: var(--acs-ivory);
-  }
-
-  /* Arrows */
-  .hero-slider__arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 3;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1px solid rgba(253, 246, 238, 0.4);
-    background: rgba(61, 34, 16, 0.3);
-    color: var(--acs-ivory);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity var(--acs-duration) var(--acs-ease);
-  }
-
-  .hero-slider:hover .hero-slider__arrow {
-    opacity: 1;
-  }
-
-  .hero-slider__arrow--prev { left: 24px; }
-  .hero-slider__arrow--next { right: 24px; }
-
-  .hero-slider__arrow:hover {
-    background: rgba(61, 34, 16, 0.6);
-    border-color: rgba(253, 246, 238, 0.7);
-  }
-
-  .hero-slider__arrow svg {
-    width: 20px;
-    height: 20px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  /* Mobile */
-  @media (max-width: 768px) {
-    .hero-slider {
-      height: 70vh;
-    }
-
-    .hero-slider__overlay {
-      background: linear-gradient(
-        to top,
-        rgba(61, 34, 16, 0.65) 0%,
-        rgba(61, 34, 16, 0) 50%
-      );
-    }
-
-    .hero-slider__content {
-      top: auto;
-      bottom: 0;
-      transform: none;
-      padding: var(--acs-sp-lg) var(--acs-edge-m);
-      padding-bottom: 72px;
-      text-align: center;
-      max-width: 100%;
-      align-items: center;
-    }
-
-    .hero-slider__headline {
-      font-size: 32px;
-    }
-
-    .hero-slider__ctas {
-      justify-content: center;
-    }
-
-    /* Hide second CTA on mobile */
-    .hero-slider__cta--secondary {
-      display: none;
-    }
-
-    .hero-slider__arrow {
-      display: none;
-    }
-
-    .hero-slider__dots {
-      bottom: 24px;
-    }
-
-    .hero-slider__dot {
-      width: 10px;
-      height: 10px;
-    }
-  }
-</style>
-
-<section
-  class="hero-slider"
-  id="hero-slider-{{ section.id }}"
-  aria-label="Hero banner"
-  aria-roledescription="carousel"
-  data-autoplay="{{ section.settings.autoplay }}"
-  data-interval="{{ section.settings.interval }}"
->
-  <div class="hero-slider__track">
-    {%- for block in section.blocks -%}
-      <div
-        class="hero-slider__slide{% if forloop.first %} is-active{% endif %}"
-        role="group"
-        aria-roledescription="slide"
-        aria-label="Slide {{ forloop.index }} of {{ section.blocks.size }}"
-        {{ block.shopify_attributes }}
-      >
-        <div class="hero-slider__media">
-          {%- if block.settings.mobile_image != blank -%}
-            <picture>
-              <source
-                media="(max-width: 768px)"
-                srcset="{{ block.settings.mobile_image | image_url: width: 800 }}"
-              >
-              <img
-                src="{{ block.settings.desktop_image | image_url: width: 1920 }}"
-                alt="{{ block.settings.headline | escape }}"
-                width="1920"
-                height="1080"
-                {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}
-              >
-            </picture>
-          {%- elsif block.settings.desktop_image != blank -%}
-            <img
-              src="{{ block.settings.desktop_image | image_url: width: 1920 }}"
-              alt="{{ block.settings.headline | escape }}"
-              width="1920"
-              height="1080"
-              {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}
-            >
-          {%- endif -%}
-        </div>
-
-        <div class="hero-slider__overlay"></div>
-
-        <div class="hero-slider__content">
-          {%- if block.settings.eyebrow != blank -%}
-            <span class="hero-slider__eyebrow">{{ block.settings.eyebrow }}</span>
-          {%- endif -%}
-
-          <h2 class="hero-slider__headline">{{ block.settings.headline }}</h2>
-
-          {%- if block.settings.subtext != blank -%}
-            <p class="hero-slider__subtext">{{ block.settings.subtext }}</p>
-          {%- endif -%}
-
-          <div class="hero-slider__ctas">
-            {%- if block.settings.cta1_label != blank -%}
-              <a href="{{ block.settings.cta1_link }}" class="acs-btn acs-btn--ivory">
-                {{ block.settings.cta1_label }}
-              </a>
-            {%- endif -%}
-            {%- if block.settings.cta2_label != blank -%}
-              <a href="{{ block.settings.cta2_link }}" class="acs-btn acs-btn--ghost-ivory hero-slider__cta--secondary">
-                {{ block.settings.cta2_label }}
-              </a>
+                {%- if desktop_image != blank -%}
+                  <img
+                    src="{{ desktop_image | image_url: width: 1600 }}"
+                    srcset="{{ desktop_image | image_url: width: 900 }} 900w, {{ desktop_image | image_url: width: 1400 }} 1400w, {{ desktop_image | image_url: width: 1800 }} 1800w"
+                    sizes="100vw"
+                    width="{{ desktop_image.width }}"
+                    height="{{ desktop_image.height }}"
+                    alt="{{ image_alt | escape }}"
+                    loading="{{ loading }}"
+                    {% if fetch_priority == 'high' %}
+                      fetchpriority="high"
+                    {% endif %}
+                    style="object-position: {{ image_focus }};"
+                  >
+                {%- else -%}
+                  <img
+                    src="{{ mobile_image | image_url: width: 800 }}"
+                    srcset="{{ mobile_image | image_url: width: 480 }} 480w, {{ mobile_image | image_url: width: 800 }} 800w"
+                    sizes="100vw"
+                    width="{{ mobile_image.width }}"
+                    height="{{ mobile_image.height }}"
+                    alt="{{ image_alt | escape }}"
+                    loading="{{ loading }}"
+                    {% if fetch_priority == 'high' %}
+                      fetchpriority="high"
+                    {% endif %}
+                    style="object-position: {{ image_focus }};"
+                  >
+                {%- endif -%}
+              </picture>
+            {%- else -%}
+              <div class="acs-hero__placeholder hero-slider__placeholder" aria-hidden="true"></div>
             {%- endif -%}
           </div>
+
+          <div class="acs-hero__overlay hero-slider__overlay" aria-hidden="true"></div>
+
+          <div class="acs-hero__content hero-slider__content">
+            <div class="acs-hero__content-inner hero-slider__content-inner">
+              {%- if block.settings.eyebrow != blank -%}
+                <p class="acs-eyebrow acs-hero__eyebrow hero-slider__eyebrow">
+                  {{ block.settings.eyebrow | escape }}
+                </p>
+              {%- endif -%}
+
+              {%- if block.settings.headline != blank -%}
+                {%- if forloop.first and section.settings.first_slide_h1 -%}
+                  <h1 class="acs-hero__headline hero-slider__headline">
+                    {{ block.settings.headline | escape }}
+                  </h1>
+                {%- else -%}
+                  <h2 class="acs-hero__headline hero-slider__headline">
+                    {{ block.settings.headline | escape }}
+                  </h2>
+                {%- endif -%}
+              {%- endif -%}
+
+              {%- if block.settings.subtext != blank -%}
+                <p class="acs-hero__subtext hero-slider__subtext">
+                  {{ block.settings.subtext | escape }}
+                </p>
+              {%- endif -%}
+
+              <div class="acs-hero__ctas hero-slider__ctas">
+                {%- if block.settings.cta1_label != blank -%}
+                  <a href="{{ primary_link }}" class="acs-btn acs-btn--ivory hero-slider__cta">
+                    {{ block.settings.cta1_label | escape }}
+                  </a>
+                {%- endif -%}
+
+                {%- if block.settings.cta2_label != blank -%}
+                  <a
+                    href="{{ secondary_link }}"
+                    class="acs-btn acs-btn--ghost-ivory hero-slider__cta hero-slider__cta--secondary"
+                  >
+                    {{ block.settings.cta2_label | escape }}
+                  </a>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    {%- endfor -%}
-  </div>
-
-  {%- if section.blocks.size > 1 -%}
-    <button class="hero-slider__arrow hero-slider__arrow--prev" aria-label="Previous slide">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-    <button class="hero-slider__arrow hero-slider__arrow--next" aria-label="Next slide">
-      <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
-    </button>
-
-    <ol class="hero-slider__dots" role="tablist" aria-label="Slide navigation">
-      {%- for block in section.blocks -%}
-        <li>
-          <button
-            class="hero-slider__dot{% if forloop.first %} is-active{% endif %}"
-            role="tab"
-            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
-            aria-label="Go to slide {{ forloop.index }}"
-            data-index="{{ forloop.index0 }}"
-          ></button>
-        </li>
       {%- endfor -%}
-    </ol>
-  {%- endif -%}
-</section>
+    </div>
 
-<script src="{{ 'hero-slider.js' | asset_url }}" defer></script>
+    {%- if slide_count > 1 -%}
+      <button
+        class="acs-hero__arrow acs-hero__arrow--prev hero-slider__arrow hero-slider__arrow--prev"
+        type="button"
+        aria-label="{{ previous_label | escape }}"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+
+      <button
+        class="acs-hero__arrow acs-hero__arrow--next hero-slider__arrow hero-slider__arrow--next"
+        type="button"
+        aria-label="{{ next_label | escape }}"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M9 6l6 6-6 6"/>
+        </svg>
+      </button>
+
+      <ol class="acs-hero__dots hero-slider__dots" role="tablist" aria-label="{{ dot_label | escape }}">
+        {%- for block in section.blocks -%}
+          <li>
+            <button
+              class="acs-hero__dot hero-slider__dot{% if forloop.first %} is-active{% endif %}"
+              type="button"
+              role="tab"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              aria-controls="HeroSlide-{{ section.id }}-{{ forloop.index }}"
+              aria-label="{{ dot_label | escape }} {{ forloop.index }}"
+              data-index="{{ forloop.index0 }}"
+            ></button>
+          </li>
+        {%- endfor -%}
+      </ol>
+    {%- endif -%}
+  </section>
+
+  <script src="{{ 'hero-slider.js' | asset_url }}" defer></script>
+{%- endif -%}
 
 {% schema %}
 {
-  "name": "Hero Slider",
+  "name": "ACS Hero Slider",
   "tag": "section",
-  "class": "hero-slider-section",
+  "class": "shopify-section--acs-hero",
   "settings": [
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Accessible label",
+      "default": "Featured collections"
+    },
+    {
+      "type": "checkbox",
+      "id": "first_slide_h1",
+      "label": "Use first slide headline as the page H1",
+      "default": true
+    },
     {
       "type": "checkbox",
       "id": "autoplay",
@@ -346,6 +222,30 @@
       "max": 10,
       "step": 1,
       "default": 5
+    },
+    {
+      "type": "text",
+      "id": "previous_label",
+      "label": "Previous button label",
+      "default": "Previous slide"
+    },
+    {
+      "type": "text",
+      "id": "next_label",
+      "label": "Next button label",
+      "default": "Next slide"
+    },
+    {
+      "type": "text",
+      "id": "slide_label",
+      "label": "Slide label prefix",
+      "default": "Slide"
+    },
+    {
+      "type": "text",
+      "id": "dot_label",
+      "label": "Dot navigation label",
+      "default": "Go to slide"
     }
   ],
   "blocks": [
@@ -361,13 +261,47 @@
         {
           "type": "image_picker",
           "id": "mobile_image",
-          "label": "Mobile image (optional)"
+          "label": "Mobile image"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image alt text",
+          "default": "Handcrafted artisan fashion by Acharkhastory"
+        },
+        {
+          "type": "select",
+          "id": "image_focus",
+          "label": "Image focus",
+          "options": [
+            {
+              "value": "center center",
+              "label": "Center"
+            },
+            {
+              "value": "center top",
+              "label": "Top"
+            },
+            {
+              "value": "center bottom",
+              "label": "Bottom"
+            },
+            {
+              "value": "left center",
+              "label": "Left"
+            },
+            {
+              "value": "right center",
+              "label": "Right"
+            }
+          ],
+          "default": "center center"
         },
         {
           "type": "text",
           "id": "eyebrow",
-          "label": "Eyebrow text",
-          "default": "New Collection 2025"
+          "label": "Eyebrow",
+          "default": "New collection"
         },
         {
           "type": "text",
@@ -379,13 +313,13 @@
           "type": "textarea",
           "id": "subtext",
           "label": "Subtext",
-          "default": "Handcrafted with love by artisans across India"
+          "default": "Handcrafted clothing, jewellery, and home pieces made by Indian artisans."
         },
         {
           "type": "text",
           "id": "cta1_label",
           "label": "Primary CTA label",
-          "default": "Shop Now"
+          "default": "Shop new arrivals"
         },
         {
           "type": "url",
@@ -396,7 +330,7 @@
           "type": "text",
           "id": "cta2_label",
           "label": "Secondary CTA label",
-          "default": "Explore Crafts"
+          "default": "Meet the artisans"
         },
         {
           "type": "url",
@@ -406,33 +340,73 @@
       ]
     }
   ],
+  "max_blocks": 6,
   "presets": [
     {
-      "name": "Hero Slider",
+      "name": "ACS Hero Slider",
       "blocks": [
         {
           "type": "slide",
           "settings": {
-            "eyebrow": "New Collection 2025",
+            "eyebrow": "New collection",
             "headline": "Stories woven in every thread",
-            "subtext": "Handcrafted Ajrakh, made in Kutch",
-            "cta1_label": "Shop Ajrakh",
-            "cta2_label": "Meet the Artisan"
+            "subtext": "Handcrafted Ajrakh clothing made by Indian artisans.",
+            "cta1_label": "Shop new arrivals",
+            "cta2_label": "Meet the artisans"
           }
         },
         {
           "type": "slide",
           "settings": {
-            "eyebrow": "Heirloom Embroidery",
-            "headline": "The art your grandmother remembered",
-            "subtext": "Mirror work by master craftswomen",
-            "cta1_label": "Shop Embroidery",
-            "cta2_label": "Explore Crafts"
+            "eyebrow": "Craft focus",
+            "headline": "Ajrakh, block printed by hand",
+            "subtext": "Natural dyes, slow processes, and patterns rooted in Kutch.",
+            "cta1_label": "Shop Ajrakh",
+            "cta2_label": "Explore craft stories"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Heirloom embroidery",
+            "headline": "Mirror work with a modern ease",
+            "subtext": "Statement pieces made for celebrations, gifting, and everyday joy.",
+            "cta1_label": "Shop embroidery",
+            "cta2_label": "See the details"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Home and gifting",
+            "headline": "Handmade warmth for the home",
+            "subtext": "Textiles and gifts that carry the mark of the maker.",
+            "cta1_label": "Shop home",
+            "cta2_label": "Browse gifts"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Small batch drops",
+            "headline": "Fresh arrivals before they sell out",
+            "subtext": "Limited runs, mindful materials, and no mass production.",
+            "cta1_label": "Shop latest",
+            "cta2_label": "View bestsellers"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Made with meaning",
+            "headline": "Your order supports artisan livelihoods",
+            "subtext": "Each purchase helps keep handmade Indian craft in motion.",
+            "cta1_label": "Shop with impact",
+            "cta2_label": "Our story"
           }
         }
       ]
     }
-  ],
-  "max_blocks": 8
+  ]
 }
 {% endschema %}

@@ -1,0 +1,24 @@
+{
+  "sections": {
+    "wishlist_acs": {
+      "type": "acs-wishlist",
+      "settings": {
+        "title": "Your Wishlist",
+        "empty_title": "Your wishlist is empty",
+        "empty_body": "Save your favourite pieces and come back to them anytime.",
+        "empty_cta_label": "Start Shopping"
+      }
+    },
+    "email_signup_acs": {
+      "type": "email-signup",
+      "settings": {
+        "title": "Join the Acharkhastory Family",
+        "subtitle": "Be the first to know about new collections, craft stories, and exclusive offers."
+      }
+    }
+  },
+  "order": [
+    "wishlist_acs",
+    "email_signup_acs"
+  ]
+}

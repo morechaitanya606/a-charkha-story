@@ -1,0 +1,733 @@
+{% comment %}
+  Acharkhastory product main
+  Conversion-focused PDP hero with media gallery, lightbox, purchase panel, variant controls, trust rows, and mobile sticky add bar.
+{% endcomment %}
+
+{% liquid
+  assign selected_variant = product.selected_or_first_available_variant
+  assign product_form_id = 'acs-product-form-' | append: section.id
+  assign free_shipping_threshold = section.settings.free_shipping_threshold | times: 100
+  assign low_stock_threshold = section.settings.low_stock_threshold
+  assign compare_at_price = selected_variant.compare_at_price
+  assign current_price = selected_variant.price
+  assign savings_percent = 0
+
+  if compare_at_price > current_price
+    assign savings_amount = compare_at_price | minus: current_price
+    assign savings_percent = savings_amount | times: 100.0 | divided_by: compare_at_price | floor
+  endif
+
+  assign craft_type = product.metafields.custom.craft_type.value | default: product.metafields.custom.artisan_craft.value | default: product.type
+  assign artisan_name = product.metafields.custom.artisan_name.value | default: product.vendor | default: section.settings.artisan_name
+  assign artisan_region = product.metafields.custom.artisan_region.value | default: section.settings.artisan_region
+  assign artisan_craft = product.metafields.custom.artisan_craft.value | default: craft_type | default: section.settings.artisan_craft
+  assign artisan_photo = product.metafields.custom.artisan_photo.value | default: section.settings.artisan_image
+  assign artisan_link = product.metafields.custom.artisan_link.value | default: section.settings.artisan_link
+
+  if artisan_link == blank
+    assign artisan_link = routes.root_url | append: 'pages/artisans'
+  endif
+
+  assign breadcrumb_collection = collection
+  if breadcrumb_collection == blank and product.collections.size > 0
+    assign breadcrumb_collection = product.collections.first
+  endif
+%}
+
+<section
+  class="acs-pdp acs-section"
+  id="AcsProductMain-{{ section.id }}"
+  data-acs-product-main
+  data-section-id="{{ section.id }}"
+  data-low-stock-threshold="{{ low_stock_threshold }}"
+  data-free-shipping-threshold="{{ free_shipping_threshold }}"
+  data-add-label="{{ section.settings.add_to_bag_label | escape }}"
+  data-sold-out-label="{{ section.settings.sold_out_label | escape }}"
+  data-unavailable-label="{{ section.settings.unavailable_label | escape }}"
+  data-save-label="{{ section.settings.save_label | escape }}"
+>
+  <div class="acs-pdp__container acs-page-width">
+    <nav class="acs-pdp__breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">{{ section.settings.home_label }}</a>
+      {%- if breadcrumb_collection != blank -%}
+        <span aria-hidden="true">/</span>
+        <a href="{{ breadcrumb_collection.url }}">{{ breadcrumb_collection.title }}</a>
+      {%- endif -%}
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{{ product.title }}</span>
+    </nav>
+
+    <div class="acs-pdp__layout">
+      <div class="acs-pdp__gallery" data-acs-gallery>
+        {%- if product.media.size > 0 -%}
+          <div class="acs-pdp__thumbs" aria-label="{{ section.settings.thumbnail_label }}">
+            {%- for media in product.media -%}
+              {%- liquid
+                assign preview_image = media.preview_image
+                assign media_alt = preview_image.alt | default: media.alt | default: product.title | escape
+              -%}
+              {%- if preview_image != blank -%}
+                <button
+                  type="button"
+                  class="acs-pdp__thumb{% if forloop.first %} is-active{% endif %}"
+                  data-acs-thumb
+                  data-index="{{ forloop.index0 }}"
+                  aria-current="{% if forloop.first %}true{% else %}false{% endif %}"
+                  aria-label="{{ section.settings.thumbnail_button_label }} {{ forloop.index }}"
+                >
+                  {{
+                    preview_image
+                    | image_url: width: 180
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '90, 140, 180',
+                      sizes: '72px',
+                      alt: media_alt,
+                      class: 'acs-pdp__thumb-image',
+                      width: 72,
+                      height: 96
+                  }}
+                  {%- unless media.media_type == 'image' -%}
+                    <span class="acs-pdp__thumb-badge">{{ media.media_type | replace: '_', ' ' }}</span>
+                  {%- endunless -%}
+                </button>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          <div class="acs-pdp__stage" data-acs-stage>
+            {%- for media in product.media -%}
+              {%- liquid
+                assign preview_image = media.preview_image
+                assign media_alt = preview_image.alt | default: media.alt | default: product.title | escape
+                assign image_loading = 'lazy'
+                assign image_priority = 'auto'
+                if forloop.first
+                  assign image_loading = 'eager'
+                  assign image_priority = 'high'
+                endif
+              -%}
+              {%- if preview_image != blank -%}
+                <button
+                  type="button"
+                  class="acs-pdp__media-frame{% if forloop.first %} is-active{% endif %}"
+                  data-acs-media-frame
+                  data-acs-gallery-open
+                  data-index="{{ forloop.index0 }}"
+                  data-media-id="{{ media.id }}"
+                  data-media-type="{{ media.media_type }}"
+                  data-full-src="{{ preview_image | image_url: width: 1800 }}"
+                  data-alt="{{ media_alt }}"
+                  aria-label="{{ section.settings.open_media_label }}"
+                >
+                  {{
+                    preview_image
+                    | image_url: width: 1200
+                    | image_tag:
+                      loading: image_loading,
+                      fetchpriority: image_priority,
+                      widths: '450, 700, 900, 1200, 1600',
+                      sizes: '(min-width: 990px) 55vw, 100vw',
+                      alt: media_alt,
+                      class: 'acs-pdp__image',
+                      width: preview_image.width,
+                      height: preview_image.height
+                  }}
+                  {%- unless media.media_type == 'image' -%}
+                    <span class="acs-pdp__media-pill">{{ section.settings.video_label }}</span>
+                  {%- endunless -%}
+                </button>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <div class="acs-pdp__stage acs-pdp__stage--empty">
+            <div class="acs-pdp__media-frame is-active">
+              {{ 'product-1' | placeholder_svg_tag: 'acs-pdp__placeholder' }}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <aside class="acs-pdp__purchase" data-acs-purchase>
+        {%- if artisan_name != blank -%}
+          <a class="acs-pdp__artisan-kicker" href="{{ artisan_link }}">
+            {{ artisan_name }}
+          </a>
+        {%- endif -%}
+
+        <div class="acs-pdp__heading">
+          <h1 class="acs-pdp__title">{{ product.title }}</h1>
+          {%- liquid
+            assign review_count = product.metafields.judgeme.review_count | default: 0
+            assign avg_rating = product.metafields.judgeme.average_rating | default: 0 | times: 1.0
+            assign full_stars = avg_rating | floor
+            assign has_half = false
+            assign decimal = avg_rating | minus: full_stars
+            if decimal >= 0.25 and decimal < 0.75
+              assign has_half = true
+            endif
+            assign empty_stars = 5 | minus: full_stars
+            if has_half
+              assign empty_stars = empty_stars | minus: 1
+            endif
+          -%}
+          <a class="acs-pdp__reviews-link" href="#Reviews-{{ section.id | replace: 'main', 'reviews_pdp_acs' }}">
+            <span aria-hidden="true">
+              {%- for i in (1..full_stars) -%}&#9733;{%- endfor -%}
+              {%- if has_half -%}<span class="acs-pdp__star-half">&#9733;</span>{%- endif -%}
+              {%- for i in (1..empty_stars) -%}<span class="acs-pdp__star-muted">&#9734;</span>{%- endfor -%}
+            </span>
+            {%- if review_count > 0 -%}
+              <span>{{ avg_rating | round: 1 }} · {{ review_count }} {{ review_count | pluralize: 'review', 'reviews' }}</span>
+            {%- else -%}
+              <span>{{ section.settings.reviews_label }}</span>
+            {%- endif -%}
+          </a>
+          {%- if section.settings.enable_judgeme_badge and product.metafields.judgeme.badge != blank -%}
+            <div class="jdgm-widget jdgm-preview-badge acs-pdp__judgeme" data-id="{{ product.id }}">
+              {{ product.metafields.judgeme.badge }}
+            </div>
+          {%- endif -%}
+        </div>
+
+        <div class="acs-pdp__price-block" data-acs-price-block>
+          <div class="acs-pdp__price-row">
+            <span class="acs-pdp__price" data-acs-price>{{ current_price | money }}</span>
+            <span
+              class="acs-pdp__compare{% unless compare_at_price > current_price %} is-hidden{% endunless %}"
+              data-acs-compare-price
+            >
+              {{ compare_at_price | money }}
+            </span>
+            <span
+              class="acs-pdp__save{% unless compare_at_price > current_price %} is-hidden{% endunless %}"
+              data-acs-save-badge
+            >
+              {{ section.settings.save_label }} {{ savings_percent }}%
+            </span>
+          </div>
+          <p class="acs-pdp__tax-note">{{ section.settings.tax_note }}</p>
+          <p
+            class="acs-pdp__free-shipping{% unless current_price >= free_shipping_threshold %} is-hidden{% endunless %}"
+            data-acs-free-shipping
+          >
+            {{ section.settings.free_delivery_label }}
+          </p>
+        </div>
+
+        <p class="acs-sr-only" data-acs-variant-status role="status" aria-live="polite"></p>
+
+        {% form 'product', product, id: product_form_id, class: 'acs-pdp__form', data-acs-product-form: '' %}
+          <input type="hidden" name="id" value="{{ selected_variant.id }}" data-acs-variant-input>
+
+          <script type="application/json" data-acs-variant-data>
+            [
+              {%- for variant in product.variants -%}
+                {
+                  "id": {{ variant.id | json }},
+                  "title": {{ variant.title | json }},
+                  "available": {{ variant.available | json }},
+                  "price": {{ variant.price | json }},
+                  "price_money": {{ variant.price | money | json }},
+                  "compare_at_price": {{ variant.compare_at_price | json }},
+                  "compare_at_price_money": {{ variant.compare_at_price | money | json }},
+                  "inventory_quantity": {{ variant.inventory_quantity | json }},
+                  "inventory_management": {{ variant.inventory_management | json }},
+                  "inventory_policy": {{ variant.inventory_policy | json }},
+                  "options": {{ variant.options | json }},
+                  "featured_media_id": {{ variant.featured_media.id | json }}
+                }{% unless forloop.last %},{% endunless %}
+              {%- endfor -%}
+            ]
+          </script>
+
+          {%- unless product.has_only_default_variant -%}
+            <div class="acs-pdp__options">
+              {%- for option in product.options_with_values -%}
+                {%- liquid
+                  assign option_index = option.position | minus: 1
+                  assign option_name_downcase = option.name | downcase
+                  assign is_color_option = false
+                  assign selected_value = selected_variant.options[option_index]
+                  if option_name_downcase contains 'color' or option_name_downcase contains 'colour'
+                    assign is_color_option = true
+                  endif
+                -%}
+                <fieldset
+                  class="acs-pdp__option{% if is_color_option %} acs-pdp__option--color{% endif %}"
+                  data-acs-option
+                  data-option-position="{{ option.position }}"
+                >
+                  <legend class="acs-pdp__option-label">
+                    <span>{{ option.name }}:</span>
+                    <strong data-acs-option-selected>{{ selected_value }}</strong>
+                    {%- if option_name_downcase contains 'size' and section.settings.size_guide_link != blank -%}
+                      <a class="acs-pdp__size-guide" href="{{ section.settings.size_guide_link }}">
+                        {{ section.settings.size_guide_label }}
+                      </a>
+                    {%- endif -%}
+                  </legend>
+
+                  <div class="acs-pdp__option-values" role="radiogroup" aria-label="{{ option.name }}">
+                    {%- for value in option.values -%}
+                      {%- liquid
+                        assign value_available = false
+                        assign value_handle = value | handleize
+                        for variant in product.variants
+                          if variant.available and variant.options contains value
+                            assign value_available = true
+                            break
+                          endif
+                        endfor
+                      -%}
+                      <button
+                        type="button"
+                        class="acs-pdp__option-button{% if value == selected_value %} is-selected{% endif %}{% unless value_available %} is-unavailable{% endunless %}"
+                        data-acs-option-button
+                        data-option-position="{{ option.position }}"
+                        data-value="{{ value | escape }}"
+                        role="radio"
+                        aria-checked="{% if value == selected_value %}true{% else %}false{% endif %}"
+                        {% unless value_available %}aria-disabled="true"{% endunless %}
+                      >
+                        {%- if is_color_option -%}
+                          <span
+                            class="acs-pdp__swatch"
+                            style="--acs-swatch-color: var(--acs-swatch-{{ value_handle }}, var(--acs-color-surface));"
+                            aria-hidden="true"
+                          ></span>
+                        {%- endif -%}
+                        <span>{{ value }}</span>
+                      </button>
+                    {%- endfor -%}
+                  </div>
+                </fieldset>
+              {%- endfor -%}
+            </div>
+          {%- endunless -%}
+
+          <p
+            class="acs-pdp__stock{% unless selected_variant.inventory_management and selected_variant.inventory_policy != 'continue' and selected_variant.inventory_quantity > 0 and selected_variant.inventory_quantity <= low_stock_threshold %} is-hidden{% endunless %}"
+            data-acs-stock
+          >
+            {{ section.settings.low_stock_prefix }}
+            <span data-acs-stock-count>{{ selected_variant.inventory_quantity }}</span>
+            {{ section.settings.low_stock_suffix }}
+          </p>
+
+          <div class="acs-pdp__buy-box">
+            <div class="acs-pdp__quantity" data-acs-quantity>
+              <button type="button" class="acs-pdp__quantity-button" data-acs-quantity-action="decrease" aria-label="{{ section.settings.decrease_label }}">-</button>
+              <input
+                class="acs-pdp__quantity-input"
+                type="number"
+                name="quantity"
+                value="1"
+                min="1"
+                inputmode="numeric"
+                data-acs-quantity-input
+                aria-label="{{ section.settings.quantity_label }}"
+              >
+              <button type="button" class="acs-pdp__quantity-button" data-acs-quantity-action="increase" aria-label="{{ section.settings.increase_label }}">+</button>
+            </div>
+
+            <button
+              type="submit"
+              name="add"
+              class="acs-pdp__add-button"
+              data-acs-add-button
+              {% unless selected_variant.available %}disabled{% endunless %}
+            >
+              <span data-acs-add-label>
+                {%- if selected_variant.available -%}
+                  {{ section.settings.add_to_bag_label }}
+                {%- else -%}
+                  {{ section.settings.sold_out_label }}
+                {%- endif -%}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              class="acs-pdp__wishlist"
+              data-acs-wishlist
+              data-product-id="{{ product.id }}"
+              data-product-handle="{{ product.handle }}"
+              aria-pressed="false"
+            >
+              <span aria-hidden="true">&#9825;</span>
+              <span>{{ section.settings.wishlist_label }}</span>
+            </button>
+          </div>
+
+          <p class="acs-pdp__form-message acs-sr-only" data-acs-form-message role="status" aria-live="polite" hidden></p>
+        {% endform %}
+
+        <div class="acs-pdp__trust-row" aria-label="{{ section.settings.trust_label }}">
+          <div class="acs-pdp__trust-item">
+            <span class="acs-pdp__trust-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 4v3h-7z"/><circle cx="7" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></svg>
+            </span>
+            <span>{{ section.settings.shipping_promise }}</span>
+          </div>
+          <div class="acs-pdp__trust-item">
+            <span class="acs-pdp__trust-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 7v6h6"/><path d="M5.5 15a7 7 0 1 0 1.7-7.2L4 13"/></svg>
+            </span>
+            <span>{{ section.settings.returns_promise }}</span>
+          </div>
+          <div class="acs-pdp__trust-item">
+            <span class="acs-pdp__trust-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 21c0-6-5-10-10-10 2-7 6-10 10-8 4-2 8 1 10 8-5 0-10 4-10 10z"/><path d="M12 8v13"/></svg>
+            </span>
+            <span>{{ section.settings.handmade_promise }}</span>
+          </div>
+          {%- if artisan_name != blank -%}
+            <div class="acs-pdp__trust-item">
+              <span class="acs-pdp__trust-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4-3 7-7 8-4-1-7-4-7-8V7z"/><path d="M9 12l2 2 4-5"/></svg>
+              </span>
+              <span>{{ section.settings.supports_label }} {{ artisan_name }}{% if artisan_region != blank %}, {{ artisan_region }}{% endif %}</span>
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- if artisan_name != blank -%}
+          <div class="acs-pdp__artisan-card">
+            <div class="acs-pdp__artisan-photo">
+              {%- if artisan_photo != blank -%}
+                {{
+                  artisan_photo
+                  | image_url: width: 160
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '80, 120, 160',
+                    sizes: '64px',
+                    alt: artisan_name,
+                    width: 64,
+                    height: 64
+                }}
+              {%- else -%}
+                <span>{{ artisan_name | slice: 0 }}</span>
+              {%- endif -%}
+            </div>
+            <div class="acs-pdp__artisan-copy">
+              <span class="acs-pdp__artisan-label">{{ section.settings.artisan_card_label }}</span>
+              <strong>{{ artisan_name }}</strong>
+              {%- if artisan_craft != blank or artisan_region != blank -%}
+                <span>{{ artisan_craft }}{% if artisan_craft != blank and artisan_region != blank %} - {% endif %}{{ artisan_region }}</span>
+              {%- endif -%}
+              <a href="{{ artisan_link }}">{{ section.settings.artisan_link_label }}</a>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- comment %} Pincode delivery checker {% endcomment -%}
+        {%- render 'acs-pincode-checker' -%}
+
+        {%- comment %} Gift wrap option {% endcomment -%}
+        {%- render 'gift-wrap-option' -%}
+
+        {%- comment %} Notify me for out-of-stock {% endcomment -%}
+        {%- render 'acs-notify-me' -%}
+      </aside>
+    </div>
+  </div>
+
+  <div class="acs-pdp__lightbox" data-acs-lightbox hidden role="dialog" aria-modal="true" aria-label="{{ section.settings.lightbox_label }}">
+    <button type="button" class="acs-pdp__lightbox-close" data-acs-lightbox-close aria-label="{{ section.settings.close_label }}">x</button>
+    <button type="button" class="acs-pdp__lightbox-nav acs-pdp__lightbox-nav--prev" data-acs-lightbox-prev aria-label="{{ section.settings.previous_label }}">&lt;</button>
+    <img class="acs-pdp__lightbox-image" data-acs-lightbox-image alt="" width="1200" height="1500">
+    <button type="button" class="acs-pdp__lightbox-nav acs-pdp__lightbox-nav--next" data-acs-lightbox-next aria-label="{{ section.settings.next_label }}">&gt;</button>
+  </div>
+
+  <div class="acs-pdp__sticky-bar" data-acs-sticky-bar aria-label="{{ section.settings.sticky_bar_label }}">
+    <div class="acs-pdp__sticky-info">
+      <span>{{ product.title }}</span>
+      <strong data-acs-sticky-price>{{ current_price | money }}</strong>
+    </div>
+    <button type="button" class="acs-pdp__sticky-button" data-acs-sticky-submit {% unless selected_variant.available %}disabled{% endunless %}>
+      {%- if selected_variant.available -%}
+        {{ section.settings.add_to_bag_label }}
+      {%- else -%}
+        {{ section.settings.sold_out_label }}
+      {%- endif -%}
+    </button>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "ACS Product Main",
+  "tag": "section",
+  "class": "acs-product-main-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "home_label",
+      "label": "Breadcrumb home label",
+      "default": "Home"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_judgeme_badge",
+      "label": "Show Judge.me preview badge",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "free_shipping_threshold",
+      "label": "Free shipping threshold",
+      "min": 499,
+      "max": 9999,
+      "step": 100,
+      "default": 1499
+    },
+    {
+      "type": "range",
+      "id": "low_stock_threshold",
+      "label": "Low stock threshold",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "url",
+      "id": "size_guide_link",
+      "label": "Size guide link"
+    },
+    {
+      "type": "text",
+      "id": "size_guide_label",
+      "label": "Size guide label",
+      "default": "Size Guide"
+    },
+    {
+      "type": "header",
+      "content": "Purchase copy"
+    },
+    {
+      "type": "text",
+      "id": "reviews_label",
+      "label": "Reviews label",
+      "default": "4.3 - 52 reviews"
+    },
+    {
+      "type": "text",
+      "id": "save_label",
+      "label": "Savings label",
+      "default": "Save"
+    },
+    {
+      "type": "text",
+      "id": "tax_note",
+      "label": "Tax note",
+      "default": "Inclusive of all taxes"
+    },
+    {
+      "type": "text",
+      "id": "free_delivery_label",
+      "label": "Free delivery label",
+      "default": "Free delivery on this order"
+    },
+    {
+      "type": "text",
+      "id": "low_stock_prefix",
+      "label": "Low stock prefix",
+      "default": "Only"
+    },
+    {
+      "type": "text",
+      "id": "low_stock_suffix",
+      "label": "Low stock suffix",
+      "default": "left in this option"
+    },
+    {
+      "type": "text",
+      "id": "quantity_label",
+      "label": "Quantity label",
+      "default": "Quantity"
+    },
+    {
+      "type": "text",
+      "id": "decrease_label",
+      "label": "Decrease quantity label",
+      "default": "Decrease quantity"
+    },
+    {
+      "type": "text",
+      "id": "increase_label",
+      "label": "Increase quantity label",
+      "default": "Increase quantity"
+    },
+    {
+      "type": "text",
+      "id": "add_to_bag_label",
+      "label": "Add button label",
+      "default": "Add to Bag"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold out label",
+      "default": "Sold Out"
+    },
+    {
+      "type": "text",
+      "id": "unavailable_label",
+      "label": "Unavailable label",
+      "default": "Unavailable"
+    },
+    {
+      "type": "text",
+      "id": "wishlist_label",
+      "label": "Wishlist label",
+      "default": "Save to Wishlist"
+    },
+    {
+      "type": "header",
+      "content": "Trust rows"
+    },
+    {
+      "type": "text",
+      "id": "trust_label",
+      "label": "Trust row aria label",
+      "default": "Product promises"
+    },
+    {
+      "type": "text",
+      "id": "shipping_promise",
+      "label": "Shipping promise",
+      "default": "Free delivery above Rs. 1,499"
+    },
+    {
+      "type": "text",
+      "id": "returns_promise",
+      "label": "Returns promise",
+      "default": "15-day easy returns"
+    },
+    {
+      "type": "text",
+      "id": "handmade_promise",
+      "label": "Handmade promise",
+      "default": "Handmade and sustainable"
+    },
+    {
+      "type": "text",
+      "id": "supports_label",
+      "label": "Artisan support label",
+      "default": "Supports"
+    },
+    {
+      "type": "header",
+      "content": "Artisan fallback"
+    },
+    {
+      "type": "text",
+      "id": "artisan_name",
+      "label": "Fallback artisan name",
+      "default": "Acharkhastory Artisans"
+    },
+    {
+      "type": "text",
+      "id": "artisan_region",
+      "label": "Fallback artisan region",
+      "default": "India"
+    },
+    {
+      "type": "text",
+      "id": "artisan_craft",
+      "label": "Fallback artisan craft",
+      "default": "Handcrafted"
+    },
+    {
+      "type": "image_picker",
+      "id": "artisan_image",
+      "label": "Fallback artisan image"
+    },
+    {
+      "type": "url",
+      "id": "artisan_link",
+      "label": "Fallback artisan link"
+    },
+    {
+      "type": "text",
+      "id": "artisan_card_label",
+      "label": "Artisan card label",
+      "default": "Artisan Card"
+    },
+    {
+      "type": "text",
+      "id": "artisan_link_label",
+      "label": "Artisan link label",
+      "default": "View artisan profile"
+    },
+    {
+      "type": "header",
+      "content": "Gallery labels"
+    },
+    {
+      "type": "text",
+      "id": "thumbnail_label",
+      "label": "Thumbnail list label",
+      "default": "Product media thumbnails"
+    },
+    {
+      "type": "text",
+      "id": "thumbnail_button_label",
+      "label": "Thumbnail button label",
+      "default": "Show product image"
+    },
+    {
+      "type": "text",
+      "id": "open_media_label",
+      "label": "Open media label",
+      "default": "Open image gallery"
+    },
+    {
+      "type": "text",
+      "id": "video_label",
+      "label": "Video badge label",
+      "default": "See it worn"
+    },
+    {
+      "type": "text",
+      "id": "lightbox_label",
+      "label": "Lightbox label",
+      "default": "Product image viewer"
+    },
+    {
+      "type": "text",
+      "id": "close_label",
+      "label": "Close lightbox label",
+      "default": "Close gallery"
+    },
+    {
+      "type": "text",
+      "id": "previous_label",
+      "label": "Previous image label",
+      "default": "Previous image"
+    },
+    {
+      "type": "text",
+      "id": "next_label",
+      "label": "Next image label",
+      "default": "Next image"
+    },
+    {
+      "type": "text",
+      "id": "sticky_bar_label",
+      "label": "Sticky bar label",
+      "default": "Quick add to bag"
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "ACS Product Main"
+    }
+  ]
+}
+{% endschema %}

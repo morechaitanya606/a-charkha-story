@@ -1,0 +1,158 @@
+{% comment %}
+  Acharkhastory social proof counter.
+  Builds early trust through customer, craft, and impact metrics.
+{% endcomment %}
+
+{% liquid
+  assign heading = section.settings.heading | strip
+  assign subtitle = section.settings.subtitle | strip
+  assign has_stats = false
+
+  for block in section.blocks
+    assign label = block.settings.label | strip
+
+    if label != blank
+      assign has_stats = true
+      break
+    endif
+  endfor
+%}
+
+{%- if has_stats -%}
+  <section class="acs-section acs-social-proof" id="SocialProof-{{ section.id }}">
+    <div class="acs-container">
+      {%- if heading != blank or subtitle != blank -%}
+        <header class="acs-section-header acs-section-header--center">
+          {%- if heading != blank -%}
+            <h2 class="acs-h2">{{ heading | escape }}</h2>
+          {%- endif -%}
+
+          {%- if subtitle != blank -%}
+            <p class="acs-section-header__subtitle">{{ subtitle | escape }}</p>
+          {%- endif -%}
+        </header>
+      {%- endif -%}
+
+      <div class="acs-social-proof__grid">
+        {%- for block in section.blocks -%}
+          {% liquid
+            assign target = block.settings.target_number | strip | remove: ','
+            assign label = block.settings.label | strip
+            assign prefix = block.settings.prefix | strip
+            assign suffix = block.settings.suffix | strip
+          %}
+
+          {%- if label != blank -%}
+            <div class="acs-social-proof__item" {{ block.shopify_attributes }}>
+              <span
+                class="acs-social-proof__number"
+                data-acs-counter
+                data-target="{{ target | escape }}"
+                data-prefix="{{ prefix | escape }}"
+                data-suffix="{{ suffix | escape }}"
+              >
+                {{ prefix | escape }}0{{ suffix | escape }}
+              </span>
+
+              <span class="acs-social-proof__label">{{ label | escape }}</span>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+
+  <script src="{{ 'social-proof-counter.js' | asset_url }}" defer></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "ACS Social Proof",
+  "tag": "section",
+  "class": "shopify-section--acs-social-proof",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Join 25,000+ customers choosing handmade"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Real craft, trusted by customers across India."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        {
+          "type": "text",
+          "id": "target_number",
+          "label": "Target number",
+          "default": "25000"
+        },
+        {
+          "type": "text",
+          "id": "prefix",
+          "label": "Prefix"
+        },
+        {
+          "type": "text",
+          "id": "suffix",
+          "label": "Suffix",
+          "default": "+"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Happy customers"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "ACS Social Proof",
+      "blocks": [
+        {
+          "type": "stat",
+          "settings": {
+            "target_number": "25000",
+            "suffix": "+",
+            "label": "Happy customers"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "target_number": "2300",
+            "suffix": "+",
+            "label": "Artisans supported"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "target_number": "20",
+            "suffix": "+",
+            "label": "Craft traditions"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "target_number": "12",
+            "label": "Indian states"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

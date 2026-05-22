@@ -1,0 +1,205 @@
+{% comment %}
+  Acharkhastory — Custom 404 Section
+  Branded "page not found" with spinning charkha SVG, search, and quick links.
+{% endcomment %}
+
+{%- style -%}
+  .acs-404 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 60vh;
+    padding: var(--acs-space-3xl) var(--acs-edge);
+    gap: var(--acs-space-lg);
+    background: var(--acs-color-background);
+  }
+
+  .acs-404__icon {
+    width: 120px;
+    height: 120px;
+    color: var(--acs-color-accent);
+    opacity: 0.4;
+    animation: acs-spin 20s linear infinite;
+  }
+
+  @keyframes acs-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .acs-404__icon { animation: none; }
+  }
+
+  .acs-404__code {
+    font-size: clamp(4rem, 10vw, 7rem);
+    font-family: var(--acs-font-display);
+    font-weight: 300;
+    color: var(--acs-color-border);
+    line-height: 1;
+    margin: 0;
+  }
+
+  .acs-404__title {
+    font-family: var(--acs-font-display);
+    font-size: var(--acs-type-h2);
+    color: var(--acs-color-primary);
+    margin: 0;
+    line-height: var(--acs-line-tight);
+  }
+
+  .acs-404__body {
+    max-width: 480px;
+    color: var(--acs-color-muted);
+    font-size: var(--acs-type-body);
+    line-height: var(--acs-line-body);
+    margin: 0;
+  }
+
+  .acs-404__search {
+    display: flex;
+    gap: var(--acs-space-sm);
+    width: 100%;
+    max-width: 440px;
+    margin-top: var(--acs-space-md);
+  }
+
+  .acs-404__search-input {
+    flex: 1;
+    min-height: 2.75rem;
+    border: 1px solid var(--acs-color-border);
+    border-radius: var(--acs-radius-sm);
+    padding: 0 var(--acs-space-md);
+    font-size: var(--acs-type-body);
+    font-family: var(--acs-font-body);
+    color: var(--acs-color-ink);
+    background: var(--acs-color-white);
+  }
+
+  .acs-404__search-input:focus {
+    outline: none;
+    border-color: var(--acs-color-accent);
+    box-shadow: 0 0 0 3px rgb(var(--acs-color-accent-rgb) / 0.15);
+  }
+
+  .acs-404__search-btn {
+    min-height: 2.75rem;
+    padding: 0 var(--acs-space-lg);
+    border: 0;
+    border-radius: var(--acs-radius-sm);
+    background: var(--acs-color-primary);
+    color: var(--acs-color-background);
+    cursor: pointer;
+    font-weight: 700;
+    font-size: var(--acs-type-small);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: background var(--acs-duration-base) var(--acs-ease);
+  }
+
+  .acs-404__search-btn:hover {
+    background: var(--acs-color-accent);
+  }
+
+  .acs-404__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--acs-space-sm);
+    justify-content: center;
+    margin-top: var(--acs-space-md);
+  }
+
+  .acs-404__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--acs-space-xs);
+    padding: var(--acs-space-sm) var(--acs-space-md);
+    border: 1px solid var(--acs-color-border);
+    border-radius: var(--acs-radius-full);
+    color: var(--acs-color-primary);
+    text-decoration: none;
+    font-size: var(--acs-type-small);
+    font-weight: 600;
+    transition: border-color var(--acs-duration-base) var(--acs-ease),
+      background var(--acs-duration-base) var(--acs-ease);
+  }
+
+  .acs-404__link:hover {
+    border-color: var(--acs-color-primary);
+    background: var(--acs-color-cream);
+  }
+{%- endstyle -%}
+
+<section class="acs-404" aria-labelledby="acs-404-title">
+  {%- comment %} Spinning Charkha Icon {%- endcomment -%}
+  <div class="acs-404__icon" aria-hidden="true">
+    <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="55" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+      <circle cx="60" cy="60" r="40" stroke="currentColor" stroke-width="1"/>
+      <circle cx="60" cy="60" r="8" fill="currentColor" opacity="0.6"/>
+      {%- comment %} Spokes {%- endcomment -%}
+      <line x1="60" y1="5" x2="60" y2="115" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+      <line x1="5" y1="60" x2="115" y2="60" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+      <line x1="20" y1="20" x2="100" y2="100" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+      <line x1="100" y1="20" x2="20" y2="100" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+      <line x1="60" y1="5" x2="95" y2="35" stroke="currentColor" stroke-width="0.75" opacity="0.3"/>
+      <line x1="60" y1="5" x2="25" y2="35" stroke="currentColor" stroke-width="0.75" opacity="0.3"/>
+      <line x1="60" y1="115" x2="95" y2="85" stroke="currentColor" stroke-width="0.75" opacity="0.3"/>
+      <line x1="60" y1="115" x2="25" y2="85" stroke="currentColor" stroke-width="0.75" opacity="0.3"/>
+      {%- comment %} Rim detail {%- endcomment -%}
+      <circle cx="60" cy="60" r="25" stroke="currentColor" stroke-width="0.75" stroke-dasharray="4 6" opacity="0.4"/>
+    </svg>
+  </div>
+
+  <p class="acs-404__code">404</p>
+  <h1 class="acs-404__title" id="acs-404-title">{{ section.settings.title }}</h1>
+  <p class="acs-404__body">{{ section.settings.body }}</p>
+
+  {%- comment %} Search Bar {%- endcomment -%}
+  <form action="{{ routes.search_url }}" method="get" class="acs-404__search" role="search">
+    <input
+      type="search"
+      name="q"
+      class="acs-404__search-input"
+      placeholder="{{ section.settings.search_placeholder }}"
+      aria-label="Search"
+    >
+    <button type="submit" class="acs-404__search-btn">Search</button>
+  </form>
+
+  {%- comment %} Quick Links {%- endcomment -%}
+  <div class="acs-404__links">
+    {%- for block in section.blocks -%}
+      <a href="{{ block.settings.link }}" class="acs-404__link">
+        {{ block.settings.label }}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Custom 404",
+  "tag": "section",
+  "class": "acs-404-section",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Heading", "default": "This page seems to have unraveled" },
+    { "type": "textarea", "id": "body", "label": "Body", "default": "The page you're looking for doesn't exist or has been moved. Try searching for what you need, or explore one of our popular collections." },
+    { "type": "text", "id": "search_placeholder", "label": "Search placeholder", "default": "Search for products, crafts..." }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Quick Link",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Shop All" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Custom 404" }]
+}
+{% endschema %}

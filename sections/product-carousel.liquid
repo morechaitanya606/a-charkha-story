@@ -1,207 +1,144 @@
 {% comment %}
-  ACHARKHASTORY — Product Carousel
-  Horizontal scrolling product row from a Shopify collection.
-  Uses snippets/product-card-acs.liquid for each card.
+  Acharkhastory product carousel.
+  Used for New Arrivals, Bestsellers, and other product discovery rows.
 {% endcomment %}
 
-{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+{% liquid
+  assign heading = section.settings.title | strip
+  assign subtitle = section.settings.subtitle | strip
+  assign collection = section.settings.collection
+  assign has_products = false
+  assign view_all_link = section.settings.view_all_link
 
-<style>
-  .product-carousel {
-    padding-block: var(--acs-section-py);
-    overflow: hidden;
-  }
+  if collection != blank and collection.products.size > 0
+    assign has_products = true
+  endif
 
-  .product-carousel__inner {
-    max-width: var(--acs-container);
-    margin-inline: auto;
-    padding-inline: var(--acs-edge);
-  }
+  if view_all_link == blank and collection != blank
+    assign view_all_link = collection.url
+  endif
+%}
 
-  .product-carousel__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: var(--acs-sp-lg);
-  }
+{%- if has_products or request.design_mode -%}
+  <section
+    class="acs-section acs-product-carousel acs-product-carousel--mobile-{{ section.settings.mobile_layout }}"
+    id="ProductCarousel-{{ section.id }}"
+    data-acs-product-carousel
+  >
+    <div class="acs-container acs-product-carousel__inner">
+      <header class="acs-product-carousel__header">
+        <div class="acs-section-header">
+          {%- if heading != blank -%}
+            <h2 class="acs-h2">{{ heading | escape }}</h2>
+          {%- endif -%}
 
-  .product-carousel__title {
-    font-family: var(--acs-font-display);
-    font-size: var(--acs-fs-h2);
-    font-weight: 500;
-    color: var(--acs-primary);
-    margin: 0;
-  }
+          {%- if subtitle != blank -%}
+            <p class="acs-section-header__subtitle">{{ subtitle | escape }}</p>
+          {%- endif -%}
+        </div>
 
-  .product-carousel__view-all {
-    font-family: var(--acs-font-body);
-    font-size: var(--acs-fs-nav);
-    color: var(--acs-secondary);
-    text-decoration: none;
-    white-space: nowrap;
-  }
+        {%- if section.settings.view_all_text != blank and view_all_link != blank -%}
+          <a class="acs-button acs-button--link" href="{{ view_all_link }}">
+            {{ section.settings.view_all_text | escape }}
+          </a>
+        {%- endif -%}
+      </header>
 
-  .product-carousel__view-all:hover {
-    text-decoration: underline;
-  }
-
-  .product-carousel__track-wrap {
-    position: relative;
-  }
-
-  .product-carousel__track {
-    display: flex;
-    gap: var(--acs-sp-md);
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: var(--acs-sp-xs);
-  }
-
-  .product-carousel__track::-webkit-scrollbar {
-    display: none;
-  }
-
-  .product-carousel__card {
-    flex: 0 0 280px;
-    min-width: 0;
-  }
-
-  /* Arrow nav */
-  .product-carousel__arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-100%);
-    z-index: 2;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 1px solid var(--acs-border);
-    background: var(--acs-white);
-    color: var(--acs-primary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(61, 34, 16, 0.1);
-    transition: all var(--acs-duration) var(--acs-ease);
-  }
-
-  .product-carousel__arrow:hover {
-    background: var(--acs-cream);
-    border-color: var(--acs-secondary);
-  }
-
-  .product-carousel__arrow--prev { left: -20px; }
-  .product-carousel__arrow--next { right: -20px; }
-
-  .product-carousel__arrow svg {
-    width: 18px;
-    height: 18px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  @media (max-width: 768px) {
-    .product-carousel__card {
-      flex: 0 0 60vw;
-    }
-
-    .product-carousel__arrow {
-      display: none;
-    }
-
-    .product-carousel__header {
-      flex-direction: column;
-      gap: var(--acs-sp-xs);
-    }
-  }
-
-  @media (max-width: 480px) {
-    .product-carousel__card {
-      flex: 0 0 70vw;
-    }
-  }
-</style>
-
-{%- assign collection = collections[section.settings.collection] -%}
-
-<section class="product-carousel" id="product-carousel-{{ section.id }}">
-  <div class="product-carousel__inner">
-    <div class="product-carousel__header">
-      <h2 class="product-carousel__title">{{ section.settings.title }}</h2>
-      {%- if section.settings.view_all_link != blank -%}
-        <a href="{{ section.settings.view_all_link }}" class="product-carousel__view-all">
-          {{ section.settings.view_all_text | default: 'View all →' }}
-        </a>
-      {%- elsif collection -%}
-        <a href="{{ collection.url }}" class="product-carousel__view-all">
-          {{ section.settings.view_all_text | default: 'View all →' }}
-        </a>
-      {%- endif -%}
-    </div>
-
-    <div class="product-carousel__track-wrap">
-      <div class="product-carousel__track" id="carousel-track-{{ section.id }}">
-        {%- if collection -%}
+      <div
+        class="acs-product-carousel__track"
+        data-acs-product-carousel-track
+        aria-label="{{ heading | escape }}"
+      >
+        {%- if has_products -%}
           {%- for product in collection.products limit: section.settings.max_products -%}
-            <div class="product-carousel__card">
-              {%- render 'product-card-acs', product: product, show_badge: true, show_craft_tag: true, card_index: forloop.index -%}
+            <div class="acs-product-carousel__item">
+              {%- render 'product-card-acs',
+                product: product,
+                show_badge: true,
+                show_craft_tag: true,
+                card_index: forloop.index
+              -%}
             </div>
           {%- endfor -%}
-        {%- else -%}
-          {%- for i in (1..4) -%}
-            <div class="product-carousel__card">
-              <div class="product-card-acs">
-                <div class="product-card-acs__media" style="background:var(--acs-cream);">
+        {%- elsif request.design_mode -%}
+          {%- for index in (1..4) -%}
+            <div class="acs-product-carousel__item">
+              <article class="product-card-acs">
+                <div class="product-card-acs__media">
                   {{ 'product-1' | placeholder_svg_tag }}
                 </div>
+
                 <div class="product-card-acs__info">
-                  <span class="product-card-acs__craft-tag">Ajrakh</span>
-                  <h3 class="product-card-acs__title">Sample Product {{ i }}</h3>
-                  <div class="product-card-acs__price-row">
-                    <span class="product-card-acs__price">₹2,400</span>
-                  </div>
+                  {%- if section.settings.placeholder_craft != blank -%}
+                    <span class="product-card-acs__craft-tag">
+                      {{ section.settings.placeholder_craft | escape }}
+                    </span>
+                  {%- endif -%}
+
+                  <h3 class="product-card-acs__title">
+                    {{ section.settings.placeholder_title | escape }} {{ index }}
+                  </h3>
+
+                  {%- if section.settings.placeholder_price != blank -%}
+                    <div class="product-card-acs__price-row">
+                      <span class="product-card-acs__price">
+                        {{ section.settings.placeholder_price | escape }}
+                      </span>
+                    </div>
+                  {%- endif -%}
                 </div>
-              </div>
+              </article>
             </div>
           {%- endfor -%}
         {%- endif -%}
       </div>
 
-      <button
-        class="product-carousel__arrow product-carousel__arrow--prev"
-        aria-label="Scroll left"
-        onclick="document.getElementById('carousel-track-{{ section.id }}').scrollBy({left: -300, behavior: 'smooth'})"
-      >
-        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
-      <button
-        class="product-carousel__arrow product-carousel__arrow--next"
-        aria-label="Scroll right"
-        onclick="document.getElementById('carousel-track-{{ section.id }}').scrollBy({left: 300, behavior: 'smooth'})"
-      >
-        <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
-      </button>
+      {%- if has_products and collection.products.size > 1 -%}
+        <button
+          class="acs-product-carousel__arrow acs-product-carousel__arrow--prev"
+          type="button"
+          aria-label="{{ section.settings.previous_label | escape }}"
+          data-acs-carousel-prev
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
+
+        <button
+          class="acs-product-carousel__arrow acs-product-carousel__arrow--next"
+          type="button"
+          aria-label="{{ section.settings.next_label | escape }}"
+          data-acs-carousel-next
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M9 6l6 6-6 6"/>
+          </svg>
+        </button>
+      {%- endif -%}
     </div>
-  </div>
-</section>
+  </section>
+
+  <script src="{{ 'product-carousel-acs.js' | asset_url }}" defer></script>
+{%- endif -%}
 
 {% schema %}
 {
-  "name": "Product Carousel",
+  "name": "ACS Product Carousel",
   "tag": "section",
-  "class": "product-carousel-section",
+  "class": "shopify-section--acs-product-carousel",
   "settings": [
     {
       "type": "text",
       "id": "title",
       "label": "Heading",
       "default": "New Arrivals"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Fresh craft-led pieces, released in small batches."
     },
     {
       "type": "collection",
@@ -218,20 +155,66 @@
       "default": 8
     },
     {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Mobile layout",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Two-column grid"
+        },
+        {
+          "value": "scroll",
+          "label": "Horizontal scroll"
+        }
+      ],
+      "default": "grid"
+    },
+    {
       "type": "text",
       "id": "view_all_text",
       "label": "View all text",
-      "default": "View all →"
+      "default": "View all"
     },
     {
       "type": "url",
       "id": "view_all_link",
-      "label": "View all link (optional, defaults to collection)"
+      "label": "View all link"
+    },
+    {
+      "type": "text",
+      "id": "previous_label",
+      "label": "Previous button label",
+      "default": "Previous products"
+    },
+    {
+      "type": "text",
+      "id": "next_label",
+      "label": "Next button label",
+      "default": "Next products"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_craft",
+      "label": "Editor placeholder craft",
+      "default": "Ajrakh"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_title",
+      "label": "Editor placeholder title",
+      "default": "Sample Product"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_price",
+      "label": "Editor placeholder price",
+      "default": "Rs. 2400"
     }
   ],
   "presets": [
     {
-      "name": "Product Carousel"
+      "name": "ACS Product Carousel"
     }
   ]
 }

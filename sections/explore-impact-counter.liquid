@@ -1,9 +1,7 @@
 {% comment %}
-  ACHARKHASTORY — Impact Counter Section (EX9)
+  Acharkhastory impact counter section.
   Animated number counters that show artisan impact scale.
 {% endcomment %}
-
-{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
 
 <style>
   .explore-impact {
@@ -13,14 +11,14 @@
   }
 
   .explore-impact__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--acs-sp-xl);
+    align-items: center;
+    justify-content: space-around;
     max-width: var(--acs-container);
     margin-inline: auto;
     padding-inline: var(--acs-edge);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--acs-sp-xl);
     text-align: center;
   }
 
@@ -32,33 +30,36 @@
   }
 
   .explore-impact__number {
+    color: var(--acs-ivory);
     font-family: var(--acs-font-display);
     font-size: 48px;
     font-weight: 500;
     line-height: 1;
-    color: var(--acs-ivory);
   }
 
   .explore-impact__label {
+    color: rgb(var(--acs-color-background-rgb) / 0.7);
     font-family: var(--acs-font-body);
     font-size: 12px;
     font-weight: 500;
-    text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: rgba(253, 246, 238, 0.7);
+    text-transform: uppercase;
   }
 
   @media (max-width: 768px) {
     .explore-impact {
       padding-block: var(--acs-sp-2xl);
     }
+
     .explore-impact__inner {
       gap: var(--acs-sp-lg);
     }
+
     .explore-impact__item {
-      min-width: 140px;
       width: calc(50% - var(--acs-sp-lg));
+      min-width: 140px;
     }
+
     .explore-impact__number {
       font-size: 36px;
     }
@@ -69,50 +70,60 @@
   <div class="explore-impact__inner">
     {%- for block in section.blocks -%}
       <div class="explore-impact__item" {{ block.shopify_attributes }}>
-        <div class="explore-impact__number" data-target="{{ block.settings.target_number }}" data-prefix="{{ block.settings.prefix }}" data-suffix="{{ block.settings.suffix }}">
-          0
+        <div
+          class="explore-impact__number"
+          data-target="{{ block.settings.target_number | escape }}"
+          data-prefix="{{ block.settings.prefix | escape }}"
+          data-suffix="{{ block.settings.suffix | escape }}"
+        >
+          {{ block.settings.prefix }}0{{ block.settings.suffix }}
         </div>
-        <div class="explore-impact__label">{{ block.settings.label }}</div>
+        <div class="explore-impact__label">{{ block.settings.label | escape }}</div>
       </div>
     {%- endfor -%}
   </div>
 </section>
 
 <script>
-  (function() {
+  (function () {
     var section = document.getElementById('explore-impact-{{ section.id }}');
+    if (!section) return;
+
     var counters = section.querySelectorAll('.explore-impact__number');
     var hasAnimated = false;
 
-    var animateCounters = function() {
+    var animateCounters = function () {
       if (hasAnimated) return;
       hasAnimated = true;
 
-      counters.forEach(function(counter) {
-        var targetStr = counter.getAttribute('data-target');
-        var target = parseInt(targetStr.replace(/,/g, ''), 10);
-        if (isNaN(target)) {
-          counter.innerText = (counter.getAttribute('data-prefix') || '') + targetStr + (counter.getAttribute('data-suffix') || '');
+      counters.forEach(function (counter) {
+        var targetString = counter.getAttribute('data-target') || '0';
+        var target = parseInt(targetString.replace(/,/g, ''), 10);
+        var prefix = counter.getAttribute('data-prefix') || '';
+        var suffix = counter.getAttribute('data-suffix') || '';
+
+        if (Number.isNaN(target)) {
+          counter.innerText = prefix + targetString + suffix;
           return;
         }
 
         var duration = 2000;
         var start = null;
 
-        var step = function(timestamp) {
+        var step = function (timestamp) {
           if (!start) start = timestamp;
+
           var progress = Math.min((timestamp - start) / duration, 1);
-          // Ease out expo
-          var easeOut = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-          var current = Math.floor(easeOut * target);
-          
+          var eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+          var current = Math.floor(eased * target);
           var formatted = current.toLocaleString('en-IN');
-          counter.innerText = (counter.getAttribute('data-prefix') || '') + formatted + (counter.getAttribute('data-suffix') || '');
+
+          counter.innerText = prefix + formatted + suffix;
 
           if (progress < 1) {
             window.requestAnimationFrame(step);
           } else {
-            counter.innerText = (counter.getAttribute('data-prefix') || '') + targetStr + (counter.getAttribute('data-suffix') || '');
+            counter.innerText = prefix + targetString + suffix;
           }
         };
 
@@ -120,12 +131,20 @@
       });
     };
 
-    var observer = new IntersectionObserver(function(entries) {
-      if (entries[0].isIntersecting) {
-        animateCounters();
-        observer.disconnect();
-      }
-    }, { threshold: 0.5 });
+    if (!('IntersectionObserver' in window)) {
+      animateCounters();
+      return;
+    }
+
+    var observer = new IntersectionObserver(
+      function (entries) {
+        if (entries[0] && entries[0].isIntersecting) {
+          animateCounters();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
 
     observer.observe(section);
   })();
@@ -151,8 +170,7 @@
         {
           "type": "text",
           "id": "prefix",
-          "label": "Prefix (e.g. ₹)",
-          "default": ""
+          "label": "Prefix (e.g. Rs.)"
         },
         {
           "type": "text",
@@ -173,10 +191,39 @@
     {
       "name": "Impact Counter",
       "blocks": [
-        { "type": "counter", "settings": { "target_number": "2,300", "suffix": "+", "label": "Artisans empowered" } },
-        { "type": "counter", "settings": { "target_number": "12", "suffix": "", "label": "Indian states" } },
-        { "type": "counter", "settings": { "target_number": "20", "suffix": "+", "label": "Craft traditions" } },
-        { "type": "counter", "settings": { "target_number": "2", "prefix": "₹", "suffix": "Cr+", "label": "Artisan earnings" } }
+        {
+          "type": "counter",
+          "settings": {
+            "target_number": "2,300",
+            "suffix": "+",
+            "label": "Artisans empowered"
+          }
+        },
+        {
+          "type": "counter",
+          "settings": {
+            "target_number": "12",
+            "suffix": "",
+            "label": "Indian states"
+          }
+        },
+        {
+          "type": "counter",
+          "settings": {
+            "target_number": "20",
+            "suffix": "+",
+            "label": "Craft traditions"
+          }
+        },
+        {
+          "type": "counter",
+          "settings": {
+            "target_number": "2",
+            "prefix": "Rs. ",
+            "suffix": "Cr+",
+            "label": "Artisan earnings"
+          }
+        }
       ]
     }
   ],

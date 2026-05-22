@@ -1,167 +1,67 @@
 {% comment %}
-  ACHARKHASTORY — Featured Collection Banner
-  Full-width 55/45 split with editorial image + content.
-  Toggle image left/right via schema.
+  Acharkhastory featured story banner.
+  Editorial image plus narrative content for craft, collection, or artisan storytelling.
 {% endcomment %}
 
-{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+{% liquid
+  assign title = section.settings.title | strip
+  assign description = section.settings.description | strip
+  assign image = section.settings.image
+  assign cta_link = section.settings.cta_link | default: routes.all_products_collection_url
+%}
 
-<style>
-  .fcb {
-    background: var(--acs-surface);
-    overflow: hidden;
-  }
+<section
+  class="acs-featured-banner{% if section.settings.reverse_layout %} acs-featured-banner--reverse{% endif %}"
+  id="FeaturedBanner-{{ section.id }}"
+>
+  <div class="acs-featured-banner__media">
+    {%- if image != blank -%}
+      <img
+        src="{{ image | image_url: width: 1200 }}"
+        srcset="{{ image | image_url: width: 720 }} 720w, {{ image | image_url: width: 1200 }} 1200w, {{ image | image_url: width: 1600 }} 1600w"
+        sizes="(max-width: 768px) 100vw, 55vw"
+        width="{{ image.width }}"
+        height="{{ image.height }}"
+        alt="{{ section.settings.image_alt | default: title | escape }}"
+        loading="lazy"
+      >
+    {%- else -%}
+      {{ 'collection-2' | placeholder_svg_tag }}
+    {%- endif -%}
+  </div>
 
-  .fcb__inner {
-    display: flex;
-    align-items: stretch;
-    min-height: 560px;
-  }
+  <div class="acs-featured-banner__content">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="acs-eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    {%- endif -%}
 
-  .fcb__inner--reversed {
-    flex-direction: row-reverse;
-  }
+    {%- if title != blank -%}
+      <h2 class="acs-featured-banner__title">{{ title | escape }}</h2>
+    {%- endif -%}
 
-  .fcb__media {
-    flex: 0 0 55%;
-    position: relative;
-    overflow: hidden;
-  }
+    {%- if section.settings.tagline != blank -%}
+      <p class="acs-featured-banner__tagline">{{ section.settings.tagline | escape }}</p>
+    {%- endif -%}
 
-  .fcb__media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s var(--acs-ease);
-  }
+    {%- if description != blank -%}
+      <p class="acs-featured-banner__text">{{ description | escape }}</p>
+    {%- endif -%}
 
-  .fcb:hover .fcb__media img {
-    transform: scale(1.02);
-  }
-
-  .fcb__content {
-    flex: 0 0 45%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: var(--acs-sp-3xl);
-    gap: var(--acs-sp-md);
-  }
-
-  .fcb__eyebrow {
-    font-family: var(--acs-font-body);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--acs-secondary);
-  }
-
-  .fcb__title {
-    font-family: var(--acs-font-display);
-    font-size: clamp(28px, 3vw, 42px);
-    font-weight: 500;
-    line-height: 1.15;
-    color: var(--acs-primary);
-    margin: 0;
-  }
-
-  .fcb__tagline {
-    font-family: var(--acs-font-display);
-    font-size: 18px;
-    font-style: italic;
-    color: var(--acs-text-muted);
-    line-height: 1.5;
-  }
-
-  .fcb__description {
-    font-family: var(--acs-font-body);
-    font-size: var(--acs-fs-body);
-    color: var(--acs-text);
-    line-height: 1.8;
-    max-width: 420px;
-  }
-
-  .fcb__cta {
-    margin-top: var(--acs-sp-xs);
-  }
-
-  @media (max-width: 768px) {
-    .fcb__inner,
-    .fcb__inner--reversed {
-      flex-direction: column;
-    }
-
-    .fcb__media {
-      flex: none;
-      height: 360px;
-    }
-
-    .fcb__content {
-      flex: none;
-      padding: var(--acs-sp-xl) var(--acs-edge-m);
-      text-align: center;
-      align-items: center;
-    }
-
-    .fcb__description {
-      max-width: 100%;
-    }
-  }
-</style>
-
-<section class="fcb" id="fcb-{{ section.id }}">
-  <div class="fcb__inner{% if section.settings.reverse_layout %} fcb__inner--reversed{% endif %}">
-    <div class="fcb__media">
-      {%- if section.settings.image != blank -%}
-        <img
-          src="{{ section.settings.image | image_url: width: 1200 }}"
-          srcset="
-            {{ section.settings.image | image_url: width: 800 }} 800w,
-            {{ section.settings.image | image_url: width: 1200 }} 1200w
-          "
-          sizes="(max-width: 768px) 100vw, 55vw"
-          alt="{{ section.settings.title | escape }}"
-          loading="lazy"
-          width="1200"
-          height="800"
-        >
-      {%- else -%}
-        {{ 'collection-2' | placeholder_svg_tag }}
-      {%- endif -%}
-    </div>
-
-    <div class="fcb__content">
-      {%- if section.settings.eyebrow != blank -%}
-        <span class="fcb__eyebrow">{{ section.settings.eyebrow }}</span>
-      {%- endif -%}
-
-      <h2 class="fcb__title">{{ section.settings.title }}</h2>
-
-      {%- if section.settings.tagline != blank -%}
-        <p class="fcb__tagline">{{ section.settings.tagline }}</p>
-      {%- endif -%}
-
-      {%- if section.settings.description != blank -%}
-        <p class="fcb__description">{{ section.settings.description }}</p>
-      {%- endif -%}
-
-      {%- if section.settings.cta_label != blank -%}
-        <div class="fcb__cta">
-          <a href="{{ section.settings.cta_link }}" class="acs-btn acs-btn--primary">
-            {{ section.settings.cta_label }}
-          </a>
-        </div>
-      {%- endif -%}
-    </div>
+    {%- if section.settings.cta_label != blank -%}
+      <div>
+        <a class="acs-button acs-button--light" href="{{ cta_link }}">
+          {{ section.settings.cta_label | escape }}
+        </a>
+      </div>
+    {%- endif -%}
   </div>
 </section>
 
 {% schema %}
 {
-  "name": "Featured Collection Banner",
+  "name": "ACS Featured Banner",
   "tag": "section",
-  "class": "fcb-section",
+  "class": "shopify-section--acs-featured-banner",
   "settings": [
     {
       "type": "image_picker",
@@ -170,9 +70,15 @@
     },
     {
       "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text",
+      "default": "Indian artisan textile story"
+    },
+    {
+      "type": "text",
       "id": "eyebrow",
       "label": "Eyebrow",
-      "default": "Featured Collection"
+      "default": "Featured Story"
     },
     {
       "type": "text",
@@ -183,13 +89,14 @@
     {
       "type": "text",
       "id": "tagline",
-      "label": "Tagline (italic)",
+      "label": "Tagline",
       "default": "From our looms to your wardrobe"
     },
     {
       "type": "textarea",
       "id": "description",
-      "label": "Description"
+      "label": "Description",
+      "default": "Each piece is hand-blocked, hand-stitched, and finished by artisans who have inherited their craft across generations."
     },
     {
       "type": "text",
@@ -211,7 +118,7 @@
   ],
   "presets": [
     {
-      "name": "Featured Collection Banner"
+      "name": "ACS Featured Banner"
     }
   ]
 }

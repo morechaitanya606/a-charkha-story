@@ -1,153 +1,67 @@
 {% comment %}
-  ACHARKHASTORY — Email Signup Banner
-  Full-width CTA with email capture. Integrates Shopify's customer API.
+  Acharkhastory email signup.
+  Supports Shopify customer form by default and Klaviyo embed by form ID.
 {% endcomment %}
 
-{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+{% liquid
+  assign heading = section.settings.title | strip
+  assign subtitle = section.settings.subtitle | strip
+  assign klaviyo_form_id = section.settings.klaviyo_form_id | strip
+%}
 
-<style>
-  .email-signup {
-    background: var(--acs-surface);
-    padding-block: var(--acs-sp-3xl);
-    text-align: center;
-  }
+<section class="acs-section acs-email-signup" id="EmailSignup-{{ section.id }}">
+  <div class="acs-container">
+    <div class="acs-email-signup__inner">
+      <div>
+        {%- if heading != blank -%}
+          <h2 class="acs-email-signup__title">{{ heading | escape }}</h2>
+        {%- endif -%}
 
-  .email-signup__inner {
-    max-width: 600px;
-    margin-inline: auto;
-    padding-inline: var(--acs-edge);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--acs-sp-md);
-  }
-
-  .email-signup__title {
-    font-family: var(--acs-font-display);
-    font-size: var(--acs-fs-h2);
-    font-weight: 500;
-    color: var(--acs-primary);
-    margin: 0;
-  }
-
-  .email-signup__subtitle {
-    font-family: var(--acs-font-body);
-    font-size: var(--acs-fs-body);
-    color: var(--acs-text-muted);
-    max-width: 460px;
-  }
-
-  .email-signup__form {
-    display: flex;
-    gap: var(--acs-sp-xs);
-    width: 100%;
-    max-width: 440px;
-    margin-top: var(--acs-sp-xs);
-  }
-
-  .email-signup__input {
-    flex: 1;
-    font-family: var(--acs-font-body);
-    font-size: 14px;
-    color: var(--acs-text);
-    background: var(--acs-white);
-    border: 1px solid var(--acs-border);
-    border-radius: var(--acs-r-sm);
-    padding: 12px 16px;
-  }
-
-  .email-signup__input:focus {
-    outline: none;
-    border-color: var(--acs-secondary);
-  }
-
-  .email-signup__submit {
-    font-family: var(--acs-font-body);
-    font-size: var(--acs-fs-btn);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    background: var(--acs-primary);
-    color: var(--acs-ivory);
-    border: none;
-    border-radius: var(--acs-r-sm);
-    padding: 12px 24px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background var(--acs-duration) var(--acs-ease);
-  }
-
-  .email-signup__submit:hover {
-    background: var(--acs-secondary);
-  }
-
-  .email-signup__fine-print {
-    font-family: var(--acs-font-body);
-    font-size: 11px;
-    color: var(--acs-text-muted);
-  }
-
-  .email-signup__success {
-    display: none;
-    color: #2E7D32;
-    font-family: var(--acs-font-body);
-    font-size: 14px;
-  }
-
-  @media (max-width: 480px) {
-    .email-signup__form {
-      flex-direction: column;
-    }
-
-    .email-signup__submit {
-      width: 100%;
-    }
-  }
-</style>
-
-<section class="email-signup" id="email-signup-{{ section.id }}">
-  <div class="email-signup__inner">
-    <h2 class="email-signup__title">{{ section.settings.title }}</h2>
-
-    {%- if section.settings.subtitle != blank -%}
-      <p class="email-signup__subtitle">{{ section.settings.subtitle }}</p>
-    {%- endif -%}
-
-    {%- form 'customer', id: 'email-signup-form' -%}
-      <input type="hidden" name="contact[tags]" value="newsletter">
-      <div class="email-signup__form">
-        <input
-          type="email"
-          name="contact[email]"
-          class="email-signup__input"
-          placeholder="{{ section.settings.placeholder | default: 'Your email address' }}"
-          required
-          autocomplete="email"
-          aria-label="Email address"
-        >
-        <button type="submit" class="email-signup__submit">
-          {{ section.settings.button_label | default: 'Subscribe' }}
-        </button>
+        {%- if subtitle != blank -%}
+          <p class="acs-email-signup__text">{{ subtitle | escape }}</p>
+        {%- endif -%}
       </div>
 
-      {%- if form.posted_successfully? -%}
-        <p class="email-signup__success" style="display:block;">
-          {{ section.settings.success_message | default: 'Thank you! Welcome to the story.' }}
-        </p>
-      {%- endif -%}
-    {%- endform -%}
+      <div>
+        {%- if klaviyo_form_id != blank -%}
+          <div class="klaviyo-form-{{ klaviyo_form_id | escape }}"></div>
+        {%- else -%}
+          {%- form 'customer', id: 'email-signup-form' -%}
+            <input type="hidden" name="contact[tags]" value="{{ section.settings.customer_tags | escape }}">
+            <div class="acs-email-signup__form">
+              <input
+                class="acs-input"
+                type="email"
+                name="contact[email]"
+                placeholder="{{ section.settings.placeholder | escape }}"
+                autocomplete="email"
+                required
+                aria-label="{{ section.settings.email_label | escape }}"
+              >
+              <button class="acs-button acs-button--light" type="submit">
+                {{ section.settings.button_label | escape }}
+              </button>
+            </div>
 
-    {%- if section.settings.fine_print != blank -%}
-      <p class="email-signup__fine-print">{{ section.settings.fine_print }}</p>
-    {%- endif -%}
+            {%- if form.posted_successfully? -%}
+              <p class="acs-email-signup__success">{{ section.settings.success_message | escape }}</p>
+            {%- endif -%}
+          {%- endform -%}
+        {%- endif -%}
+
+        {%- if section.settings.fine_print != blank -%}
+          <p class="acs-email-signup__fine-print">{{ section.settings.fine_print | escape }}</p>
+        {%- endif -%}
+      </div>
+    </div>
   </div>
 </section>
 
 {% schema %}
 {
-  "name": "Email Signup",
+  "name": "ACS Email Signup",
   "tag": "section",
-  "class": "email-signup-section",
+  "class": "shopify-section--acs-email-signup",
   "settings": [
     {
       "type": "text",
@@ -163,9 +77,21 @@
     },
     {
       "type": "text",
+      "id": "klaviyo_form_id",
+      "label": "Klaviyo form ID",
+      "info": "Leave blank to use Shopify customer signup."
+    },
+    {
+      "type": "text",
       "id": "placeholder",
       "label": "Input placeholder",
       "default": "Your email address"
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Email input accessible label",
+      "default": "Email address"
     },
     {
       "type": "text",
@@ -177,18 +103,24 @@
       "type": "text",
       "id": "success_message",
       "label": "Success message",
-      "default": "Thank you! Welcome to the story."
+      "default": "Thank you. Welcome to the story."
     },
     {
       "type": "text",
       "id": "fine_print",
       "label": "Fine print",
-      "default": "No spam, ever. Unsubscribe anytime."
+      "default": "No spam. Unsubscribe anytime."
+    },
+    {
+      "type": "text",
+      "id": "customer_tags",
+      "label": "Customer tags",
+      "default": "newsletter"
     }
   ],
   "presets": [
     {
-      "name": "Email Signup"
+      "name": "ACS Email Signup"
     }
   ]
 }

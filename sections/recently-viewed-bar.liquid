@@ -1,0 +1,90 @@
+{% comment %}
+  Acharkhastory recently viewed bar.
+  Reveals when Horizon's recently viewed localStorage contains products.
+{% endcomment %}
+
+<section
+  class="acs-recently-viewed"
+  id="RecentlyViewedBar-{{ section.id }}"
+  data-acs-recently-viewed-bar
+  data-storage-key="viewedProducts"
+  hidden
+>
+  <div class="acs-container acs-recently-viewed__inner">
+    <div class="acs-recently-viewed__copy">
+      <span class="acs-recently-viewed__title">{{ section.settings.title | escape }}</span>
+      <span class="acs-recently-viewed__text">
+        {{ section.settings.text_before | escape }}
+        <span data-acs-recently-viewed-count>0</span>
+        {{ section.settings.text_after | escape }}
+      </span>
+    </div>
+
+    {%- if section.settings.cta_label != blank -%}
+      <a class="acs-button acs-button--ghost" href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}">
+        {{ section.settings.cta_label | escape }}
+      </a>
+    {%- endif -%}
+
+    <button
+      class="acs-recently-viewed__close"
+      type="button"
+      aria-label="{{ section.settings.close_label | escape }}"
+      data-acs-recently-viewed-close
+    >
+      x
+    </button>
+  </div>
+</section>
+
+<script src="{{ 'recently-viewed-bar.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "ACS Recently Viewed",
+  "tag": "section",
+  "class": "shopify-section--acs-recently-viewed",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Recently viewed"
+    },
+    {
+      "type": "text",
+      "id": "text_before",
+      "label": "Text before count",
+      "default": "You have"
+    },
+    {
+      "type": "text",
+      "id": "text_after",
+      "label": "Text after count",
+      "default": "recent pieces saved from browsing."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "Continue shopping"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "text",
+      "id": "close_label",
+      "label": "Close label",
+      "default": "Close recently viewed bar"
+    }
+  ],
+  "presets": [
+    {
+      "name": "ACS Recently Viewed"
+    }
+  ]
+}
+{% endschema %}

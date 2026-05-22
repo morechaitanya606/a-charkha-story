@@ -208,7 +208,7 @@
             "contact_info": {
               "type": "text",
               "settings": {
-                "text": "<p>hello@acharkhastory.com<br>+91 98765 43210<br>Mon–Sat, 10am–6pm IST</p>",
+                "text": "<p>hello@acharkhastory.com<br>+91 98765 43210<br>Mon-Sat, 10am-6pm IST</p>",
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
@@ -306,10 +306,35 @@
         "padding-block-start": 16,
         "padding-block-end": 32
       }
+    },
+    "mobile_bottom_nav_acs": {
+      "type": "mobile-bottom-nav",
+      "settings": {
+        "enabled": true,
+        "aria_label": "Mobile navigation",
+        "home_label": "Home",
+        "search_label": "Search",
+        "wishlist_label": "Wishlist",
+        "wishlist_link": "/pages/wishlist",
+        "cart_label": "Cart",
+        "account_label": "Account"
+      }
+    },
+    "whatsapp_widget_acs": {
+      "type": "whatsapp-widget",
+      "settings": {
+        "enabled": false,
+        "phone_number": "",
+        "prefilled_message": "Hi, I need help with my Acharkhastory order.",
+        "aria_label": "Chat on WhatsApp",
+        "mobile_only": true
+      }
     }
   },
   "order": [
     "footer_acs",
-    "footer_utilities_acs"
+    "footer_utilities_acs",
+    "mobile_bottom_nav_acs",
+    "whatsapp_widget_acs"
   ]
 }

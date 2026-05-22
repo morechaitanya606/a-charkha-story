@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "tos_content": {
+      "type": "acs-policy-content",
+      "settings": {
+        "title": "Terms of Service",
+        "subtitle": "Last updated: May 2026",
+        "content": "<h3>1. Introduction</h3><p>Welcome to A Charkha Story ('we', 'our', 'us'). By accessing our website at acharkhastory.com and placing an order, you agree to these Terms of Service. Please read them carefully before making a purchase.</p><h3>2. Nature of Products</h3><p>All products sold on A Charkha Story are <strong>handmade by independent artisans</strong>. Due to the nature of handcrafted goods:</p><ul><li>Slight variations in colour, pattern, and finish are natural and expected — they reflect the authentic handmade character of each piece.</li><li>Screen colours may differ from actual product colours due to monitor settings and photography.</li><li>Measurements may vary by up to 1 inch from listed dimensions.</li></ul><p>These natural variations are <strong>not defects</strong> and are not eligible for returns or exchanges.</p><h3>3. Ordering</h3><p>By placing an order, you confirm that:</p><ul><li>You are at least 18 years old.</li><li>The information you provide is accurate and complete.</li><li>You authorise us to charge the payment method provided.</li></ul><p>We reserve the right to refuse or cancel orders at our discretion, including for suspected fraud, pricing errors, or product unavailability.</p><h3>4. Pricing & Payment</h3><p>All prices are listed in Indian Rupees (₹) and include applicable GST. We accept UPI, credit/debit cards, net banking, and select wallets. Payment is processed securely through our payment gateway partners.</p><h3>5. Shipping & Delivery</h3><p>Please refer to our <a href='/pages/shipping-policy'>Shipping Policy</a> for detailed information on delivery timelines, charges, and coverage areas.</p><h3>6. Returns & Exchanges</h3><p>Our return and exchange policy is outlined on our <a href='/pages/returns-policy'>Returns & Exchange Policy</a> page. Key points:</p><ul><li>Returns accepted within 15 days of delivery.</li><li>Items must be unused, unwashed, and in original packaging.</li><li>Custom or made-to-order items are non-returnable.</li></ul><h3>7. Intellectual Property</h3><p>All content on this website — including text, images, designs, logos, and product photography — is the property of A Charkha Story and is protected under Indian copyright law. You may not reproduce, distribute, or use our content without written permission.</p><h3>8. Limitation of Liability</h3><p>A Charkha Story shall not be liable for any indirect, incidental, or consequential damages arising from the use of our website or products. Our total liability shall not exceed the amount paid for the specific product in question.</p><h3>9. Governing Law</h3><p>These terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of the courts in Mumbai, Maharashtra.</p><h3>10. Contact</h3><p>For questions about these terms, please <a href='/pages/contact-us'>contact us</a> at hello@acharkhastory.com.</p>",
+        "contact_heading": "Questions?",
+        "contact_text": "<p>Email us at hello@acharkhastory.com or visit our Contact page.</p>",
+        "contact_email": "hello@acharkhastory.com"
+      }
+    }
+  },
+  "order": ["tos_content"]
+}

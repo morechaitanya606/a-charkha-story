@@ -1,103 +1,175 @@
 /**
- * ACHARKHASTORY — Hero Slider
- * Vanilla JS slider: autoplay, cross-dissolve, touch/swipe, keyboard, a11y.
+ * Acharkhastory hero slider.
+ * Vanilla JS carousel with autoplay, pointer swipe, keyboard support,
+ * visibility pause, and prefers-reduced-motion respect.
  */
 (function () {
   'use strict';
 
-  document.querySelectorAll('.hero-slider').forEach(initSlider);
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-hero-slider]').forEach(initHeroSlider);
+  });
 
-  function initSlider(slider) {
-    const slides = slider.querySelectorAll('.hero-slider__slide');
-    const dots = slider.querySelectorAll('.hero-slider__dot');
-    const prevBtn = slider.querySelector('.hero-slider__arrow--prev');
-    const nextBtn = slider.querySelector('.hero-slider__arrow--next');
+  /** @param {Element} slider */
+  function initHeroSlider(slider) {
+    const slides = Array.from(slider.querySelectorAll('.hero-slider__slide'));
+    const dots = Array.from(slider.querySelectorAll('.hero-slider__dot'));
+    const previousButton = slider.querySelector('.hero-slider__arrow--prev');
+    const nextButton = slider.querySelector('.hero-slider__arrow--next');
+    const autoplay = /** @type {HTMLElement} */ (slider).dataset.autoplay === 'true';
+    const interval = Number.parseInt(/** @type {HTMLElement} */ (slider).dataset.interval || '5000', 10) || 5000;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ARIA: mark as carousel */
+    slider.setAttribute('aria-roledescription', 'carousel');
+    slides.forEach(function (slide, i) {
+      slide.setAttribute('aria-roledescription', 'slide');
+      slide.setAttribute('aria-label', 'Slide ' + (i + 1) + ' of ' + slides.length);
+    });
 
     if (slides.length < 2) return;
 
-    let current = 0;
-    let timer = null;
-    let paused = false;
+    let activeIndex = 0;
+    /** @type {ReturnType<typeof setInterval> | null} */
+    let autoplayTimer = null;
+    let isPointerDown = false;
+    let pointerStartX = 0;
+    /** @type {number | null} */
+    let pointerId = null;
 
-    const autoplay = slider.dataset.autoplay === 'true';
-    const interval = (parseInt(slider.dataset.interval, 10) || 5) * 1000;
+    /** @param {number} nextIndex */
+    const activate = function (nextIndex) {
+      const normalizedIndex = (nextIndex + slides.length) % slides.length;
 
-    function goTo(index) {
-      if (index === current) return;
-      slides[current].classList.remove('is-active');
-      dots[current]?.classList.remove('is-active');
-      dots[current]?.setAttribute('aria-selected', 'false');
+      if (normalizedIndex === activeIndex) return;
 
-      current = (index + slides.length) % slides.length;
+      slides[activeIndex]?.classList.remove('is-active');
+      dots[activeIndex]?.classList.remove('is-active');
+      dots[activeIndex]?.setAttribute('aria-selected', 'false');
 
-      slides[current].classList.add('is-active');
-      dots[current]?.classList.add('is-active');
-      dots[current]?.setAttribute('aria-selected', 'true');
-    }
+      activeIndex = normalizedIndex;
 
-    function next() { goTo(current + 1); }
-    function prev() { goTo(current - 1); }
+      slides[activeIndex]?.classList.add('is-active');
+      dots[activeIndex]?.classList.add('is-active');
+      dots[activeIndex]?.setAttribute('aria-selected', 'true');
+    };
 
-    function startAutoplay() {
-      if (!autoplay || paused) return;
+    const goNext = function () {
+      activate(activeIndex + 1);
+    };
+
+    const goPrevious = function () {
+      activate(activeIndex - 1);
+    };
+
+    const stopAutoplay = function () {
+      if (autoplayTimer) {
+        window.clearInterval(autoplayTimer);
+        autoplayTimer = null;
+      }
+    };
+
+    const startAutoplay = function () {
+      if (!autoplay || prefersReducedMotion) return;
+
       stopAutoplay();
-      timer = setInterval(next, interval);
-    }
+      autoplayTimer = window.setInterval(goNext, interval);
+    };
 
-    function stopAutoplay() {
-      if (timer) { clearInterval(timer); timer = null; }
-    }
+    const restartAutoplay = function () {
+      stopAutoplay();
+      startAutoplay();
+    };
 
-    /* Arrows */
-    prevBtn?.addEventListener('click', function () { prev(); startAutoplay(); });
-    nextBtn?.addEventListener('click', function () { next(); startAutoplay(); });
+    previousButton?.addEventListener('click', function () {
+      goPrevious();
+      restartAutoplay();
+    });
 
-    /* Dots */
+    nextButton?.addEventListener('click', function () {
+      goNext();
+      restartAutoplay();
+    });
+
     dots.forEach(function (dot) {
       dot.addEventListener('click', function () {
-        goTo(parseInt(this.dataset.index, 10));
-        startAutoplay();
+        activate(Number.parseInt(/** @type {HTMLElement} */ (dot).dataset.index || '0', 10));
+        restartAutoplay();
       });
     });
 
-    /* Pause on hover */
-    slider.addEventListener('mouseenter', function () { paused = true; stopAutoplay(); });
-    slider.addEventListener('mouseleave', function () { paused = false; startAutoplay(); });
-
-    /* Touch / Swipe */
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    slider.addEventListener('touchstart', function (e) {
-      touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-
-    slider.addEventListener('touchend', function (e) {
-      touchEndX = e.changedTouches[0].screenX;
-      var diff = touchStartX - touchEndX;
-      if (Math.abs(diff) > 50) {
-        if (diff > 0) next(); else prev();
-        startAutoplay();
+    slider.addEventListener('keydown', function (/** @type {Event} */ event) {
+      const kbEvent = /** @type {KeyboardEvent} */ (event);
+      if (kbEvent.key === 'ArrowLeft') {
+        goPrevious();
+        restartAutoplay();
       }
-    }, { passive: true });
 
-    /* Keyboard */
-    slider.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowLeft') { prev(); startAutoplay(); }
-      if (e.key === 'ArrowRight') { next(); startAutoplay(); }
+      if (kbEvent.key === 'ArrowRight') {
+        goNext();
+        restartAutoplay();
+      }
     });
 
-    /* Pause when not visible */
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) { startAutoplay(); }
-        else { stopAutoplay(); }
-      });
-    }, { threshold: 0.3 });
+    slider.addEventListener('pointerdown', function (/** @type {Event} */ event) {
+      const pEvent = /** @type {PointerEvent} */ (event);
+      if (pEvent.pointerType === 'mouse' && pEvent.button !== 0) return;
+
+      isPointerDown = true;
+      pointerId = pEvent.pointerId;
+      pointerStartX = pEvent.clientX;
+      /** @type {HTMLElement} */ (slider).setPointerCapture?.(pointerId);
+    });
+
+    slider.addEventListener('pointerup', function (/** @type {Event} */ event) {
+      const pEvent = /** @type {PointerEvent} */ (event);
+      if (!isPointerDown || pEvent.pointerId !== pointerId) return;
+
+      const swipeDistance = pointerStartX - pEvent.clientX;
+
+      isPointerDown = false;
+      pointerId = null;
+
+      if (Math.abs(swipeDistance) > 48) {
+        if (swipeDistance > 0) {
+          goNext();
+        } else {
+          goPrevious();
+        }
+
+        restartAutoplay();
+      }
+    });
+
+    slider.addEventListener('pointercancel', function () {
+      isPointerDown = false;
+      pointerId = null;
+    });
+
+    slider.addEventListener('mouseenter', stopAutoplay);
+    slider.addEventListener('mouseleave', startAutoplay);
+    slider.addEventListener('focusin', stopAutoplay);
+    slider.addEventListener('focusout', startAutoplay);
+
+    if (!('IntersectionObserver' in window)) {
+      startAutoplay();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            startAutoplay();
+          } else {
+            stopAutoplay();
+          }
+        });
+      },
+      { threshold: 0.35 }
+    );
 
     observer.observe(slider);
-
-    /* Start */
     startAutoplay();
   }
 })();

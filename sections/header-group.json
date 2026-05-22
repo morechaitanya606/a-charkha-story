@@ -17,7 +17,7 @@
         "announcement_1": {
           "type": "_announcement",
           "settings": {
-            "text": "Free shipping on orders above ₹1,499",
+            "text": "Free shipping on orders above Rs. 1,499",
             "link": "",
             "font": "var(--font-subheading--family)",
             "font_size": "0.75rem",
@@ -43,7 +43,7 @@
         "announcement_3": {
           "type": "_announcement",
           "settings": {
-            "text": "15-day easy returns · COD available",
+            "text": "15-day easy returns | COD available",
             "link": "",
             "font": "var(--font-subheading--family)",
             "font_size": "0.75rem",

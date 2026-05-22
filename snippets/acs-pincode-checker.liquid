@@ -1,0 +1,128 @@
+{% comment %}
+  Acharkhastory — Pincode Delivery Checker
+  Renders an inline pincode form on PDP for delivery ETA + COD availability.
+  Requires: acs-pincode-checker.js
+{% endcomment %}
+
+<div class="acs-pincode" data-acs-pincode-checker>
+  <label class="acs-pincode__label" for="acs-pincode-input-{{ section.id }}">
+    <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M10 2a6 6 0 00-6 6c0 4.5 6 10 6 10s6-5.5 6-10a6 6 0 00-6-6zm0 8a2 2 0 110-4 2 2 0 010 4z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+    Check Delivery
+  </label>
+
+  <div class="acs-pincode__row">
+    <input
+      type="text"
+      id="acs-pincode-input-{{ section.id }}"
+      class="acs-pincode__input"
+      placeholder="Enter pincode"
+      maxlength="6"
+      inputmode="numeric"
+      pattern="[1-9][0-9]{5}"
+      data-acs-pincode-input
+      autocomplete="postal-code"
+    >
+    <button type="button" class="acs-pincode__button" data-acs-pincode-check>
+      Check
+    </button>
+  </div>
+
+  <div class="acs-pincode__result" data-acs-pincode-result hidden aria-live="polite"></div>
+</div>
+
+<style>
+  .acs-pincode {
+    display: grid;
+    gap: var(--acs-space-sm);
+    padding: var(--acs-space-md);
+    border: var(--acs-border-subtle);
+    border-radius: var(--acs-radius-md);
+    background: rgb(var(--acs-color-white-rgb) / 0.52);
+  }
+
+  .acs-pincode__label {
+    display: flex;
+    align-items: center;
+    gap: var(--acs-space-xs);
+    color: var(--acs-color-primary);
+    font-size: var(--acs-type-small);
+    font-weight: 700;
+  }
+
+  .acs-pincode__label svg {
+    color: var(--acs-color-accent);
+  }
+
+  .acs-pincode__row {
+    display: flex;
+    gap: var(--acs-space-xs);
+  }
+
+  .acs-pincode__input {
+    flex: 1;
+    min-height: 40px;
+    border: var(--acs-border-subtle);
+    border-radius: var(--acs-radius-sm);
+    background: var(--acs-color-white);
+    color: var(--acs-color-ink);
+    font-family: var(--acs-font-body);
+    font-size: var(--acs-type-body);
+    padding: 0.5rem 0.75rem;
+    transition: border-color var(--acs-duration-base) var(--acs-ease);
+  }
+
+  .acs-pincode__input:focus {
+    border-color: var(--acs-color-accent);
+    outline: 0;
+    box-shadow: var(--acs-focus-ring);
+  }
+
+  .acs-pincode__button {
+    min-height: 40px;
+    border: 1px solid var(--acs-color-primary);
+    border-radius: var(--acs-radius-sm);
+    background: transparent;
+    color: var(--acs-color-primary);
+    font-family: var(--acs-font-body);
+    font-size: var(--acs-type-small);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0 1rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background var(--acs-duration-base) var(--acs-ease), color var(--acs-duration-base) var(--acs-ease);
+  }
+
+  .acs-pincode__button:hover {
+    background: var(--acs-color-primary);
+    color: var(--acs-color-background);
+  }
+
+  .acs-pincode__result {
+    display: grid;
+    gap: var(--acs-space-2xs);
+    font-size: var(--acs-type-small);
+  }
+
+  .acs-pincode__success {
+    display: flex;
+    align-items: center;
+    gap: var(--acs-space-2xs);
+    color: var(--acs-color-success);
+    font-weight: 600;
+  }
+
+  .acs-pincode__icon {
+    flex-shrink: 0;
+  }
+
+  .acs-pincode__cod {
+    color: var(--acs-color-muted);
+    font-size: var(--acs-type-caption);
+  }
+
+  .acs-pincode__error {
+    color: var(--acs-color-sale);
+    font-weight: 600;
+  }
+</style>

@@ -1,0 +1,43 @@
+{
+  "sections": {
+    "faq_main": {
+      "type": "acs-faq-accordion",
+      "blocks": {
+        "cat_1": { "type": "category", "settings": { "title": "Orders & Shipping" }},
+        "faq_1": { "type": "faq_item", "settings": { "question": "How long does delivery take?", "answer": "<p>Handcrafted orders typically ship within 5-7 business days. Delivery takes an additional 3-5 days depending on your location. We ship across India and internationally.</p>" }},
+        "faq_2": { "type": "faq_item", "settings": { "question": "Do you offer free shipping?", "answer": "<p>Yes! We offer free shipping on all orders above Rs. 1,499 within India.</p>" }},
+        "faq_3": { "type": "faq_item", "settings": { "question": "Can I track my order?", "answer": "<p>Absolutely. You'll receive a tracking link via email and WhatsApp once your order ships.</p>" }},
+        "faq_4": { "type": "faq_item", "settings": { "question": "Do you ship internationally?", "answer": "<p>Yes, we ship to over 30 countries worldwide. International delivery takes 7-14 business days. Customs duties may apply based on your country.</p>" }},
+        "cat_2": { "type": "category", "settings": { "title": "Returns & Exchanges" }},
+        "faq_5": { "type": "faq_item", "settings": { "question": "What is your return policy?", "answer": "<p>We offer 15-day easy returns on all non-sale items. Items must be unused, unwashed, and in their original packaging with tags attached.</p>" }},
+        "faq_6": { "type": "faq_item", "settings": { "question": "How do I initiate a return?", "answer": "<p>Simply WhatsApp us or email hello@acharkhastory.com with your order number. We'll arrange a pickup at no extra cost within India.</p>" }},
+        "faq_7": { "type": "faq_item", "settings": { "question": "Can I exchange for a different size or colour?", "answer": "<p>Yes! Exchanges are free. Contact us within 15 days of delivery and we'll arrange the swap.</p>" }},
+        "cat_3": { "type": "category", "settings": { "title": "Product & Care" }},
+        "faq_8": { "type": "faq_item", "settings": { "question": "How should I care for handwoven fabrics?", "answer": "<p>Hand wash gently in cold water with mild detergent. Do not wring or twist — lay flat to dry in shade. Iron on low heat. Store in a cool, dry place away from direct sunlight.</p>" }},
+        "faq_9": { "type": "faq_item", "settings": { "question": "Are your products truly handmade?", "answer": "<p>Yes, 100%. Every product is handcrafted by artisan families across India. No machines are used in the making of our textiles. Each piece may have minor variations — this is a sign of authenticity, not a defect.</p>" }},
+        "faq_10": { "type": "faq_item", "settings": { "question": "Will handwoven fabrics shrink?", "answer": "<p>Natural fabrics may shrink 2-3% after the first wash. This is normal for handwoven textiles. We recommend cold water hand washing to minimise shrinkage.</p>" }},
+        "cat_4": { "type": "category", "settings": { "title": "Payments & Orders" }},
+        "faq_11": { "type": "faq_item", "settings": { "question": "What payment methods do you accept?", "answer": "<p>We accept UPI, credit/debit cards, net banking, and popular wallets including Paytm and PhonePe via Razorpay. International customers can pay via credit card.</p>" }},
+        "faq_12": { "type": "faq_item", "settings": { "question": "Is COD available?", "answer": "<p>Cash on Delivery is available for orders within India under Rs. 5,000. A nominal COD fee of Rs. 49 applies.</p>" }}
+      },
+      "block_order": ["cat_1", "faq_1", "faq_2", "faq_3", "faq_4", "cat_2", "faq_5", "faq_6", "faq_7", "cat_3", "faq_8", "faq_9", "faq_10", "cat_4", "faq_11", "faq_12"],
+      "settings": {
+        "title": "Frequently Asked Questions",
+        "subtitle": "Everything you need to know about shopping with A Charkha Story.",
+        "contact_title": "Still have questions?",
+        "contact_text": "<p>Reach out to us at <a href=\"mailto:hello@acharkhastory.com\">hello@acharkhastory.com</a> or WhatsApp us at <a href=\"https://wa.me/919999999999\">+91-99999-99999</a>. We reply within 24 hours.</p>"
+      }
+    },
+    "email_signup_acs": {
+      "type": "email-signup",
+      "settings": {
+        "title": "Join the Acharkhastory Family",
+        "subtitle": "Be the first to know about new collections, craft stories, and exclusive offers."
+      }
+    }
+  },
+  "order": [
+    "faq_main",
+    "email_signup_acs"
+  ]
+}

@@ -1,224 +1,86 @@
 {% comment %}
-  ACHARKHASTORY — Customer Reviews
-  3-column review cards. Integrates Judge.me embed.
-  Includes manual review blocks as fallback / seed content.
+  Acharkhastory customer reviews.
+  Manual review cards with optional Judge.me app widget container.
 {% endcomment %}
 
-{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+{% liquid
+  assign heading = section.settings.title | strip
+  assign subtitle = section.settings.subtitle | strip
+  assign has_reviews = false
 
-<style>
-  .reviews-acs {
-    padding-block: var(--acs-section-py);
-    background: var(--acs-cream);
-  }
+  for block in section.blocks
+    if block.settings.review_text != blank
+      assign has_reviews = true
+      break
+    endif
+  endfor
+%}
 
-  .reviews-acs__inner {
-    max-width: var(--acs-container);
-    margin-inline: auto;
-    padding-inline: var(--acs-edge);
-  }
+{%- if has_reviews or section.settings.enable_judgeme -%}
+  <section class="acs-section acs-reviews" id="Reviews-{{ section.id }}">
+    <div class="acs-container">
+      {%- if heading != blank or subtitle != blank -%}
+        <header class="acs-section-header acs-section-header--center">
+          {%- if heading != blank -%}
+            <h2 class="acs-h2">{{ heading | escape }}</h2>
+          {%- endif -%}
 
-  .reviews-acs__header {
-    text-align: center;
-    margin-bottom: var(--acs-sp-xl);
-  }
+          {%- if subtitle != blank -%}
+            <p class="acs-section-header__subtitle">{{ subtitle | escape }}</p>
+          {%- endif -%}
+        </header>
+      {%- endif -%}
 
-  .reviews-acs__title {
-    font-family: var(--acs-font-display);
-    font-size: var(--acs-fs-h2);
-    font-weight: 500;
-    color: var(--acs-primary);
-    margin: 0;
-  }
+      {%- if section.settings.enable_judgeme -%}
+        <div class="jdgm-widget jdgm-review-widget"></div>
+      {%- endif -%}
 
-  .reviews-acs__subtitle {
-    font-family: var(--acs-font-body);
-    font-size: 14px;
-    color: var(--acs-text-muted);
-    margin-top: var(--acs-sp-xs);
-  }
+      {%- if has_reviews -%}
+        <div class="acs-reviews__grid">
+          {%- for block in section.blocks -%}
+            {%- if block.settings.review_text != blank -%}
+              <article class="acs-review-card" {{ block.shopify_attributes }}>
+                <div class="acs-review-card__stars" aria-label="{{ block.settings.rating }} out of 5 stars">
+                  {%- for index in (1..5) -%}
+                    {%- if index <= block.settings.rating -%}&#9733;{%- else -%}&#9734;{%- endif -%}
+                  {%- endfor -%}
+                </div>
 
-  /* Judge.me embed container */
-  .reviews-acs__judgeme {
-    margin-bottom: var(--acs-sp-xl);
-  }
+                <blockquote class="acs-review-card__quote">
+                  {{ block.settings.review_text | escape }}
+                </blockquote>
 
-  /* Manual review cards */
-  .reviews-acs__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--acs-sp-lg);
-  }
+                <div>
+                  <div class="acs-review-card__author">{{ block.settings.name | escape }}</div>
+                  <div class="acs-review-card__meta">
+                    {%- if block.settings.location != blank -%}
+                      <span>{{ block.settings.location | escape }}</span>
+                    {%- endif -%}
+                    {%- if block.settings.verified_label != blank -%}
+                      <span>{{ block.settings.verified_label | escape }}</span>
+                    {%- endif -%}
+                  </div>
+                </div>
 
-  .reviews-acs__card {
-    background: var(--acs-white);
-    border-radius: var(--acs-r-md);
-    padding: var(--acs-sp-lg);
-    display: flex;
-    flex-direction: column;
-    gap: var(--acs-sp-sm);
-  }
-
-  .reviews-acs__card-header {
-    display: flex;
-    align-items: center;
-    gap: var(--acs-sp-sm);
-  }
-
-  .reviews-acs__avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    object-fit: cover;
-    background: var(--acs-surface);
-    flex-shrink: 0;
-  }
-
-  .reviews-acs__avatar--placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--acs-font-display);
-    font-size: 20px;
-    font-weight: 500;
-    color: var(--acs-secondary);
-    background: var(--acs-surface);
-  }
-
-  .reviews-acs__author {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .reviews-acs__name {
-    font-family: var(--acs-font-body);
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--acs-primary);
-  }
-
-  .reviews-acs__location {
-    font-family: var(--acs-font-body);
-    font-size: 11px;
-    color: var(--acs-text-muted);
-  }
-
-  .reviews-acs__stars {
-    color: var(--acs-warm-mid);
-    font-size: 14px;
-    letter-spacing: 2px;
-    line-height: 1;
-  }
-
-  .reviews-acs__text {
-    font-family: var(--acs-font-body);
-    font-size: 14px;
-    color: var(--acs-text);
-    line-height: 1.7;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .reviews-acs__product {
-    font-family: var(--acs-font-body);
-    font-size: 11px;
-    color: var(--acs-text-muted);
-    font-style: italic;
-    margin-top: auto;
-  }
-
-  @media (max-width: 768px) {
-    .reviews-acs__grid {
-      grid-template-columns: 1fr;
-      gap: var(--acs-sp-md);
-      display: flex;
-      overflow-x: auto;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-
-    .reviews-acs__grid::-webkit-scrollbar {
-      display: none;
-    }
-
-    .reviews-acs__card {
-      min-width: 280px;
-      flex-shrink: 0;
-    }
-  }
-</style>
-
-<section class="reviews-acs" id="reviews-acs-{{ section.id }}">
-  <div class="reviews-acs__inner">
-    <div class="reviews-acs__header">
-      <h2 class="reviews-acs__title">{{ section.settings.title }}</h2>
-      {%- if section.settings.subtitle != blank -%}
-        <p class="reviews-acs__subtitle">{{ section.settings.subtitle }}</p>
+                {%- if block.settings.product_name != blank -%}
+                  <div class="acs-review-card__product">
+                    {{ section.settings.purchased_prefix | escape }} {{ block.settings.product_name | escape }}
+                  </div>
+                {%- endif -%}
+              </article>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
       {%- endif -%}
     </div>
-
-    {%- comment -%} Judge.me widget embed — will render when app is installed {%- endcomment -%}
-    {%- if section.settings.enable_judgeme -%}
-      <div class="reviews-acs__judgeme">
-        <div id="judgeme_product_reviews" class="jdgm-widget jdgm-review-widget"></div>
-      </div>
-    {%- endif -%}
-
-    {%- if section.blocks.size > 0 -%}
-      <div class="reviews-acs__grid">
-        {%- for block in section.blocks -%}
-          <div class="reviews-acs__card" {{ block.shopify_attributes }}>
-            <div class="reviews-acs__card-header">
-              {%- if block.settings.avatar != blank -%}
-                <img
-                  class="reviews-acs__avatar"
-                  src="{{ block.settings.avatar | image_url: width: 96 }}"
-                  alt="{{ block.settings.name }}"
-                  loading="lazy"
-                  width="48"
-                  height="48"
-                >
-              {%- else -%}
-                <div class="reviews-acs__avatar reviews-acs__avatar--placeholder">
-                  {{ block.settings.name | slice: 0 }}
-                </div>
-              {%- endif -%}
-              <div class="reviews-acs__author">
-                <span class="reviews-acs__name">{{ block.settings.name }}</span>
-                {%- if block.settings.location != blank -%}
-                  <span class="reviews-acs__location">{{ block.settings.location }}</span>
-                {%- endif -%}
-              </div>
-            </div>
-
-            <div class="reviews-acs__stars">
-              {%- assign star_count = block.settings.rating | default: 5 -%}
-              {%- for i in (1..5) -%}
-                {%- if i <= star_count -%}★{%- else -%}☆{%- endif -%}
-              {%- endfor -%}
-            </div>
-
-            <p class="reviews-acs__text">{{ block.settings.review_text }}</p>
-
-            {%- if block.settings.product_name != blank -%}
-              <span class="reviews-acs__product">Purchased: {{ block.settings.product_name }}</span>
-            {%- endif -%}
-          </div>
-        {%- endfor -%}
-      </div>
-    {%- endif -%}
-  </div>
-</section>
+  </section>
+{%- endif -%}
 
 {% schema %}
 {
-  "name": "Customer Reviews",
+  "name": "ACS Reviews",
   "tag": "section",
-  "class": "reviews-acs-section",
+  "class": "shopify-section--acs-reviews",
   "settings": [
     {
       "type": "text",
@@ -230,14 +92,20 @@
       "type": "text",
       "id": "subtitle",
       "label": "Subtitle",
-      "default": "Real stories from real customers"
+      "default": "Real stories from real customers."
     },
     {
       "type": "checkbox",
       "id": "enable_judgeme",
-      "label": "Enable Judge.me widget",
+      "label": "Show Judge.me widget container",
       "default": false,
-      "info": "Install the Judge.me app from Shopify to enable dynamic reviews"
+      "info": "Install Judge.me and enable its app embed before turning this on."
+    },
+    {
+      "type": "text",
+      "id": "purchased_prefix",
+      "label": "Purchased product prefix",
+      "default": "Purchased:"
     }
   ],
   "blocks": [
@@ -258,14 +126,15 @@
           "default": "Mumbai"
         },
         {
-          "type": "image_picker",
-          "id": "avatar",
-          "label": "Photo (optional)"
+          "type": "text",
+          "id": "verified_label",
+          "label": "Verified label",
+          "default": "Verified purchase"
         },
         {
           "type": "range",
           "id": "rating",
-          "label": "Stars",
+          "label": "Rating",
           "min": 1,
           "max": 5,
           "default": 5
@@ -285,9 +154,10 @@
       ]
     }
   ],
+  "max_blocks": 9,
   "presets": [
     {
-      "name": "Customer Reviews",
+      "name": "ACS Reviews",
       "blocks": [
         {
           "type": "review",
@@ -305,7 +175,7 @@
             "name": "Ananya R.",
             "location": "Bangalore",
             "rating": 5,
-            "review_text": "Ordered the mirror work dupatta and it's absolutely gorgeous. The packaging was beautiful too — felt like receiving a gift.",
+            "review_text": "Ordered the mirror work dupatta and it is absolutely gorgeous. The packaging was beautiful too and felt like receiving a gift.",
             "product_name": "Kutchi Mirror Work Dupatta"
           }
         },
@@ -321,7 +191,6 @@
         }
       ]
     }
-  ],
-  "max_blocks": 9
+  ]
 }
 {% endschema %}

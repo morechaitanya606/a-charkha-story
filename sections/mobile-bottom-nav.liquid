@@ -1,0 +1,141 @@
+{% comment %}
+  Acharkhastory mobile bottom navigation.
+  Global mobile tab bar for Home, Search, Wishlist, Cart, and Account.
+{% endcomment %}
+
+{%- if section.settings.enabled -%}
+  <nav class="acs-bottom-nav" aria-label="{{ section.settings.aria_label | escape }}">
+    <ul class="acs-bottom-nav__list" role="list">
+      <li>
+        <a class="acs-bottom-nav__link{% if request.page_type == 'index' %} is-active{% endif %}" href="{{ routes.root_url }}"{% if request.page_type == 'index' %} aria-current="page"{% endif %}>
+          <span class="acs-bottom-nav__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M3 11l9-8 9 8"/>
+              <path d="M5 10v10h14V10"/>
+              <path d="M9 20v-6h6v6"/>
+            </svg>
+          </span>
+          <span>{{ section.settings.home_label | escape }}</span>
+        </a>
+      </li>
+
+      <li>
+        <a class="acs-bottom-nav__link{% if request.page_type == 'search' %} is-active{% endif %}" href="{{ routes.search_url }}"{% if request.page_type == 'search' %} aria-current="page"{% endif %}>
+          <span class="acs-bottom-nav__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <circle cx="11" cy="11" r="7"/>
+              <path d="M16.5 16.5L21 21"/>
+            </svg>
+          </span>
+          <span>{{ section.settings.search_label | escape }}</span>
+        </a>
+      </li>
+
+      <li>
+        <a class="acs-bottom-nav__link" href="{{ section.settings.wishlist_link | default: routes.root_url }}">
+          <span class="acs-bottom-nav__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/>
+            </svg>
+          </span>
+          <span>{{ section.settings.wishlist_label | escape }}</span>
+        </a>
+      </li>
+
+      <li>
+        <a class="acs-bottom-nav__link{% if request.page_type == 'cart' %} is-active{% endif %}" href="{{ routes.cart_url }}"{% if request.page_type == 'cart' %} aria-current="page"{% endif %}>
+          <span class="acs-bottom-nav__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M6 6h15l-2 9H8L6 6z"/>
+              <path d="M6 6L5 3H2"/>
+              <circle cx="9" cy="20" r="1.5"/>
+              <circle cx="18" cy="20" r="1.5"/>
+            </svg>
+            {%- if cart.item_count > 0 -%}
+              <span class="acs-bottom-nav__badge" data-cart-count aria-live="polite">{{ cart.item_count }}</span>
+            {%- endif -%}
+          </span>
+          <span>{{ section.settings.cart_label | escape }}</span>
+        </a>
+      </li>
+
+      <li>
+        <a
+          class="acs-bottom-nav__link{% if request.page_type contains 'customers' %} is-active{% endif %}"
+          href="{{ routes.account_url }}"
+          {% if request.page_type contains 'customers' %} aria-current="page"{% endif %}
+        >
+          <span class="acs-bottom-nav__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 21c1.8-4 4.5-6 8-6s6.2 2 8 6"/>
+            </svg>
+          </span>
+          <span>{{ section.settings.account_label | escape }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "ACS Mobile Bottom Nav",
+  "tag": "section",
+  "class": "shopify-section--acs-mobile-bottom-nav",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Enable mobile bottom nav",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Accessible label",
+      "default": "Mobile navigation"
+    },
+    {
+      "type": "text",
+      "id": "home_label",
+      "label": "Home label",
+      "default": "Home"
+    },
+    {
+      "type": "text",
+      "id": "search_label",
+      "label": "Search label",
+      "default": "Search"
+    },
+    {
+      "type": "text",
+      "id": "wishlist_label",
+      "label": "Wishlist label",
+      "default": "Wishlist"
+    },
+    {
+      "type": "url",
+      "id": "wishlist_link",
+      "label": "Wishlist link"
+    },
+    {
+      "type": "text",
+      "id": "cart_label",
+      "label": "Cart label",
+      "default": "Cart"
+    },
+    {
+      "type": "text",
+      "id": "account_label",
+      "label": "Account label",
+      "default": "Account"
+    }
+  ],
+  "presets": [
+    {
+      "name": "ACS Mobile Bottom Nav"
+    }
+  ]
+}
+{% endschema %}

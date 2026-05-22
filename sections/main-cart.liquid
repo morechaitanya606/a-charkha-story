@@ -46,6 +46,7 @@
 
       {%- unless cart.empty? -%}
         <div class="cart-page__summary">
+          {% render 'acs-cart-enhancements' %}
           {%- content_for 'block', id: 'cart-page-summary', type: '_cart-summary' -%}
         </div>
       {%- endunless -%}
@@ -188,6 +189,15 @@
       "id": "color_scheme",
       "label": "t:settings.color_scheme",
       "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "free_shipping_threshold",
+      "label": "Free shipping threshold",
+      "min": 499,
+      "max": 9999,
+      "step": 100,
+      "default": 1499
     },
     {
       "type": "header",

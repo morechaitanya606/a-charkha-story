@@ -1,0 +1,72 @@
+{% comment %}
+  About Page — Founder / Team section
+  Split layout: image left, content right.
+  Usage: Include via templates/page.about.json
+{% endcomment %}
+
+<section class="acs-founder acs-section" id="about-founder">
+  <div class="acs-page-width">
+    <div class="acs-founder__layout">
+      <div class="acs-founder__image-wrap">
+        {%- if section.settings.image != blank -%}
+          {{ section.settings.image
+             | image_url: width: 900
+             | image_tag:
+               loading: 'lazy',
+               widths: '400, 600, 900',
+               sizes: '(max-width: 768px) 100vw, 50vw',
+               alt: section.settings.name | default: 'Founder of A Charkha Story' }}
+        {%- else -%}
+          <div style="width:100%;height:100%;background:var(--acs-color-surface);display:flex;align-items:center;justify-content:center;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--acs-color-muted)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="acs-founder__content">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="acs-eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+
+        <h2 class="acs-founder__name">{{ section.settings.name }}</h2>
+
+        {%- if section.settings.role != blank -%}
+          <p class="acs-founder__role">{{ section.settings.role }}</p>
+        {%- endif -%}
+
+        <div class="acs-founder__bio">
+          {{ section.settings.bio }}
+        </div>
+
+        {%- if section.settings.cta_label != blank -%}
+          <div>
+            <a href="{{ section.settings.cta_link | default: '/collections/all' }}" class="acs-btn acs-btn--primary">
+              {{ section.settings.cta_label }}
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Founder / Team",
+  "tag": "section",
+  "class": "acs-founder-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The People Behind" },
+    { "type": "image_picker", "id": "image", "label": "Photo" },
+    { "type": "text", "id": "name", "label": "Name", "default": "The A Charkha Story Team" },
+    { "type": "text", "id": "role", "label": "Role / subtitle", "default": "Founders & Craft Curators" },
+    { "type": "richtext", "id": "bio", "label": "Bio / Story", "default": "<p>What started as a personal journey through the weaving villages of Bengal has grown into a mission to preserve India's handloom and handicraft heritage.</p><p>We work directly with over 2,300 artisans across 12 states — ensuring fair wages, creative freedom, and a direct connection between the maker and the wearer. Every product we sell carries the fingerprint of its maker and the story of its origin.</p><p>Our promise: no middlemen, no mass production, no compromise on craft.</p>" },
+    { "type": "text", "id": "cta_label", "label": "CTA label", "default": "Shop Our Collections" },
+    { "type": "url", "id": "cta_link", "label": "CTA link" }
+  ],
+  "presets": [{ "name": "Founder / Team" }]
+}
+{% endschema %}

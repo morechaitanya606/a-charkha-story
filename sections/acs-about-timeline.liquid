@@ -1,0 +1,62 @@
+{% comment %}
+  About Page — Timeline Section
+  Horizontal timeline showing brand milestones.
+  Usage: Include via templates/page.about.json
+{% endcomment %}
+
+<section class="acs-section" id="about-timeline">
+  <div class="acs-page-width">
+    <div class="acs-section-header acs-section-header--center">
+      <h2 class="acs-h2">{{ section.settings.title }}</h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="acs-section-header__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="acs-timeline__track">
+      {%- for block in section.blocks -%}
+        <div class="acs-timeline__milestone" {{ block.shopify_attributes }}>
+          <span class="acs-timeline__year">{{ block.settings.year }}</span>
+          <h3 class="acs-timeline__title">{{ block.settings.title }}</h3>
+          {%- if block.settings.description != blank -%}
+            <p class="acs-timeline__desc">{{ block.settings.description }}</p>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Timeline",
+  "tag": "section",
+  "class": "acs-about-timeline-section",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "title", "label": "Heading", "default": "Our Journey" },
+    { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "From a single loom to a community of 2,300+ artisans." }
+  ],
+  "blocks": [
+    {
+      "type": "milestone",
+      "name": "Milestone",
+      "settings": [
+        { "type": "text", "id": "year", "label": "Year", "default": "2020" },
+        { "type": "text", "id": "title", "label": "Title", "default": "The Seed" },
+        { "type": "textarea", "id": "description", "label": "Description", "default": "A visit to the weavers of Shantipur planted the idea for A Charkha Story." }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "About Timeline",
+    "blocks": [
+      { "type": "milestone", "settings": { "year": "2020", "title": "The Seed", "description": "A visit to the weavers of Shantipur planted the idea for A Charkha Story." }},
+      { "type": "milestone", "settings": { "year": "2021", "title": "First Collection", "description": "Our debut collection of handwoven muslin sarees reached 500 customers across India." }},
+      { "type": "milestone", "settings": { "year": "2022", "title": "Artisan Network Grows", "description": "Expanded to work with 40+ artisan cooperatives across 12 Indian states." }},
+      { "type": "milestone", "settings": { "year": "2023", "title": "2,300+ Artisans", "description": "Today we support over 2,300 artisan families and continue to grow." }},
+      { "type": "milestone", "settings": { "year": "2024", "title": "Full Category Range", "description": "Womenswear, menswear, accessories, bags, and home — all handcrafted." }}
+    ]
+  }]
+}
+{% endschema %}

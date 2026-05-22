@@ -1,276 +1,137 @@
 {% comment %}
-  ACHARKHASTORY — Product Card (ACS)
-  Reusable across carousels and grids.
-  Expects: product, show_badge, show_craft_tag, card_index
+  Acharkhastory product card.
+  Accepts:
+  - product
+  - show_badge
+  - show_craft_tag
+  - show_quick_add
+  - show_wishlist
+  - card_index
+  - sale_label, new_label, bestseller_label, wishlist_label, add_label, select_label, sold_out_label
 {% endcomment %}
 
 {% liquid
   assign show_badge = show_badge | default: true
   assign show_craft_tag = show_craft_tag | default: true
+  assign show_quick_add = show_quick_add | default: true
+  assign show_wishlist = show_wishlist | default: true
   assign card_index = card_index | default: 0
+  assign sale_label = sale_label | default: 'Sale'
+  assign new_label = new_label | default: 'New'
+  assign bestseller_label = bestseller_label | default: 'Bestseller'
+  assign wishlist_label = wishlist_label | default: 'Add to wishlist'
+  assign add_label = add_label | default: 'Add to Bag'
+  assign select_label = select_label | default: 'Select Options'
+  assign sold_out_label = sold_out_label | default: 'Sold Out'
+  assign loading = 'lazy'
+
+  if card_index == 1
+    assign loading = 'eager'
+  endif
 %}
 
-<style>
-  .product-card-acs {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
-    color: inherit;
-  }
+{%- if product != blank -%}
+  <article class="product-card-acs acs-card-lift acs-reveal" data-product-id="{{ product.id }}" data-acs-delay="{{ card_index }}">
+    <div class="product-card-acs__media">
+      <a href="{{ product.url }}" class="product-card-acs__media-link" aria-label="{{ product.title | escape }}">
+        {%- if product.featured_image != blank -%}
+          <img
+            class="product-card-acs__img product-card-acs__img--primary"
+            src="{{ product.featured_image | image_url: width: 600 }}"
+            srcset="{{ product.featured_image | image_url: width: 300 }} 300w, {{ product.featured_image | image_url: width: 600 }} 600w, {{ product.featured_image | image_url: width: 900 }} 900w"
+            sizes="(max-width: 768px) 50vw, 280px"
+            alt="{{ product.featured_image.alt | default: product.title | escape }}"
+            loading="{{ loading }}"
+            width="{{ product.featured_image.width }}"
+            height="{{ product.featured_image.height }}"
+          >
 
-  .product-card-acs__media {
-    position: relative;
-    overflow: hidden;
-    border-radius: var(--acs-r-sm);
-    aspect-ratio: 2 / 3;
-    background: var(--acs-cream);
-  }
-
-  .product-card-acs__img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: opacity 0.35s var(--acs-ease);
-  }
-
-  .product-card-acs__img--hover {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-  }
-
-  .product-card-acs:hover .product-card-acs__img--hover {
-    opacity: 1;
-  }
-
-  .product-card-acs:hover .product-card-acs__img--primary {
-    opacity: 0;
-  }
-
-  .product-card-acs__badge {
-    position: absolute;
-    top: var(--acs-sp-sm);
-    left: var(--acs-sp-sm);
-    z-index: 2;
-  }
-
-  .product-card-acs__wishlist {
-    position: absolute;
-    top: var(--acs-sp-sm);
-    right: var(--acs-sp-sm);
-    z-index: 2;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(255, 255, 255, 0.85);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity var(--acs-duration) var(--acs-ease);
-  }
-
-  .product-card-acs:hover .product-card-acs__wishlist {
-    opacity: 1;
-  }
-
-  .product-card-acs__wishlist svg {
-    width: 18px;
-    height: 18px;
-    fill: none;
-    stroke: var(--acs-primary);
-    stroke-width: 2;
-  }
-
-  /* Quick add */
-  .product-card-acs__quick-add {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 2;
-    padding: var(--acs-sp-sm);
-    transform: translateY(100%);
-    transition: transform 0.3s var(--acs-ease);
-  }
-
-  .product-card-acs:hover .product-card-acs__quick-add {
-    transform: translateY(0);
-  }
-
-  .product-card-acs__add-btn {
-    width: 100%;
-    font-family: var(--acs-font-body);
-    font-size: var(--acs-fs-btn);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    background: var(--acs-primary);
-    color: var(--acs-ivory);
-    border: none;
-    border-radius: var(--acs-r-sm);
-    padding: 10px 16px;
-    cursor: pointer;
-    transition: background var(--acs-duration) var(--acs-ease);
-  }
-
-  .product-card-acs__add-btn:hover {
-    background: var(--acs-secondary);
-  }
-
-  /* Info */
-  .product-card-acs__info {
-    padding-top: var(--acs-sp-sm);
-    display: flex;
-    flex-direction: column;
-    gap: var(--acs-sp-xxs);
-  }
-
-  .product-card-acs__craft-tag {
-    font-family: var(--acs-font-body);
-    font-size: var(--acs-fs-badge);
-    color: var(--acs-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 500;
-  }
-
-  .product-card-acs__title {
-    font-family: var(--acs-font-body);
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--acs-primary);
-    line-height: 1.4;
-    margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .product-card-acs__price-row {
-    display: flex;
-    align-items: center;
-    gap: var(--acs-sp-xs);
-    font-family: var(--acs-font-body);
-    font-size: 14px;
-  }
-
-  .product-card-acs__price {
-    font-weight: 500;
-    color: var(--acs-primary);
-  }
-
-  .product-card-acs__price--sale {
-    color: var(--acs-sale);
-  }
-
-  .product-card-acs__compare {
-    color: var(--acs-text-muted);
-    text-decoration: line-through;
-    font-weight: 400;
-    font-size: 13px;
-  }
-
-  /* Mobile tweaks */
-  @media (max-width: 768px) {
-    .product-card-acs__wishlist {
-      opacity: 1;
-      width: 32px;
-      height: 32px;
-    }
-
-    .product-card-acs__quick-add {
-      display: none;
-    }
-  }
-</style>
-
-<div class="product-card-acs" data-product-id="{{ product.id }}">
-  <a href="{{ product.url }}" class="product-card-acs__media" aria-label="{{ product.title }}">
-    {%- if product.featured_image -%}
-      <img
-        class="product-card-acs__img product-card-acs__img--primary"
-        src="{{ product.featured_image | image_url: width: 600 }}"
-        srcset="
-          {{ product.featured_image | image_url: width: 400 }} 400w,
-          {{ product.featured_image | image_url: width: 600 }} 600w
-        "
-        sizes="(max-width: 768px) 50vw, 280px"
-        alt="{{ product.featured_image.alt | default: product.title | escape }}"
-        loading="lazy"
-        width="600"
-        height="900"
-      >
-
-      {%- if product.images.size > 1 -%}
-        <img
-          class="product-card-acs__img product-card-acs__img--hover"
-          src="{{ product.images[1] | image_url: width: 600 }}"
-          alt="{{ product.images[1].alt | default: product.title | escape }}"
-          loading="lazy"
-          width="600"
-          height="900"
-        >
-      {%- endif -%}
-    {%- else -%}
-      {{ 'product-1' | placeholder_svg_tag }}
-    {%- endif -%}
-
-    {%- if show_badge -%}
-      {%- if product.compare_at_price > product.price -%}
-        <span class="product-card-acs__badge acs-badge acs-badge--sale">Sale</span>
-      {%- elsif product.tags contains 'new' -%}
-        <span class="product-card-acs__badge acs-badge acs-badge--new">New</span>
-      {%- elsif product.tags contains 'bestseller' -%}
-        <span class="product-card-acs__badge acs-badge acs-badge--bestseller">Bestseller</span>
-      {%- endif -%}
-    {%- endif -%}
-
-    <button class="product-card-acs__wishlist" aria-label="Add to wishlist">
-      <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-    </button>
-
-    <div class="product-card-acs__quick-add">
-      {%- if product.available -%}
-        {%- if product.variants.size == 1 -%}
-          <form action="/cart/add" method="post">
-            <input type="hidden" name="id" value="{{ product.variants.first.id }}">
-            <button type="submit" class="product-card-acs__add-btn">Add to Bag</button>
-          </form>
+          {%- if product.images.size > 1 -%}
+            <img
+              class="product-card-acs__img product-card-acs__img--hover"
+              src="{{ product.images[1] | image_url: width: 600 }}"
+              srcset="{{ product.images[1] | image_url: width: 300 }} 300w, {{ product.images[1] | image_url: width: 600 }} 600w"
+              sizes="(max-width: 768px) 50vw, 280px"
+              alt="{{ product.images[1].alt | default: product.title | escape }}"
+              loading="lazy"
+              width="{{ product.images[1].width }}"
+              height="{{ product.images[1].height }}"
+            >
+          {%- endif -%}
         {%- else -%}
-          <a href="{{ product.url }}" class="product-card-acs__add-btn" style="display:block;text-align:center;text-decoration:none;">Select Options</a>
+          {{ 'product-1' | placeholder_svg_tag }}
         {%- endif -%}
-      {%- else -%}
-        <button class="product-card-acs__add-btn" disabled style="opacity: 0.5;">Sold Out</button>
+      </a>
+
+      {%- if show_badge -%}
+        {%- if product.compare_at_price > product.price -%}
+          <span class="product-card-acs__badge acs-badge acs-badge--sale">{{ sale_label | escape }}</span>
+        {%- elsif product.tags contains 'new' -%}
+          <span class="product-card-acs__badge acs-badge acs-badge--new">{{ new_label | escape }}</span>
+        {%- elsif product.tags contains 'bestseller' -%}
+          <span class="product-card-acs__badge acs-badge acs-badge--bestseller">
+            {{ bestseller_label | escape }}
+          </span>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- if show_wishlist -%}
+        <button
+          class="product-card-acs__wishlist"
+          type="button"
+          aria-label="{{ wishlist_label | escape }}"
+          data-product-handle="{{ product.handle }}"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </button>
+      {%- endif -%}
+
+      {%- if show_quick_add -%}
+        <div class="product-card-acs__quick-add">
+          {%- if product.available -%}
+            {%- if product.variants.size == 1 -%}
+              <form action="{{ routes.cart_add_url }}" method="post" data-acs-ajax-add>
+                <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                <button type="submit" class="product-card-acs__add-btn" aria-label="Add {{ product.title | escape }} to bag">{{ add_label | escape }}</button>
+              </form>
+            {%- else -%}
+              <a href="{{ product.url }}" class="product-card-acs__add-btn">{{ select_label | escape }}</a>
+            {%- endif -%}
+          {%- else -%}
+            <button class="product-card-acs__add-btn" type="button" disabled>
+              {{ sold_out_label | escape }}
+            </button>
+          {%- endif -%}
+        </div>
       {%- endif -%}
     </div>
-  </a>
 
-  <div class="product-card-acs__info">
-    {%- if show_craft_tag -%}
-      {%- for tag in product.tags -%}
-        {%- if tag contains 'craft_' -%}
-          <span class="product-card-acs__craft-tag">{{ tag | remove: 'craft_' | replace: '-', ' ' }}</span>
-          {%- break -%}
-        {%- endif -%}
-      {%- endfor -%}
-    {%- endif -%}
-
-    <a href="{{ product.url }}" class="product-card-acs__title-link" style="text-decoration:none;">
-      <h3 class="product-card-acs__title">{{ product.title }}</h3>
-    </a>
-
-    <div class="product-card-acs__price-row">
-      {%- if product.compare_at_price > product.price -%}
-        <span class="product-card-acs__price product-card-acs__price--sale">{{ product.price | money }}</span>
-        <span class="product-card-acs__compare">{{ product.compare_at_price | money }}</span>
-      {%- else -%}
-        <span class="product-card-acs__price">{{ product.price | money }}</span>
+    <div class="product-card-acs__info">
+      {%- if show_craft_tag -%}
+        {%- for tag in product.tags -%}
+          {%- if tag contains 'craft_' -%}
+            <span class="product-card-acs__craft-tag">
+              {{ tag | remove: 'craft_' | replace: '-', ' ' | escape }}
+            </span>
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
       {%- endif -%}
+
+      <a href="{{ product.url }}" class="product-card-acs__title-link">
+        <h3 class="product-card-acs__title">{{ product.title | escape }}</h3>
+      </a>
+
+      <div class="product-card-acs__price-row">
+        {%- if product.compare_at_price > product.price -%}
+          <span class="product-card-acs__price product-card-acs__price--sale">{{ product.price | money }}</span>
+          <span class="product-card-acs__compare">{{ product.compare_at_price | money }}</span>
+        {%- else -%}
+          <span class="product-card-acs__price">{{ product.price | money }}</span>
+        {%- endif -%}
+      </div>
     </div>
-  </div>
-</div>
+  </article>
+{%- endif -%}

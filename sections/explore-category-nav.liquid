@@ -1,0 +1,148 @@
+{% comment %}
+  Acharkhastory — Explore category navigation
+  Sticky horizontal category tab bar with pill-shaped links.
+  Mobile: horizontally scrollable. Desktop: centered.
+{% endcomment %}
+
+{%- if section.blocks.size > 0 -%}
+<nav class="acs-explore-nav" aria-label="{{ section.settings.aria_label | default: 'Explore categories' }}">
+  <div class="acs-explore-nav__track">
+    {%- for block in section.blocks -%}
+      <a
+        href="{{ block.settings.link | default: '#' }}"
+        class="acs-explore-nav__pill{% if forloop.first %} is-active{% endif %}"
+        {{ block.shopify_attributes }}
+      >
+        {{ block.settings.label }}
+      </a>
+    {%- endfor -%}
+  </div>
+</nav>
+{%- endif -%}
+
+<style>
+  .acs-explore-nav {
+    position: sticky;
+    top: var(--header-height, 72px);
+    z-index: var(--acs-z-sticky, 50);
+    background: rgb(var(--acs-color-background-rgb, 253 246 238) / 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--acs-border, #ead9c4);
+  }
+
+  .acs-explore-nav__track {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--acs-sp-xs, 0.5rem);
+    max-width: var(--acs-container, 1280px);
+    margin-inline: auto;
+    padding: var(--acs-sp-sm, 0.75rem) var(--acs-edge, 5rem);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .acs-explore-nav__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .acs-explore-nav__pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    padding: 0 var(--acs-sp-lg, 1.5rem);
+    border: 1px solid var(--acs-border, #ead9c4);
+    border-radius: var(--acs-r-full, 999px);
+    background: transparent;
+    color: var(--acs-primary, #3d2210);
+    font-family: var(--acs-font-body, 'DM Sans', sans-serif);
+    font-size: var(--acs-type-caption, 0.75rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background var(--acs-duration, 220ms) var(--acs-ease, ease),
+      border-color var(--acs-duration, 220ms) var(--acs-ease, ease),
+      color var(--acs-duration, 220ms) var(--acs-ease, ease),
+      transform var(--acs-duration, 220ms) var(--acs-ease, ease);
+  }
+
+  .acs-explore-nav__pill:hover {
+    background: var(--acs-cream, #f5e6d0);
+    border-color: var(--acs-secondary, #7b4b2a);
+    transform: translateY(-1px);
+  }
+
+  .acs-explore-nav__pill.is-active {
+    background: var(--acs-primary, #3d2210);
+    border-color: var(--acs-primary, #3d2210);
+    color: var(--acs-bg, #fdf6ee);
+  }
+
+  @media (max-width: 749px) {
+    .acs-explore-nav__track {
+      justify-content: flex-start;
+      padding: var(--acs-sp-xs, 0.5rem) var(--acs-edge-m, 1.25rem);
+    }
+
+    .acs-explore-nav__pill {
+      height: 32px;
+      padding: 0 var(--acs-sp-md, 1rem);
+      font-size: var(--acs-type-micro, 0.6875rem);
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Explore Category Nav",
+  "tag": "section",
+  "class": "acs-explore-nav-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Aria label",
+      "default": "Explore categories"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category_link",
+      "name": "Category link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Category"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Explore Category Nav",
+      "blocks": [
+        { "type": "category_link", "settings": { "label": "All", "link": "/pages/explore" } },
+        { "type": "category_link", "settings": { "label": "Sarees", "link": "/collections/sarees" } },
+        { "type": "category_link", "settings": { "label": "Kurtis", "link": "/collections/kurtis" } },
+        { "type": "category_link", "settings": { "label": "Clothing", "link": "/collections/clothing" } },
+        { "type": "category_link", "settings": { "label": "Accessories", "link": "/collections/accessories" } },
+        { "type": "category_link", "settings": { "label": "Home", "link": "/collections/home" } },
+        { "type": "category_link", "settings": { "label": "Sale", "link": "/collections/sale" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

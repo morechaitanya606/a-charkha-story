@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "shopify theme dev"
+    "dev": "shopify theme dev",
+    "preview:local": "node scripts/local-preview-server.mjs"
   },
   "repository": {
     "type": "git",
@@ -17,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/morechaitanya606/a-charkha-story/issues"
   },
-  "homepage": "https://github.com/morechaitanya606/a-charkha-story#readme"
+  "homepage": "https://github.com/morechaitanya606/a-charkha-story#readme",
+  "devDependencies": {
+    "@shopify/cli": "^3.94.3"
+  }
 }

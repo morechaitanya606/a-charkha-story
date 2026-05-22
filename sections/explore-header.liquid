@@ -21,8 +21,10 @@
     position: absolute;
     inset: 0;
     opacity: 0.08;
-    background-image: url('{{ "block-print-texture.png" | asset_url }}');
-    background-size: 400px;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgb(var(--acs-color-primary-rgb) / 0.45) 1px, transparent 0),
+      radial-gradient(circle at 13px 13px, rgb(var(--acs-color-primary-rgb) / 0.28) 1px, transparent 0);
+    background-size: 24px 24px;
     background-repeat: repeat;
     pointer-events: none;
   }

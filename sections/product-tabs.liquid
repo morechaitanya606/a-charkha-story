@@ -1,259 +1,244 @@
 {% comment %}
-  ACHARKHASTORY — Product Detail Tabs
-  3 accordion tabs below split panel: Description, Size Guide, Shipping & Returns.
-  Description open by default; others collapsed.
+  Acharkhastory product tabs
+  Full PDP accordion set: Description, Fabric & Care, Size Guide, Craft Story, and Shipping & Returns.
 {% endcomment %}
 
-{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+{% liquid
+  assign heading = section.settings.heading | strip
+  assign subheading = section.settings.subheading | strip
+%}
 
-<style>
-  .pdp-tabs {
-    max-width: var(--acs-container);
-    margin-inline: auto;
-    padding-inline: var(--acs-edge);
-    padding-block: var(--acs-sp-2xl);
-    border-top: 1px solid var(--acs-border);
-  }
+{{ 'product-tabs.css' | asset_url | stylesheet_tag }}
 
-  .pdp-tabs__item {
-    border-bottom: 1px solid var(--acs-border);
-  }
+<section class="acs-pdp-tabs" id="ProductTabs-{{ section.id }}">
+  <div class="acs-pdp-tabs__inner acs-page-width">
+    {%- if heading != blank or subheading != blank -%}
+      <header class="acs-pdp-tabs__header">
+        {%- if heading != blank -%}
+          <h2 class="acs-pdp-tabs__heading">{{ heading | escape }}</h2>
+        {%- endif -%}
+        {%- if subheading != blank -%}
+          <p class="acs-pdp-tabs__subheading">{{ subheading | escape }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
 
-  .pdp-tabs__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: var(--acs-sp-lg) 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: var(--acs-font-body);
-    font-size: 13px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--acs-text-muted);
-    transition: color var(--acs-duration) var(--acs-ease);
-  }
+    <div class="acs-pdp-tabs__list">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign tab_title = block.settings.title | default: block.type
+          assign is_open = false
+          if block.settings.open_by_default or forloop.first
+            assign is_open = true
+          endif
+        -%}
 
-  .pdp-tabs__header:hover {
-    color: var(--acs-primary);
-  }
+        <details class="acs-pdp-tabs__item" {% if is_open %}open{% endif %} {{ block.shopify_attributes }}>
+          <summary class="acs-pdp-tabs__summary">
+            <span>{{ tab_title | escape }}</span>
+            <span class="acs-pdp-tabs__summary-icon" aria-hidden="true"></span>
+          </summary>
 
-  .pdp-tabs__header[aria-expanded="true"] {
-    color: var(--acs-primary);
-    border-bottom: 2px solid var(--acs-secondary);
-    padding-bottom: calc(var(--acs-sp-lg) - 2px);
-  }
+          <div class="acs-pdp-tabs__panel">
+            {%- case block.type -%}
+              {%- when 'description' -%}
+                <div class="acs-pdp-tabs__rte">
+                  {%- if product != blank and product.description != blank -%}
+                    {{ product.description }}
+                  {%- else -%}
+                    {{ block.settings.fallback_content }}
+                  {%- endif -%}
+                </div>
 
-  .pdp-tabs__icon {
-    width: 20px;
-    height: 20px;
-    transition: transform 0.3s var(--acs-ease);
-    flex-shrink: 0;
-  }
+              {%- when 'fabric_care' -%}
+                {%- liquid
+                  assign fabric_value = product.metafields.custom.fabric.value | default: product.metafields.custom.fabric | default: block.settings.fabric
+                  assign care_value = product.metafields.custom.wash_care.value | default: product.metafields.custom.care.value | default: block.settings.care
+                  assign fit_value = product.metafields.custom.fit.value | default: block.settings.fit
+                  assign origin_value = product.metafields.custom.origin.value | default: product.metafields.custom.artisan_region.value | default: block.settings.origin
+                -%}
 
-  .pdp-tabs__header[aria-expanded="true"] .pdp-tabs__icon {
-    transform: rotate(180deg);
-  }
+                <dl class="acs-pdp-tabs__meta-grid">
+                  {%- if fabric_value != blank -%}
+                    <div class="acs-pdp-tabs__meta-card">
+                      <dt>{{ block.settings.fabric_label | escape }}</dt>
+                      <dd>{{ fabric_value }}</dd>
+                    </div>
+                  {%- endif -%}
+                  {%- if care_value != blank -%}
+                    <div class="acs-pdp-tabs__meta-card">
+                      <dt>{{ block.settings.care_label | escape }}</dt>
+                      <dd>{{ care_value }}</dd>
+                    </div>
+                  {%- endif -%}
+                  {%- if fit_value != blank -%}
+                    <div class="acs-pdp-tabs__meta-card">
+                      <dt>{{ block.settings.fit_label | escape }}</dt>
+                      <dd>{{ fit_value }}</dd>
+                    </div>
+                  {%- endif -%}
+                  {%- if origin_value != blank -%}
+                    <div class="acs-pdp-tabs__meta-card">
+                      <dt>{{ block.settings.origin_label | escape }}</dt>
+                      <dd>{{ origin_value }}</dd>
+                    </div>
+                  {%- endif -%}
+                </dl>
 
-  .pdp-tabs__icon svg {
-    width: 100%;
-    height: 100%;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
+                {%- if block.settings.care_content != blank -%}
+                  <div class="acs-pdp-tabs__rte">{{ block.settings.care_content }}</div>
+                {%- endif -%}
 
-  .pdp-tabs__content {
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.35s var(--acs-ease);
-  }
+                {%- if block.settings.handmade_note != blank -%}
+                  <p class="acs-pdp-tabs__note">{{ block.settings.handmade_note | escape }}</p>
+                {%- endif -%}
 
-  .pdp-tabs__content.is-open {
-    max-height: 1000px;
-  }
+              {%- when 'size_guide' -%}
+                {%- liquid
+                  capture newline
 
-  .pdp-tabs__body {
-    padding-bottom: var(--acs-sp-lg);
-    font-family: var(--acs-font-body);
-    font-size: var(--acs-fs-body);
-    font-weight: 400;
-    line-height: 1.8;
-    color: var(--acs-text);
-  }
+                  endcapture
+                  assign size_columns = block.settings.size_columns | split: '|'
+                  assign size_rows = block.settings.size_rows | strip | split: newline
+                -%}
 
-  .pdp-tabs__body ul {
-    list-style: none;
-    padding: 0;
-    margin: var(--acs-sp-md) 0 0;
-  }
+                <div class="acs-pdp-tabs__size-layout">
+                  <div>
+                    {%- if block.settings.intro != blank -%}
+                      <div class="acs-pdp-tabs__rte">{{ block.settings.intro }}</div>
+                    {%- endif -%}
 
-  .pdp-tabs__body ul li {
-    padding: var(--acs-sp-xxs) 0;
-    position: relative;
-    padding-left: 20px;
-  }
+                    <div class="acs-pdp-tabs__table-wrap">
+                      <table class="acs-pdp-tabs__table">
+                        <thead>
+                          <tr>
+                            {%- for column in size_columns -%}
+                              {%- if column != blank -%}
+                                <th scope="col">{{ column | strip | escape }}</th>
+                              {%- endif -%}
+                            {%- endfor -%}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {%- for row in size_rows -%}
+                            {%- assign clean_row = row | strip -%}
+                            {%- if clean_row != blank -%}
+                              {%- assign cells = clean_row | split: '|' -%}
+                              <tr>
+                                {%- for cell in cells -%}
+                                  <td>{{ cell | strip | escape }}</td>
+                                {%- endfor -%}
+                              </tr>
+                            {%- endif -%}
+                          {%- endfor -%}
+                        </tbody>
+                      </table>
+                    </div>
 
-  .pdp-tabs__body ul li::before {
-    content: '·';
-    position: absolute;
-    left: 0;
-    color: var(--acs-secondary);
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 1.4;
-  }
+                    {%- if block.settings.note != blank -%}
+                      <p class="acs-pdp-tabs__note">{{ block.settings.note | escape }}</p>
+                    {%- endif -%}
+                  </div>
 
-  /* Size chart table */
-  .pdp-tabs__size-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: var(--acs-sp-md) 0;
-    font-size: 13px;
-  }
+                  <aside class="acs-pdp-tabs__measure">
+                    <div class="acs-pdp-tabs__measure-image">
+                      {%- if block.settings.measurement_image != blank -%}
+                        {{
+                          block.settings.measurement_image
+                          | image_url: width: 600
+                          | image_tag:
+                            loading: 'lazy',
+                            widths: '300, 450, 600',
+                            sizes: '(min-width: 990px) 320px, 100vw',
+                            alt: block.settings.measurement_image_alt,
+                            width: 600,
+                            height: 750
+                        }}
+                      {%- else -%}
+                        <div class="acs-pdp-tabs__measure-placeholder">{{ block.settings.measurement_placeholder | escape }}</div>
+                      {%- endif -%}
+                    </div>
 
-  .pdp-tabs__size-table th {
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-size: 11px;
-    color: var(--acs-text-muted);
-    padding: var(--acs-sp-sm);
-    border-bottom: 1px solid var(--acs-border);
-    text-align: left;
-  }
+                    {%- if block.settings.measurement_text != blank -%}
+                      <div class="acs-pdp-tabs__rte">{{ block.settings.measurement_text }}</div>
+                    {%- endif -%}
+                  </aside>
+                </div>
 
-  .pdp-tabs__size-table td {
-    padding: var(--acs-sp-sm);
-    border-bottom: 1px solid var(--acs-border);
-    color: var(--acs-text);
-  }
+              {%- when 'craft_story' -%}
+                {%- liquid
+                  assign craft_type = product.metafields.custom.craft_type.value | default: product.metafields.custom.artisan_craft.value | default: product.type | default: block.settings.craft_type
+                  assign craft_region = product.metafields.custom.artisan_region.value | default: block.settings.region
+                  assign artisan_name = product.metafields.custom.artisan_name.value | default: product.vendor | default: block.settings.artisan_name
+                  assign craft_link = product.metafields.custom.artisan_link.value | default: block.settings.link
+                -%}
 
-  .pdp-tabs__size-table tr:hover td {
-    background: var(--acs-cream);
-  }
+                <article class="acs-pdp-tabs__story-card">
+                  <div class="acs-pdp-tabs__story-meta">
+                    {%- if craft_type != blank -%}
+                      <span class="acs-pdp-tabs__pill">{{ craft_type }}</span>
+                    {%- endif -%}
+                    {%- if craft_region != blank -%}
+                      <span class="acs-pdp-tabs__pill">{{ craft_region }}</span>
+                    {%- endif -%}
+                    {%- if artisan_name != blank -%}
+                      <span class="acs-pdp-tabs__pill">{{ artisan_name }}</span>
+                    {%- endif -%}
+                  </div>
 
-  .pdp-tabs__note {
-    font-size: 13px;
-    color: var(--acs-text-muted);
-    font-style: italic;
-    margin-top: var(--acs-sp-md);
-  }
+                  <div class="acs-pdp-tabs__rte">
+                    {%- if block.settings.story != blank -%}
+                      {{ block.settings.story }}
+                    {%- else -%}
+                      <p>{{ block.settings.fallback_story | escape }}</p>
+                    {%- endif -%}
+                  </div>
 
-  /* Unit toggle */
-  .pdp-tabs__unit-toggle {
-    display: inline-flex;
-    border: 1px solid var(--acs-border);
-    border-radius: var(--acs-r-sm);
-    overflow: hidden;
-    margin-bottom: var(--acs-sp-md);
-  }
+                  {%- if craft_link != blank -%}
+                    <a class="acs-pdp-tabs__story-link" href="{{ craft_link }}">{{ block.settings.link_label | escape }}</a>
+                  {%- endif -%}
+                </article>
 
-  .pdp-tabs__unit-btn {
-    padding: 6px 16px;
-    font-family: var(--acs-font-body);
-    font-size: 12px;
-    border: none;
-    cursor: pointer;
-    background: transparent;
-    color: var(--acs-text-muted);
-    transition: all var(--acs-duration) var(--acs-ease);
-  }
+              {%- when 'shipping_returns' -%}
+                <div class="acs-pdp-tabs__shipping-grid">
+                  <div class="acs-pdp-tabs__rte">
+                    {{ block.settings.shipping_content }}
+                  </div>
+                  <div class="acs-pdp-tabs__rte">
+                    {{ block.settings.returns_content }}
+                  </div>
+                </div>
 
-  .pdp-tabs__unit-btn.is-active {
-    background: var(--acs-primary);
-    color: var(--acs-ivory);
-  }
-
-  @media (max-width: 768px) {
-    .pdp-tabs {
-      padding-inline: var(--acs-edge-m);
-    }
-  }
-</style>
-
-<section class="pdp-tabs" id="pdp-tabs-{{ section.id }}">
-  {%- for block in section.blocks -%}
-    <div class="pdp-tabs__item" {{ block.shopify_attributes }}>
-      <button
-        class="pdp-tabs__header"
-        aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
-        aria-controls="tab-content-{{ block.id }}"
-        data-tab-toggle
-      >
-        <span>{{ block.settings.title }}</span>
-        <span class="pdp-tabs__icon">
-          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-        </span>
-      </button>
-      <div
-        class="pdp-tabs__content{% if forloop.first %} is-open{% endif %}"
-        id="tab-content-{{ block.id }}"
-        role="region"
-      >
-        <div class="pdp-tabs__body">
-          {%- case block.type -%}
-            {%- when 'description' -%}
-              {%- if product != blank -%}
-                {{ product.description }}
-              {%- else -%}
-                {{ block.settings.content }}
-              {%- endif -%}
-
-            {%- when 'size_guide' -%}
-              <div class="pdp-tabs__unit-toggle">
-                <button class="pdp-tabs__unit-btn is-active" data-unit="in">Inches</button>
-                <button class="pdp-tabs__unit-btn" data-unit="cm">Centimetres</button>
-              </div>
-              {{ block.settings.content }}
-              {%- if block.settings.note != blank -%}
-                <p class="pdp-tabs__note">{{ block.settings.note }}</p>
-              {%- endif -%}
-
-            {%- when 'shipping' -%}
-              {{ block.settings.content }}
-              {%- if block.settings.handmade_note != blank -%}
-                <p class="pdp-tabs__note">{{ block.settings.handmade_note }}</p>
-              {%- endif -%}
-          {%- endcase -%}
-        </div>
-      </div>
+                {%- if block.settings.handmade_note != blank -%}
+                  <p class="acs-pdp-tabs__note">{{ block.settings.handmade_note | escape }}</p>
+                {%- endif -%}
+            {%- endcase -%}
+          </div>
+        </details>
+      {%- endfor -%}
     </div>
-  {%- endfor -%}
+  </div>
 </section>
-
-<script>
-  (function () {
-    document.querySelectorAll('[data-tab-toggle]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var expanded = this.getAttribute('aria-expanded') === 'true';
-        var content = document.getElementById(this.getAttribute('aria-controls'));
-        this.setAttribute('aria-expanded', String(!expanded));
-        content.classList.toggle('is-open', !expanded);
-      });
-    });
-
-    document.querySelectorAll('[data-unit]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var toggle = this.closest('.pdp-tabs__unit-toggle');
-        toggle.querySelectorAll('.pdp-tabs__unit-btn').forEach(function (b) { b.classList.remove('is-active'); });
-        this.classList.add('is-active');
-      });
-    });
-  })();
-</script>
 
 {% schema %}
 {
   "name": "Product Tabs",
   "tag": "section",
   "class": "pdp-tabs-section",
-  "settings": [],
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Product Details"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Everything to know before this handcrafted piece becomes yours."
+    }
+  ],
   "blocks": [
     {
       "type": "description",
@@ -266,10 +251,94 @@
           "default": "Description"
         },
         {
+          "type": "checkbox",
+          "id": "open_by_default",
+          "label": "Open by default",
+          "default": true
+        },
+        {
           "type": "richtext",
-          "id": "content",
-          "label": "Fallback content (used when no product context)",
-          "default": "<p>Detailed product description with fabric, craft technique, and occasion details.</p>"
+          "id": "fallback_content",
+          "label": "Fallback content",
+          "default": "<p>A handcrafted Acharkhastory piece made with thoughtful details, easy styling, and artisan-led craft.</p>"
+        }
+      ]
+    },
+    {
+      "type": "fabric_care",
+      "name": "Fabric & Care",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Tab title",
+          "default": "Fabric & Care"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_by_default",
+          "label": "Open by default",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "fabric_label",
+          "label": "Fabric label",
+          "default": "Fabric"
+        },
+        {
+          "type": "text",
+          "id": "fabric",
+          "label": "Fallback fabric",
+          "default": "Handwoven cotton"
+        },
+        {
+          "type": "text",
+          "id": "care_label",
+          "label": "Care label",
+          "default": "Wash Care"
+        },
+        {
+          "type": "text",
+          "id": "care",
+          "label": "Fallback care",
+          "default": "Gentle hand wash separately in cold water"
+        },
+        {
+          "type": "text",
+          "id": "fit_label",
+          "label": "Fit label",
+          "default": "Fit"
+        },
+        {
+          "type": "text",
+          "id": "fit",
+          "label": "Fallback fit",
+          "default": "Comfort fit"
+        },
+        {
+          "type": "text",
+          "id": "origin_label",
+          "label": "Origin label",
+          "default": "Origin"
+        },
+        {
+          "type": "text",
+          "id": "origin",
+          "label": "Fallback origin",
+          "default": "India"
+        },
+        {
+          "type": "richtext",
+          "id": "care_content",
+          "label": "Care details",
+          "default": "<ul><li>Wash dark colours separately.</li><li>Dry in shade to protect natural tones.</li><li>Use a warm iron on reverse.</li></ul>"
+        },
+        {
+          "type": "text",
+          "id": "handmade_note",
+          "label": "Handmade note",
+          "default": "Small colour and pattern variations are natural markers of handmade craft."
         }
       ]
     },
@@ -284,21 +353,121 @@
           "default": "Size Guide"
         },
         {
+          "type": "checkbox",
+          "id": "open_by_default",
+          "label": "Open by default",
+          "default": false
+        },
+        {
           "type": "richtext",
-          "id": "content",
-          "label": "Size chart content",
-          "default": "<p>Size chart will display here. Add an HTML table via the rich text editor.</p>"
+          "id": "intro",
+          "label": "Intro copy",
+          "default": "<p>Measurements are garment measurements in inches. Compare with a similar garment you own for the closest fit.</p>"
+        },
+        {
+          "type": "text",
+          "id": "size_columns",
+          "label": "Size table columns separated by |",
+          "default": "Size|Bust|Waist|Hip|Length"
+        },
+        {
+          "type": "textarea",
+          "id": "size_rows",
+          "label": "Size rows, one row per line and cells separated by |",
+          "default": "XS|32|26|36|44\nS|34|28|38|45\nM|36|30|40|46\nL|38|32|42|47\nXL|40|34|44|48\nXXL|42|36|46|49"
         },
         {
           "type": "text",
           "id": "note",
           "label": "Fit note",
-          "default": "This garment runs true to size. For a relaxed fit, size up."
+          "default": "If you are between sizes, choose the larger size for a relaxed fit."
+        },
+        {
+          "type": "image_picker",
+          "id": "measurement_image",
+          "label": "How-to-measure image"
+        },
+        {
+          "type": "text",
+          "id": "measurement_image_alt",
+          "label": "How-to-measure image alt text",
+          "default": "How to measure bust waist hip and garment length"
+        },
+        {
+          "type": "text",
+          "id": "measurement_placeholder",
+          "label": "Image placeholder text",
+          "default": "How to measure"
+        },
+        {
+          "type": "richtext",
+          "id": "measurement_text",
+          "label": "Measurement instructions",
+          "default": "<ul><li>Bust: measure around the fullest part.</li><li>Waist: measure at the narrowest point.</li><li>Length: measure from shoulder to hem.</li></ul>"
         }
       ]
     },
     {
-      "type": "shipping",
+      "type": "craft_story",
+      "name": "Craft Story",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Tab title",
+          "default": "Craft Story"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_by_default",
+          "label": "Open by default",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "craft_type",
+          "label": "Fallback craft type",
+          "default": "Handcrafted"
+        },
+        {
+          "type": "text",
+          "id": "region",
+          "label": "Fallback region",
+          "default": "India"
+        },
+        {
+          "type": "text",
+          "id": "artisan_name",
+          "label": "Fallback artisan name",
+          "default": "Acharkhastory Artisans"
+        },
+        {
+          "type": "richtext",
+          "id": "story",
+          "label": "Craft story",
+          "default": "<p>This piece carries the rhythm of Indian handcraft: slow processes, skilled hands, and details that make every garment slightly distinct.</p>"
+        },
+        {
+          "type": "text",
+          "id": "fallback_story",
+          "label": "Plain fallback story",
+          "default": "This piece is rooted in Indian artisan traditions and finished by hand."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Craft or artisan link"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link label",
+          "default": "View artisan profile"
+        }
+      ]
+    },
+    {
+      "type": "shipping_returns",
       "name": "Shipping & Returns",
       "settings": [
         {
@@ -308,16 +477,28 @@
           "default": "Shipping & Returns"
         },
         {
+          "type": "checkbox",
+          "id": "open_by_default",
+          "label": "Open by default",
+          "default": false
+        },
+        {
           "type": "richtext",
-          "id": "content",
-          "label": "Shipping & returns content",
-          "default": "<ul><li>Free shipping on orders above ₹1,499</li><li>Standard delivery: 5–7 working days</li><li>15-day easy returns — unused with tags</li><li>Size exchanges free of charge within 15 days</li><li>Refund within 7 working days of return pickup</li></ul>"
+          "id": "shipping_content",
+          "label": "Shipping content",
+          "default": "<p><strong>Shipping</strong></p><ul><li>Free shipping above Rs. 1,499.</li><li>Standard dispatch in 2-3 working days.</li><li>Delivery usually takes 5-7 working days after dispatch.</li></ul>"
+        },
+        {
+          "type": "richtext",
+          "id": "returns_content",
+          "label": "Returns content",
+          "default": "<p><strong>Returns</strong></p><ul><li>15-day easy returns for unused products with tags.</li><li>Size exchanges are supported within the return window.</li><li>Refunds are processed after return quality check.</li></ul>"
         },
         {
           "type": "text",
           "id": "handmade_note",
           "label": "Handmade note",
-          "default": "As each piece is handcrafted, slight variations in colour and pattern are a feature, not a defect."
+          "default": "Handmade items may show slight variations in colour, weave, or print placement."
         }
       ]
     }
@@ -326,9 +507,21 @@
     {
       "name": "Product Tabs",
       "blocks": [
-        { "type": "description", "settings": { "title": "Description" } },
-        { "type": "size_guide", "settings": { "title": "Size Guide" } },
-        { "type": "shipping", "settings": { "title": "Shipping & Returns" } }
+        {
+          "type": "description"
+        },
+        {
+          "type": "fabric_care"
+        },
+        {
+          "type": "size_guide"
+        },
+        {
+          "type": "craft_story"
+        },
+        {
+          "type": "shipping_returns"
+        }
       ]
     }
   ]

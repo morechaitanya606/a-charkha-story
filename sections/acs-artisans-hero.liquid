@@ -1,0 +1,84 @@
+{% comment %}
+  Artisans Page — Hero Section
+  Full-width hero with stats bar showing artisan count, states, cooperatives.
+  Usage: Include via templates/page.artisans.json
+{% endcomment %}
+
+<section class="acs-artisans-hero acs-section" id="artisans-hero">
+  {%- if section.settings.hero_image != blank -%}
+    <div class="acs-artisans-hero__media">
+      {{ section.settings.hero_image
+         | image_url: width: 1920
+         | image_tag:
+           loading: 'eager',
+           fetchpriority: 'high',
+           widths: '800, 1200, 1600, 1920',
+           sizes: '100vw',
+           alt: section.settings.image_alt | default: section.settings.title }}
+    </div>
+    <div class="acs-artisans-hero__overlay"></div>
+  {%- endif -%}
+
+  <div class="acs-artisans-hero__content acs-page-width">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="acs-eyebrow" style="color:var(--acs-color-warm);">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+
+    <h1 class="acs-artisans-hero__title">{{ section.settings.title }}</h1>
+
+    {%- if section.settings.body != blank -%}
+      <p class="acs-artisans-hero__body">{{ section.settings.body }}</p>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="acs-artisans-hero__stats">
+        {%- for block in section.blocks -%}
+          <div {{ block.shopify_attributes }}>
+            <div class="acs-artisans-hero__stat-number">
+              {%- if block.settings.prefix != blank -%}{{ block.settings.prefix }}{%- endif -%}
+              {{ block.settings.number }}
+              {%- if block.settings.suffix != blank -%}{{ block.settings.suffix }}{%- endif -%}
+            </div>
+            <p class="acs-artisans-hero__stat-label">{{ block.settings.label }}</p>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Artisans Hero",
+  "tag": "section",
+  "class": "acs-artisans-hero-section",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "image_picker", "id": "hero_image", "label": "Hero background image" },
+    { "type": "text", "id": "image_alt", "label": "Image alt text", "default": "Indian artisans crafting handmade textiles" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Artisan Collective" },
+    { "type": "text", "id": "title", "label": "Heading", "default": "The Hands Behind Every Piece" },
+    { "type": "textarea", "id": "body", "label": "Body", "default": "We work directly with artisan cooperatives across India. Every purchase sustains a family, revives a craft, and preserves a living heritage." }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Hero Stat",
+      "settings": [
+        { "type": "text", "id": "prefix", "label": "Prefix" },
+        { "type": "text", "id": "number", "label": "Number", "default": "2,300" },
+        { "type": "text", "id": "suffix", "label": "Suffix", "default": "+" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Artisans" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Artisans Hero",
+    "blocks": [
+      { "type": "stat", "settings": { "number": "2,300", "suffix": "+", "label": "Artisans" }},
+      { "type": "stat", "settings": { "number": "12", "label": "States" }},
+      { "type": "stat", "settings": { "number": "40", "suffix": "+", "label": "Cooperatives" }}
+    ]
+  }]
+}
+{% endschema %}

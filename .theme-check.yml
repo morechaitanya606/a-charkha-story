@@ -1,0 +1,15 @@
+extends: theme-check:recommended
+
+ignore:
+  - node_modules/**
+  - .git/**
+  - .agent/**
+  - home_page/**
+  - mobile view/**
+  - product image/**
+  - product_view/**
+  - product_view_2/**
+  - "*.docx.md"
+
+MatchingTranslations:
+  enabled: false

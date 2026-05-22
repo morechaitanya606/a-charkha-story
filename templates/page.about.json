@@ -1,0 +1,110 @@
+{
+  "sections": {
+    "about_hero_acs": {
+      "type": "acs-about-hero",
+      "settings": {
+        "eyebrow": "Our Story",
+        "title": "Every thread tells a story of hands, heritage, and hope",
+        "body": "A Charkha Story began with a single question: what if clothing could carry meaning? We connect you directly with artisan families across India, so every piece you wear supports a livelihood and preserves a living tradition.",
+        "cta1_label": "Shop the Collection",
+        "cta1_link": "/collections/all",
+        "cta2_label": "Meet Our Artisans",
+        "cta2_link": "/pages/artisans"
+      }
+    },
+    "about_mission_acs": {
+      "type": "acs-about-mission",
+      "settings": {
+        "quote": "We believe clothing should carry meaning. Every thread, every colour, every pattern is a conversation between the maker and the wearer.",
+        "attribution": "A Charkha Story"
+      }
+    },
+    "about_values_acs": {
+      "type": "acs-about-values",
+      "blocks": {
+        "value_1": {
+          "type": "value",
+          "settings": {
+            "icon": "handmade",
+            "title": "100% Handmade",
+            "description": "Every piece is crafted by hand — no machines, no shortcuts. From dyeing and printing to weaving and stitching, each step is done by artisan hands."
+          }
+        },
+        "value_2": {
+          "type": "value",
+          "settings": {
+            "icon": "sustainable",
+            "title": "Sustainable Materials",
+            "description": "Natural dyes, organic cotton, and zero-waste processes. We choose materials that respect the earth and the people who work with them."
+          }
+        },
+        "value_3": {
+          "type": "value",
+          "settings": {
+            "icon": "fair-trade",
+            "title": "Fair & Direct Trade",
+            "description": "We pay artisans fairly and work directly with cooperatives — no middlemen. Your purchase supports families and keeps craft traditions alive."
+          }
+        }
+      },
+      "block_order": ["value_1", "value_2", "value_3"],
+      "settings": {
+        "title": "What We Stand For",
+        "subtitle": "Three principles guide every decision we make — from the loom to your door."
+      }
+    },
+    "about_stats_acs": {
+      "type": "acs-about-stats",
+      "blocks": {
+        "stat_1": { "type": "stat", "settings": { "number": "2,300", "suffix": "+", "label": "Artisans supported" }},
+        "stat_2": { "type": "stat", "settings": { "number": "12", "label": "Indian states" }},
+        "stat_3": { "type": "stat", "settings": { "number": "20", "suffix": "+", "label": "Craft traditions" }},
+        "stat_4": { "type": "stat", "settings": { "number": "25,000", "suffix": "+", "label": "Happy customers" }}
+      },
+      "block_order": ["stat_1", "stat_2", "stat_3", "stat_4"],
+      "settings": {}
+    },
+    "about_timeline_acs": {
+      "type": "acs-about-timeline",
+      "blocks": {
+        "ms_1": { "type": "milestone", "settings": { "year": "2020", "title": "The Seed", "description": "A visit to the weavers of Shantipur planted the idea for A Charkha Story." }},
+        "ms_2": { "type": "milestone", "settings": { "year": "2021", "title": "First Collection", "description": "Our debut collection of handwoven muslin sarees reached 500 customers across India." }},
+        "ms_3": { "type": "milestone", "settings": { "year": "2022", "title": "Artisan Network Grows", "description": "Expanded to work with 40+ artisan cooperatives across 12 Indian states." }},
+        "ms_4": { "type": "milestone", "settings": { "year": "2023", "title": "2,300+ Artisans", "description": "Today we support over 2,300 artisan families and continue to grow." }},
+        "ms_5": { "type": "milestone", "settings": { "year": "2024", "title": "Full Category Range", "description": "Womenswear, menswear, accessories, bags, and home — all handcrafted." }}
+      },
+      "block_order": ["ms_1", "ms_2", "ms_3", "ms_4", "ms_5"],
+      "settings": {
+        "title": "Our Journey",
+        "subtitle": "From a single loom to a community of 2,300+ artisans."
+      }
+    },
+    "about_founder_acs": {
+      "type": "acs-about-founder",
+      "settings": {
+        "eyebrow": "The People Behind",
+        "name": "The A Charkha Story Team",
+        "role": "Founders & Craft Curators",
+        "bio": "<p>What started as a personal journey through the weaving villages of Bengal has grown into a mission to preserve India's handloom and handicraft heritage.</p><p>We work directly with over 2,300 artisans across 12 states — ensuring fair wages, creative freedom, and a direct connection between the maker and the wearer. Every product we sell carries the fingerprint of its maker and the story of its origin.</p><p>Our promise: no middlemen, no mass production, no compromise on craft.</p>",
+        "cta_label": "Shop Our Collections",
+        "cta_link": "/collections/all"
+      }
+    },
+    "email_signup_acs": {
+      "type": "email-signup",
+      "settings": {
+        "title": "Join the Acharkhastory Family",
+        "subtitle": "Be the first to know about new collections, craft stories, and exclusive offers."
+      }
+    }
+  },
+  "order": [
+    "about_hero_acs",
+    "about_mission_acs",
+    "about_values_acs",
+    "about_stats_acs",
+    "about_timeline_acs",
+    "about_founder_acs",
+    "email_signup_acs"
+  ]
+}

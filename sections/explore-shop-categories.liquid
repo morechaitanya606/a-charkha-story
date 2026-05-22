@@ -1,0 +1,276 @@
+{% comment %}
+  Acharkhastory — Explore Shop by Category
+  Premium visual category cards grid pulling images + counts from Shopify collections.
+  Mobile: 2-col grid. Desktop: 3-col grid.
+{% endcomment %}
+
+{%- if section.blocks.size > 0 -%}
+<section class="acs-shop-cats acs-section acs-reveal" id="explore-categories-{{ section.id }}">
+  <div class="acs-page-width">
+    <div class="acs-section-header acs-section-header--center">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="acs-eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      <h2 class="acs-h2">{{ section.settings.title }}</h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="acs-section-header__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="acs-shop-cats__grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign card_collection = collections[block.settings.collection]
+          assign card_image = block.settings.custom_image | default: card_collection.image | default: card_collection.products.first.featured_media
+          assign card_title = block.settings.label | default: card_collection.title | default: 'Category'
+          assign card_count = card_collection.products_count | default: 0
+          assign card_meta = block.settings.meta
+          if card_meta == blank
+            assign card_meta = card_count | append: ' pieces'
+          endif
+          assign card_link = block.settings.link | default: card_collection.url | default: '#'
+        -%}
+
+        <a
+          href="{{ card_link }}"
+          class="acs-shop-cats__card acs-reveal"
+          {{ block.shopify_attributes }}
+          style="animation-delay: {{ forloop.index0 | times: 80 }}ms;"
+        >
+          <div class="acs-shop-cats__media">
+            {%- if card_image != blank -%}
+              {{
+                card_image
+                | image_url: width: 800
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '400, 600, 800',
+                  sizes: '(min-width: 990px) 33vw, 50vw',
+                  alt: card_title,
+                  class: 'acs-shop-cats__image'
+              }}
+            {%- else -%}
+              <div class="acs-shop-cats__placeholder">
+                {{ 'collection-1' | placeholder_svg_tag: 'acs-shop-cats__placeholder-svg' }}
+              </div>
+            {%- endif -%}
+          </div>
+          <div class="acs-shop-cats__overlay">
+            <span class="acs-shop-cats__meta">{{ card_meta }}</span>
+            <h3 class="acs-shop-cats__title">{{ card_title }}</h3>
+            <span class="acs-shop-cats__cta">Explore →</span>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+<style>
+  .acs-shop-cats__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--acs-gutter, 1.5rem);
+  }
+
+  .acs-shop-cats__card {
+    position: relative;
+    display: block;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border-radius: var(--acs-r-md, 8px);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .acs-shop-cats__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .acs-shop-cats__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--acs-duration-slow, 520ms) var(--acs-ease, ease);
+  }
+
+  .acs-shop-cats__card:hover .acs-shop-cats__image {
+    transform: scale(1.06);
+  }
+
+  .acs-shop-cats__placeholder {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    background: var(--acs-cream, #f5e6d0);
+  }
+
+  .acs-shop-cats__placeholder-svg {
+    width: 60%;
+    height: auto;
+    opacity: 0.3;
+  }
+
+  .acs-shop-cats__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--acs-sp-lg, 1.5rem);
+    background: linear-gradient(
+      to top,
+      rgb(var(--acs-color-ink-rgb, 26 16 8) / 0.7) 0%,
+      rgb(var(--acs-color-ink-rgb, 26 16 8) / 0.2) 50%,
+      transparent 100%
+    );
+    transition: background var(--acs-duration, 220ms) var(--acs-ease, ease);
+  }
+
+  .acs-shop-cats__card:hover .acs-shop-cats__overlay {
+    background: linear-gradient(
+      to top,
+      rgb(var(--acs-color-ink-rgb, 26 16 8) / 0.78) 0%,
+      rgb(var(--acs-color-ink-rgb, 26 16 8) / 0.28) 50%,
+      transparent 100%
+    );
+  }
+
+  .acs-shop-cats__meta {
+    font-family: var(--acs-font-body, 'DM Sans', sans-serif);
+    font-size: var(--acs-type-micro, 0.6875rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .acs-shop-cats__title {
+    margin: var(--acs-sp-2xs, 0.25rem) 0 0;
+    font-family: var(--acs-font-display, 'Cormorant Garamond', serif);
+    font-size: clamp(1.125rem, 2vw, 1.5rem);
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.15;
+  }
+
+  .acs-shop-cats__cta {
+    margin-top: var(--acs-sp-xs, 0.5rem);
+    font-family: var(--acs-font-body, 'DM Sans', sans-serif);
+    font-size: var(--acs-type-caption, 0.75rem);
+    font-weight: 700;
+    color: rgb(255 255 255 / 0.8);
+    text-decoration: none;
+    transition: color var(--acs-duration, 220ms) var(--acs-ease, ease),
+      text-decoration var(--acs-duration, 220ms) var(--acs-ease, ease);
+  }
+
+  .acs-shop-cats__card:hover .acs-shop-cats__cta {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  @media (max-width: 989px) {
+    .acs-shop-cats__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 749px) {
+    .acs-shop-cats__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--acs-sp-sm, 0.75rem);
+    }
+
+    .acs-shop-cats__card {
+      aspect-ratio: 3 / 4;
+    }
+
+    .acs-shop-cats__overlay {
+      padding: var(--acs-sp-md, 1rem);
+    }
+
+    .acs-shop-cats__title {
+      font-size: 1.125rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Shop by Category",
+  "tag": "section",
+  "class": "acs-shop-cats-section",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Collections"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Shop by Category"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "From everyday essentials to heirloom pieces."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_image",
+          "label": "Custom image (overrides collection image)"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label (overrides collection title)"
+        },
+        {
+          "type": "text",
+          "id": "meta",
+          "label": "Meta text (overrides product count)"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (overrides collection URL)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop by Category",
+      "blocks": [
+        { "type": "category", "settings": { "label": "Sarees" } },
+        { "type": "category", "settings": { "label": "Kurtis" } },
+        { "type": "category", "settings": { "label": "Clothing" } },
+        { "type": "category", "settings": { "label": "Accessories" } },
+        { "type": "category", "settings": { "label": "Home" } },
+        { "type": "category", "settings": { "label": "Sale", "meta": "Up to 50% off" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

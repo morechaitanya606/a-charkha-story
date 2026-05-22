@@ -1,0 +1,108 @@
+{% comment %}
+  Acharkhastory frequently bought together product row.
+  Renders one selectable product for the PDP bundle section.
+{% endcomment %}
+
+{%- liquid
+  assign current_variant = row_variant | default: row_product.selected_or_first_available_variant
+  assign product_image = current_variant.featured_image
+  assign row_available = false
+  assign is_checked = false
+
+  if product_image == blank
+    assign product_image = row_product.featured_image
+  endif
+
+  if current_variant.available
+    assign row_available = true
+  endif
+
+  if row_checked and row_available
+    assign is_checked = true
+  endif
+-%}
+
+{%- if row_product != blank and current_variant != blank -%}
+  <article
+    class="acs-fbt__item"
+    data-acs-fbt-item
+    data-price="{{ current_variant.price }}"
+    data-available="{{ row_available }}"
+  >
+    <label class="acs-fbt__check" aria-label="{{ select_label | escape }} {{ row_product.title | escape }}">
+      <input
+        class="acs-fbt__checkbox"
+        type="checkbox"
+        data-acs-fbt-checkbox
+        value="{{ current_variant.id }}"
+        {% if is_checked %}checked{% endif %}
+        {% unless row_available %}disabled{% endunless %}
+      >
+      <span class="acs-fbt__check-ui" aria-hidden="true"></span>
+    </label>
+
+    <a class="acs-fbt__media" href="{{ row_product.url }}" aria-label="{{ row_product.title | escape }}">
+      {%- if product_image != blank -%}
+        <img
+          src="{{ product_image | image_url: width: 600 }}"
+          srcset="{{ product_image | image_url: width: 300 }} 300w, {{ product_image | image_url: width: 600 }} 600w, {{ product_image | image_url: width: 900 }} 900w"
+          sizes="(max-width: 768px) 5rem, 6rem"
+          alt="{{ product_image.alt | default: row_product.title | escape }}"
+          loading="lazy"
+          width="{{ product_image.width }}"
+          height="{{ product_image.height }}"
+        >
+      {%- else -%}
+        <div class="acs-fbt__placeholder" aria-hidden="true">
+          {{ 'product-1' | placeholder_svg_tag }}
+        </div>
+      {%- endif -%}
+    </a>
+
+    <div class="acs-fbt__content">
+      {%- if row_badge != blank -%}
+        <span class="acs-fbt__badge">{{ row_badge | escape }}</span>
+      {%- endif -%}
+
+      <h3 class="acs-fbt__title">
+        <a href="{{ row_product.url }}">{{ row_product.title | escape }}</a>
+      </h3>
+
+      <div class="acs-fbt__price-row">
+        <span data-acs-fbt-price>{{ current_variant.price | money }}</span>
+        {%- if current_variant.compare_at_price > current_variant.price -%}
+          <span class="acs-fbt__compare" data-acs-fbt-compare>
+            {{ current_variant.compare_at_price | money }}
+          </span>
+        {%- else -%}
+          <span class="acs-fbt__compare" data-acs-fbt-compare hidden></span>
+        {%- endif -%}
+      </div>
+
+      {%- if row_product.variants.size > 1 -%}
+        <label>
+          <span class="visually-hidden">{{ variant_label | escape }} {{ row_product.title | escape }}</span>
+          <select class="acs-fbt__variant-select" data-acs-fbt-variant-select>
+            {%- for variant in row_product.variants -%}
+              <option
+                value="{{ variant.id }}"
+                data-price="{{ variant.price }}"
+                data-price-money="{{ variant.price | money | escape }}"
+                data-compare-money="{{ variant.compare_at_price | money | escape }}"
+                data-compare-visible="{% if variant.compare_at_price > variant.price %}true{% else %}false{% endif %}"
+                {% unless variant.available %}disabled{% endunless %}
+                {% if variant.id == current_variant.id %}selected{% endif %}
+              >
+                {{ variant.title | escape }} - {{ variant.price | money }}
+              </option>
+            {%- endfor -%}
+          </select>
+        </label>
+      {%- endif -%}
+
+      {%- unless row_available -%}
+        <span class="acs-fbt__badge">{{ sold_out_label | escape }}</span>
+      {%- endunless -%}
+    </div>
+  </article>
+{%- endif -%}

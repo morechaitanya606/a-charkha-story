@@ -1,189 +1,93 @@
 {% comment %}
-  ACHARKHASTORY — Artisan Story Banner
-  50/50 split: artisan photo + narrative content with impact stats.
+  Acharkhastory artisan story.
+  Mission-led trust section with image, narrative, and impact stats.
 {% endcomment %}
 
-{{ 'acharkhastory.css' | asset_url | stylesheet_tag }}
+{% liquid
+  assign title = section.settings.title | strip
+  assign body = section.settings.body | strip
+  assign image = section.settings.image
+  assign cta_link = section.settings.cta_link | default: routes.root_url
+%}
 
-<style>
-  .artisan-story {
-    background: var(--acs-cream);
-    overflow: hidden;
-  }
-
-  .artisan-story__inner {
-    display: flex;
-    align-items: stretch;
-    min-height: 500px;
-  }
-
-  .artisan-story__media {
-    flex: 0 0 50%;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .artisan-story__media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .artisan-story__content {
-    flex: 0 0 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: var(--acs-sp-3xl);
-    gap: var(--acs-sp-md);
-  }
-
-  .artisan-story__eyebrow {
-    font-family: var(--acs-font-body);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--acs-secondary);
-  }
-
-  .artisan-story__title {
-    font-family: var(--acs-font-display);
-    font-size: clamp(24px, 3vw, 38px);
-    font-weight: 500;
-    line-height: 1.2;
-    color: var(--acs-primary);
-    margin: 0;
-  }
-
-  .artisan-story__stats {
-    display: flex;
-    gap: var(--acs-sp-xl);
-    padding-block: var(--acs-sp-md);
-    border-top: 1px solid var(--acs-border);
-    border-bottom: 1px solid var(--acs-border);
-  }
-
-  .artisan-story__stat {
-    text-align: center;
-  }
-
-  .artisan-story__stat-number {
-    font-family: var(--acs-font-display);
-    font-size: 32px;
-    font-weight: 500;
-    color: var(--acs-primary);
-    display: block;
-    line-height: 1;
-  }
-
-  .artisan-story__stat-label {
-    font-family: var(--acs-font-body);
-    font-size: 11px;
-    color: var(--acs-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-top: 4px;
-    display: block;
-  }
-
-  .artisan-story__body {
-    font-family: var(--acs-font-body);
-    font-size: var(--acs-fs-body);
-    color: var(--acs-text);
-    line-height: 1.8;
-    max-width: 420px;
-  }
-
-  .artisan-story__cta {
-    margin-top: var(--acs-sp-xs);
-  }
-
-  @media (max-width: 768px) {
-    .artisan-story__inner {
-      flex-direction: column;
-    }
-
-    .artisan-story__media {
-      flex: none;
-      height: 320px;
-    }
-
-    .artisan-story__content {
-      flex: none;
-      padding: var(--acs-sp-xl) var(--acs-edge-m);
-      text-align: center;
-      align-items: center;
-    }
-
-    .artisan-story__stats {
-      justify-content: center;
-      width: 100%;
-    }
-
-    .artisan-story__body {
-      max-width: 100%;
-    }
-  }
-</style>
-
-<section class="artisan-story" id="artisan-story-{{ section.id }}">
-  <div class="artisan-story__inner">
-    <div class="artisan-story__media">
-      {%- if section.settings.image != blank -%}
-        <img
-          src="{{ section.settings.image | image_url: width: 1000 }}"
-          alt="{{ section.settings.title | escape }}"
-          loading="lazy"
-          width="1000"
-          height="1000"
-        >
-      {%- else -%}
-        {{ 'lifestyle-1' | placeholder_svg_tag }}
-      {%- endif -%}
-    </div>
-
-    <div class="artisan-story__content">
-      {%- if section.settings.eyebrow != blank -%}
-        <span class="artisan-story__eyebrow">{{ section.settings.eyebrow }}</span>
-      {%- endif -%}
-
-      <h2 class="artisan-story__title">{{ section.settings.title }}</h2>
-
-      <div class="artisan-story__stats">
-        {%- for block in section.blocks -%}
-          <div class="artisan-story__stat" {{ block.shopify_attributes }}>
-            <span class="artisan-story__stat-number">{{ block.settings.number }}</span>
-            <span class="artisan-story__stat-label">{{ block.settings.label }}</span>
-          </div>
-        {%- endfor -%}
+<section class="acs-section acs-artisan-story" id="ArtisanStory-{{ section.id }}">
+  <div class="acs-container">
+    <div class="acs-artisan-story__grid">
+      <div class="acs-artisan-story__media">
+        {%- if image != blank -%}
+          <img
+            src="{{ image | image_url: width: 900 }}"
+            srcset="{{ image | image_url: width: 540 }} 540w, {{ image | image_url: width: 900 }} 900w, {{ image | image_url: width: 1200 }} 1200w"
+            sizes="(max-width: 768px) 100vw, 45vw"
+            width="{{ image.width }}"
+            height="{{ image.height }}"
+            alt="{{ section.settings.image_alt | default: title | escape }}"
+            loading="lazy"
+          >
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag }}
+        {%- endif -%}
       </div>
 
-      {%- if section.settings.body != blank -%}
-        <p class="artisan-story__body">{{ section.settings.body }}</p>
-      {%- endif -%}
+      <div class="acs-artisan-story__content">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="acs-eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
 
-      {%- if section.settings.cta_label != blank -%}
-        <div class="artisan-story__cta">
-          <a href="{{ section.settings.cta_link }}" class="acs-btn acs-btn--primary">
-            {{ section.settings.cta_label }}
-          </a>
-        </div>
-      {%- endif -%}
+        {%- if title != blank -%}
+          <h2 class="acs-h2">{{ title | escape }}</h2>
+        {%- endif -%}
+
+        {%- if section.blocks.size > 0 -%}
+          <div class="acs-artisan-story__stats">
+            {%- for block in section.blocks -%}
+              {%- if block.settings.number != blank or block.settings.label != blank -%}
+                <div class="acs-artisan-story__stat" {{ block.shopify_attributes }}>
+                  {%- if block.settings.number != blank -%}
+                    <span class="acs-artisan-story__stat-number">{{ block.settings.number | escape }}</span>
+                  {%- endif -%}
+
+                  {%- if block.settings.label != blank -%}
+                    <span class="acs-artisan-story__stat-label">{{ block.settings.label | escape }}</span>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        {%- if body != blank -%}
+          <p class="acs-artisan-story__text">{{ body | escape }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.cta_label != blank -%}
+          <div>
+            <a class="acs-button acs-button--primary" href="{{ cta_link }}">
+              {{ section.settings.cta_label | escape }}
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
     </div>
   </div>
 </section>
 
 {% schema %}
 {
-  "name": "Artisan Story",
+  "name": "ACS Artisan Story",
   "tag": "section",
-  "class": "artisan-story-section",
+  "class": "shopify-section--acs-artisan-story",
   "settings": [
     {
       "type": "image_picker",
       "id": "image",
       "label": "Artisan photo"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text",
+      "default": "Indian artisan working on handmade textile craft"
     },
     {
       "type": "text",
@@ -201,7 +105,7 @@
       "type": "textarea",
       "id": "body",
       "label": "Body text",
-      "default": "Every Acharkhastory product is handcrafted by skilled artisans from 40+ cooperatives. When you buy from us, you sustain a family, revive a dying craft, and wear a piece of living heritage."
+      "default": "Every Acharkhastory product is handcrafted by skilled artisans from cooperatives across India. When you buy from us, you sustain a family, revive a craft, and wear a piece of living heritage."
     },
     {
       "type": "text",
@@ -235,16 +139,34 @@
       ]
     }
   ],
+  "max_blocks": 4,
   "presets": [
     {
-      "name": "Artisan Story",
+      "name": "ACS Artisan Story",
       "blocks": [
-        { "type": "stat", "settings": { "number": "2,300+", "label": "Artisans" } },
-        { "type": "stat", "settings": { "number": "12", "label": "States" } },
-        { "type": "stat", "settings": { "number": "40+", "label": "Cooperatives" } }
+        {
+          "type": "stat",
+          "settings": {
+            "number": "2,300+",
+            "label": "Artisans"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "number": "12",
+            "label": "States"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "number": "40+",
+            "label": "Cooperatives"
+          }
+        }
       ]
     }
-  ],
-  "max_blocks": 4
+  ]
 }
 {% endschema %}

@@ -1,0 +1,109 @@
+{% comment %}
+  Acharkhastory WhatsApp widget.
+  Disabled by default and renders only when a real phone number is configured.
+{% endcomment %}
+
+{%- liquid
+  assign phone_number = section.settings.phone_number | strip
+  assign sanitized_phone = phone_number | remove: ' ' | remove: '+' | remove: '-' | remove: '(' | remove: ')'
+  if request.page_type == 'product' and product != blank
+    assign product_message = 'Hi! I am interested in ' | append: product.title | append: ' (' | append: shop.url | append: product.url | append: ')'
+    assign message = product_message
+  else
+    assign message = section.settings.prefilled_message | default: 'Hi, I need help with my Acharkhastory order.'
+  endif
+-%}
+
+{%- if section.settings.enabled and sanitized_phone != blank -%}
+  <a
+    class="acs-whatsapp{% if section.settings.mobile_only %} acs-whatsapp--mobile-only{% endif %}"
+    href="https://wa.me/{{ sanitized_phone }}?text={{ message | url_encode }}"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="{{ section.settings.aria_label | escape }}"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 3a8.5 8.5 0 0 0-7.3 12.9L4 21l5.2-1.4A8.5 8.5 0 1 0 12 3Z" fill="none" stroke="currentColor" stroke-width="1.7"/>
+      <path d="M8.7 8.5c.2-.4.4-.5.8-.5h.6c.2 0 .4.1.5.4l.7 1.6c.1.3.1.5-.1.7l-.4.5c.8 1.4 1.9 2.4 3.4 3.1l.5-.6c.2-.2.5-.3.8-.2l1.6.7c.3.1.4.3.4.6v.5c0 .5-.2.8-.6 1-1 .5-2.7.2-4.5-.9-2-1.2-3.6-2.9-4.4-4.8-.4-.9-.4-1.7.1-2.1Z" fill="currentColor"/>
+    </svg>
+  </a>
+
+  <style>
+    .acs-whatsapp {
+      position: fixed;
+      right: var(--acs-edge-m);
+      bottom: calc(var(--acs-mobile-nav-height) + 1rem);
+      z-index: var(--acs-z-sticky);
+      display: grid;
+      place-items: center;
+      width: 3.25rem;
+      height: 3.25rem;
+      border-radius: var(--acs-radius-full);
+      background: var(--acs-color-whatsapp);
+      color: var(--acs-color-white);
+      box-shadow: var(--acs-shadow-popover);
+      text-decoration: none;
+    }
+
+    .acs-whatsapp svg {
+      width: 1.65rem;
+      height: 1.65rem;
+    }
+
+    @media (min-width: 769px) {
+      .acs-whatsapp--mobile-only {
+        display: none;
+      }
+
+      .acs-whatsapp {
+        bottom: 1.5rem;
+      }
+    }
+  </style>
+{%- endif -%}
+
+
+{% schema %}
+{
+  "name": "WhatsApp Widget",
+  "tag": "section",
+  "class": "acs-whatsapp-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Enable WhatsApp chat",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "phone_number",
+      "label": "WhatsApp phone number",
+      "info": "Use country code, for example 919876543210."
+    },
+    {
+      "type": "textarea",
+      "id": "prefilled_message",
+      "label": "Prefilled message",
+      "default": "Hi, I need help with my Acharkhastory order."
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Accessible label",
+      "default": "Chat on WhatsApp"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_only",
+      "label": "Show on mobile only",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "WhatsApp Widget"
+    }
+  ]
+}
+{% endschema %}

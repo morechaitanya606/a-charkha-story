@@ -1,0 +1,104 @@
+{% comment %}
+  Acharkhastory — Cart Enhancements
+  Trust badges row, free shipping progress bar, estimated delivery.
+{% endcomment %}
+
+{%- liquid
+  assign threshold = section.settings.free_shipping_threshold | default: 1499
+  assign threshold_cents = threshold | times: 100
+  assign cart_total = cart.total_price
+  assign remaining = threshold_cents | minus: cart_total
+  assign progress = cart_total | times: 100 | divided_by: threshold_cents
+  if progress > 100
+    assign progress = 100
+  endif
+-%}
+
+<div class="acs-cart-extras">
+  {%- comment %} Free shipping progress bar {% endcomment -%}
+  <div class="acs-cart-extras__shipping" data-acs-shipping-bar>
+    {%- if remaining > 0 -%}
+      <p class="acs-cart-extras__shipping-text">
+        Add <strong>{{ remaining | money }}</strong> more for <strong>free shipping!</strong>
+      </p>
+    {%- else -%}
+      <p class="acs-cart-extras__shipping-text acs-cart-extras__shipping-text--done">
+        You have unlocked <strong>free shipping!</strong>
+      </p>
+    {%- endif -%}
+
+    <div class="acs-cart-extras__bar" role="progressbar" aria-label="Free shipping progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ progress }}">
+      <div class="acs-cart-extras__bar-fill" style="width: {{ progress }}%"></div>
+    </div>
+  </div>
+
+  {%- comment %} Trust badges {% endcomment -%}
+  <div class="acs-cart-extras__trust">
+    <span class="acs-cart-extras__badge">
+      <svg viewBox="0 0 20 20" width="16" height="16"><rect x="3" y="8" width="14" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M7 8V5a3 3 0 016 0v3" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+      Secure Checkout
+    </span>
+    <span class="acs-cart-extras__badge">
+      <svg viewBox="0 0 20 20" width="16" height="16"><path d="M2 6h10v8H2z" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M12 8h3l3 3v3h-6z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="6" cy="15" r="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="15" cy="15" r="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+      Fast Dispatch
+    </span>
+    <span class="acs-cart-extras__badge">
+      <svg viewBox="0 0 20 20" width="16" height="16"><path d="M10 2l5 3v4c0 3-2 5-5 6-3-1-5-3-5-6V5z" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M7 9l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+      Artisan Made
+    </span>
+  </div>
+</div>
+
+<style>
+  .acs-cart-extras {
+    display: grid;
+    gap: var(--acs-space-md);
+    padding: var(--acs-space-md);
+    border: var(--acs-border-subtle);
+    border-radius: var(--acs-radius-md);
+    background: rgb(var(--acs-color-white-rgb) / 0.52);
+  }
+
+  .acs-cart-extras__shipping-text {
+    margin: 0 0 var(--acs-space-xs);
+    font-size: var(--acs-type-small);
+    color: var(--acs-color-primary);
+  }
+
+  .acs-cart-extras__shipping-text--done {
+    color: var(--acs-color-success);
+  }
+
+  .acs-cart-extras__bar {
+    height: 6px;
+    border-radius: var(--acs-radius-full);
+    background: var(--acs-color-cream);
+    overflow: hidden;
+  }
+
+  .acs-cart-extras__bar-fill {
+    height: 100%;
+    border-radius: var(--acs-radius-full);
+    background: var(--acs-color-success);
+    transition: width 0.6s var(--acs-ease-out-expo);
+  }
+
+  .acs-cart-extras__trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--acs-space-sm) var(--acs-space-md);
+  }
+
+  .acs-cart-extras__badge {
+    display: flex;
+    align-items: center;
+    gap: var(--acs-space-2xs);
+    color: var(--acs-color-muted);
+    font-size: var(--acs-type-caption);
+    font-weight: 600;
+  }
+
+  .acs-cart-extras__badge svg {
+    color: var(--acs-color-accent);
+  }
+</style>

@@ -1,0 +1,45 @@
+{% comment %}
+  Policy Content Section
+  Branded layout for Shipping, Returns, Privacy, and Terms pages.
+  Usage: Include via templates/page.shipping-policy.json etc.
+{% endcomment %}
+
+<section class="acs-section" id="policy-content">
+  <div class="acs-page-width">
+    <div class="acs-policy">
+      <div class="acs-policy__header">
+        <h1 class="acs-h2">{{ section.settings.title }}</h1>
+        {%- if section.settings.updated_date != blank -%}
+          <p class="acs-policy__updated">Last updated: {{ section.settings.updated_date }}</p>
+        {%- endif -%}
+      </div>
+
+      <div class="acs-policy__content">
+        {{ section.settings.body }}
+      </div>
+
+      {%- if section.settings.contact_text != blank -%}
+        <div class="acs-policy__contact">
+          <h3 class="acs-policy__contact-title">{{ section.settings.contact_title }}</h3>
+          <p class="acs-policy__contact-body">{{ section.settings.contact_text }}</p>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Policy Content",
+  "tag": "section",
+  "class": "acs-policy-section",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Page title", "default": "Shipping Policy" },
+    { "type": "text", "id": "updated_date", "label": "Last updated date", "default": "May 2026" },
+    { "type": "richtext", "id": "body", "label": "Policy content", "default": "<h2>Shipping Information</h2><p>We ship across India and internationally. All products are carefully packed to protect handcrafted items during transit.</p><h3>Domestic Shipping</h3><ul><li>Free shipping on orders above Rs. 1,499</li><li>Standard shipping: Rs. 99 (5-7 business days)</li><li>Express shipping: Rs. 199 (2-3 business days)</li></ul><h3>International Shipping</h3><p>International orders are shipped via tracked courier. Delivery takes 7-14 business days. Customs duties may apply.</p>" },
+    { "type": "text", "id": "contact_title", "label": "Contact box title", "default": "Questions?" },
+    { "type": "richtext", "id": "contact_text", "label": "Contact text", "default": "<p>Email us at <a href=\"mailto:hello@acharkhastory.com\">hello@acharkhastory.com</a> or WhatsApp <a href=\"https://wa.me/919999999999\">+91-99999-99999</a></p>" }
+  ],
+  "presets": [{ "name": "Policy Content" }]
+}
+{% endschema %}

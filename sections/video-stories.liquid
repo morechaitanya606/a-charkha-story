@@ -1,0 +1,326 @@
+{% comment %}
+  Acharkhastory — Video Stories
+  Instagram Reels-style vertical video carousel of artisans at work.
+  Autoplay on viewport entry, pause on exit (IntersectionObserver).
+  Mobile: horizontal swipe strip; Desktop: row of 4–5 video cards.
+{% endcomment %}
+
+{%- liquid
+  assign heading = section.settings.heading
+  assign subheading = section.settings.subheading
+-%}
+
+<style>
+  .acs-video-stories {
+    background: var(--acs-color-primary);
+    color: var(--acs-color-background);
+    padding-block: var(--acs-space-3xl);
+    overflow: hidden;
+  }
+
+  .acs-video-stories__inner {
+    width: min(100% - calc(var(--acs-edge) * 2), var(--acs-page-width));
+    margin-inline: auto;
+  }
+
+  .acs-video-stories__header {
+    display: grid;
+    gap: var(--acs-space-xs);
+    margin-bottom: var(--acs-space-xl);
+  }
+
+  .acs-video-stories__heading {
+    color: var(--acs-color-background);
+    font-family: var(--acs-font-display);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 500;
+    line-height: var(--acs-line-heading);
+    margin: 0;
+  }
+
+  .acs-video-stories__subheading {
+    color: rgb(var(--acs-color-background-rgb) / 0.7);
+    max-width: 38rem;
+    margin: 0;
+  }
+
+  .acs-video-stories__track {
+    display: flex;
+    gap: var(--acs-space-md);
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: var(--acs-space-xs);
+  }
+
+  .acs-video-stories__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .acs-video-stories__card {
+    position: relative;
+    flex: 0 0 clamp(180px, 22vw, 260px);
+    aspect-ratio: 9 / 16;
+    border-radius: var(--acs-radius-md);
+    overflow: hidden;
+    background: var(--acs-color-cream);
+    scroll-snap-align: start;
+    cursor: pointer;
+  }
+
+  .acs-video-stories__card video,
+  .acs-video-stories__card img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .acs-video-stories__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(var(--acs-color-primary-rgb) / 0.65) 0%, transparent 40%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--acs-space-md);
+    pointer-events: none;
+  }
+
+  .acs-video-stories__label {
+    color: var(--acs-color-background);
+    font-size: var(--acs-type-micro);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+
+  .acs-video-stories__name {
+    color: var(--acs-color-background);
+    font-family: var(--acs-font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .acs-video-stories__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--acs-radius-full);
+    background: rgb(var(--acs-color-white-rgb) / 0.85);
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transition: opacity var(--acs-duration-base) var(--acs-ease);
+    pointer-events: none;
+  }
+
+  .acs-video-stories__play::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    margin-left: 3px;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 12px solid var(--acs-color-primary);
+  }
+
+  .acs-video-stories__card[data-paused] .acs-video-stories__play {
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    .acs-video-stories {
+      padding-block: var(--acs-space-2xl);
+    }
+
+    .acs-video-stories__card {
+      flex: 0 0 clamp(150px, 40vw, 200px);
+    }
+  }
+</style>
+
+<section class="acs-video-stories" id="VideoStories-{{ section.id }}">
+  <div class="acs-video-stories__inner">
+    {%- if heading != blank or subheading != blank -%}
+      <header class="acs-video-stories__header acs-reveal">
+        {%- if heading != blank -%}
+          <h2 class="acs-video-stories__heading">{{ heading | escape }}</h2>
+        {%- endif -%}
+        {%- if subheading != blank -%}
+          <p class="acs-video-stories__subheading">{{ subheading | escape }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    <div class="acs-video-stories__track" data-acs-video-track>
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign artisan = block.settings.artisan_name | default: 'Artisan'
+          assign craft = block.settings.craft_label | default: 'Handcraft'
+          assign poster = block.settings.poster_image
+          assign video_url = block.settings.video_url
+        -%}
+
+        <div
+          class="acs-video-stories__card acs-reveal"
+          data-acs-delay="{{ forloop.index }}"
+          data-acs-video-card
+          data-paused
+          {{ block.shopify_attributes }}
+        >
+          {%- if video_url != blank -%}
+            <video
+              src="{{ video_url }}"
+              {%- if poster != blank %}poster="{{ poster | image_url: width: 540 }}"{% endif %}
+              muted
+              loop
+              playsinline
+              preload="none"
+              data-acs-video
+            ></video>
+          {%- elsif poster != blank -%}
+            {{
+              poster
+              | image_url: width: 540
+              | image_tag:
+                loading: 'lazy',
+                widths: '270, 400, 540',
+                sizes: '(min-width: 990px) 260px, 40vw',
+                alt: artisan,
+                width: 270,
+                height: 480
+            }}
+          {%- else -%}
+            <div style="background: var(--acs-color-surface); width: 100%; height: 100%; display: grid; place-items: center;">
+              <span style="font-family: var(--acs-font-display); font-size: 1.5rem; color: var(--acs-color-accent);">{{ artisan | slice: 0 }}</span>
+            </div>
+          {%- endif -%}
+
+          <div class="acs-video-stories__overlay">
+            <span class="acs-video-stories__label">{{ craft | escape }}</span>
+            <p class="acs-video-stories__name">{{ artisan | escape }}</p>
+          </div>
+
+          {%- if video_url != blank -%}
+            <div class="acs-video-stories__play" aria-hidden="true"></div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<script>
+  (function() {
+    const track = document.querySelector('[data-acs-video-track]');
+    if (!track) return;
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        const video = entry.target.querySelector('[data-acs-video]');
+        if (!video) return;
+
+        if (entry.isIntersecting && !prefersReduced) {
+          video.play().catch(function() {});
+          entry.target.removeAttribute('data-paused');
+        } else {
+          video.pause();
+          entry.target.setAttribute('data-paused', '');
+        }
+      });
+    }, { threshold: 0.5 });
+
+    track.querySelectorAll('[data-acs-video-card]').forEach(function(card) {
+      observer.observe(card);
+
+      card.addEventListener('click', function() {
+        const video = card.querySelector('[data-acs-video]');
+        if (!video) return;
+        if (video.paused) {
+          video.play().catch(function() {});
+          card.removeAttribute('data-paused');
+        } else {
+          video.pause();
+          card.setAttribute('data-paused', '');
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Video Stories",
+  "tag": "section",
+  "class": "acs-video-stories-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Craft in Motion"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Watch our artisans bring centuries-old traditions to life."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "story",
+      "name": "Story",
+      "settings": [
+        {
+          "type": "text",
+          "id": "artisan_name",
+          "label": "Artisan name",
+          "default": "Artisan Name"
+        },
+        {
+          "type": "text",
+          "id": "craft_label",
+          "label": "Craft label",
+          "default": "Ajrakh"
+        },
+        {
+          "type": "image_picker",
+          "id": "poster_image",
+          "label": "Poster image"
+        },
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Video URL (Shopify-hosted)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video Stories",
+      "blocks": [
+        { "type": "story", "settings": { "artisan_name": "Ramji Bhai", "craft_label": "Ajrakh" } },
+        { "type": "story", "settings": { "artisan_name": "Suman Devi", "craft_label": "Chikankari" } },
+        { "type": "story", "settings": { "artisan_name": "Kala Ben", "craft_label": "Bandhani" } },
+        { "type": "story", "settings": { "artisan_name": "Ahmed Khatri", "craft_label": "Block Print" } },
+        { "type": "story", "settings": { "artisan_name": "Meena Devi", "craft_label": "Handloom" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

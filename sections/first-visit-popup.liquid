@@ -1,0 +1,177 @@
+{% comment %}
+  Acharkhastory first-visit capture.
+  Desktop popup after delay, optional exit intent, mobile sticky discount bar.
+{% endcomment %}
+
+{%- if section.settings.enabled -%}
+  <section
+    id="FirstVisitCapture-{{ section.id }}"
+    data-acs-capture
+    data-delay="{{ section.settings.delay_seconds | times: 1000 }}"
+    data-exit-intent="{{ section.settings.enable_exit_intent }}"
+    data-storage-key="acs-first-visit-capture-{{ section.id }}"
+    aria-hidden="false"
+  >
+    <div class="acs-popup" data-acs-capture-popup>
+      <div class="acs-popup__panel" role="dialog" aria-modal="true" aria-labelledby="CaptureTitle-{{ section.id }}">
+        <button class="acs-popup__close" type="button" aria-label="{{ section.settings.close_label | escape }}" data-acs-capture-dismiss>
+          x
+        </button>
+
+        {%- if section.settings.title != blank -%}
+          <h2 class="acs-popup__title" id="CaptureTitle-{{ section.id }}">{{ section.settings.title | escape }}</h2>
+        {%- endif -%}
+
+        {%- if section.settings.text != blank -%}
+          <p class="acs-popup__text">{{ section.settings.text | escape }}</p>
+        {%- endif -%}
+
+        {%- form 'customer', id: 'first-visit-popup-form' -%}
+          <input type="hidden" name="contact[tags]" value="{{ section.settings.customer_tags | escape }}">
+          <div class="acs-popup__form">
+            <input
+              class="acs-input"
+              type="email"
+              name="contact[email]"
+              placeholder="{{ section.settings.placeholder | escape }}"
+              autocomplete="email"
+              required
+              aria-label="{{ section.settings.email_label | escape }}"
+            >
+            <button class="acs-button acs-button--primary" type="submit">
+              {{ section.settings.button_label | escape }}
+            </button>
+          </div>
+        {%- endform -%}
+
+        {%- if section.settings.dismiss_label != blank -%}
+          <button class="acs-popup__dismiss" type="button" data-acs-capture-dismiss>
+            {{ section.settings.dismiss_label | escape }}
+          </button>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="acs-discount-bar" data-acs-capture-mobile>
+      <button class="acs-discount-bar__close" type="button" aria-label="{{ section.settings.close_label | escape }}" data-acs-capture-dismiss>
+        x
+      </button>
+
+      {%- form 'customer', id: 'first-visit-mobile-form' -%}
+        <input type="hidden" name="contact[tags]" value="{{ section.settings.customer_tags | escape }}">
+        <div class="acs-discount-bar__form">
+          <input
+            class="acs-input"
+            type="email"
+            name="contact[email]"
+            placeholder="{{ section.settings.mobile_placeholder | escape }}"
+            autocomplete="email"
+            required
+            aria-label="{{ section.settings.email_label | escape }}"
+          >
+          <button class="acs-button acs-button--primary" type="submit">
+            {{ section.settings.mobile_button_label | escape }}
+          </button>
+        </div>
+      {%- endform -%}
+    </div>
+  </section>
+
+  <script src="{{ 'first-visit-popup.js' | asset_url }}" defer></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "ACS First Visit Popup",
+  "tag": "section",
+  "class": "shopify-section--acs-capture",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Enable capture",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "delay_seconds",
+      "label": "Delay in seconds",
+      "min": 3,
+      "max": 20,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_exit_intent",
+      "label": "Enable desktop exit intent",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Popup title",
+      "default": "Welcome to Acharkhastory"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Popup text",
+      "default": "Stories woven in every thread. Get 10% off your first order."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Email placeholder",
+      "default": "Your email address"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Get my discount"
+    },
+    {
+      "type": "text",
+      "id": "dismiss_label",
+      "label": "Dismiss label",
+      "default": "I do not want 10% off"
+    },
+    {
+      "type": "text",
+      "id": "mobile_placeholder",
+      "label": "Mobile email placeholder",
+      "default": "Get 10% off"
+    },
+    {
+      "type": "text",
+      "id": "mobile_button_label",
+      "label": "Mobile button label",
+      "default": "Claim"
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Email input accessible label",
+      "default": "Email address"
+    },
+    {
+      "type": "text",
+      "id": "close_label",
+      "label": "Close button accessible label",
+      "default": "Close discount offer"
+    },
+    {
+      "type": "text",
+      "id": "customer_tags",
+      "label": "Customer tags",
+      "default": "newsletter,first-time-offer"
+    }
+  ],
+  "presets": [
+    {
+      "name": "ACS First Visit Popup"
+    }
+  ]
+}
+{% endschema %}

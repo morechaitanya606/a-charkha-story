@@ -1,0 +1,218 @@
+/* ==========================================================================
+   Acharkhastory — Micro-Interaction System
+   Scroll-driven reveals, card hovers, parallax tilt, counter animations,
+   and button effects. All respect prefers-reduced-motion.
+   ========================================================================== */
+
+/* ── Scroll-driven reveal animations ────────────────────────────────── */
+
+@keyframes acs-fade-up {
+  from {
+    opacity: 0;
+    translate: 0 1.5rem;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes acs-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes acs-scale-in {
+  from {
+    opacity: 0;
+    scale: 0.96;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes acs-slide-left {
+  from {
+    opacity: 0;
+    translate: 2rem 0;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* ── Reveal utility classes ─────────────────────────────────────────── */
+
+.acs-reveal {
+  opacity: 0;
+}
+
+.acs-reveal.is-visible {
+  animation: acs-fade-up var(--acs-duration-slow) var(--acs-ease-out-expo) forwards;
+}
+
+.acs-reveal--scale.is-visible {
+  animation-name: acs-scale-in;
+}
+
+.acs-reveal--slide.is-visible {
+  animation-name: acs-slide-left;
+}
+
+/* Stagger children — add data-acs-stagger to parent */
+.acs-reveal[data-acs-delay="1"] { animation-delay: 80ms; }
+.acs-reveal[data-acs-delay="2"] { animation-delay: 160ms; }
+.acs-reveal[data-acs-delay="3"] { animation-delay: 240ms; }
+.acs-reveal[data-acs-delay="4"] { animation-delay: 320ms; }
+.acs-reveal[data-acs-delay="5"] { animation-delay: 400ms; }
+.acs-reveal[data-acs-delay="6"] { animation-delay: 480ms; }
+
+/* ── Card hover lift ────────────────────────────────────────────────── */
+
+.acs-card-lift {
+  transition:
+    transform var(--acs-duration-base) var(--acs-ease),
+    box-shadow var(--acs-duration-base) var(--acs-ease);
+}
+
+@media (hover: hover) {
+  .acs-card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--acs-shadow-card-hover);
+  }
+}
+
+/* ── Parallax tilt (for category tiles) ─────────────────────────────── */
+
+.acs-tilt {
+  --acs-tilt-x: 0deg;
+  --acs-tilt-y: 0deg;
+  perspective: 800px;
+  transform-style: preserve-3d;
+}
+
+.acs-tilt__inner {
+  transition: transform var(--acs-duration-base) var(--acs-ease);
+  transform: rotateX(var(--acs-tilt-x)) rotateY(var(--acs-tilt-y));
+  will-change: transform;
+}
+
+/* ── Button ripple ──────────────────────────────────────────────────── */
+
+@keyframes acs-ripple {
+  to {
+    opacity: 0;
+    transform: scale(2.5);
+  }
+}
+
+.acs-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.acs-ripple__effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgb(var(--acs-color-white-rgb) / 0.3);
+  transform: scale(0);
+  animation: acs-ripple 0.6s linear;
+  pointer-events: none;
+}
+
+/* ── Counter animation (for stats/social proof) ─────────────────────── */
+
+@keyframes acs-count-up {
+  from {
+    opacity: 0;
+    translate: 0 0.5rem;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+.acs-counter {
+  opacity: 0;
+}
+
+.acs-counter.is-visible {
+  animation: acs-count-up 0.6s var(--acs-ease-out-expo) forwards;
+}
+
+/* ── Marquee (for review strip) ─────────────────────────────────────── */
+
+@keyframes acs-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.acs-marquee {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.acs-marquee__track {
+  display: flex;
+  gap: var(--acs-space-xl);
+  animation: acs-marquee 30s linear infinite;
+}
+
+.acs-marquee:hover .acs-marquee__track {
+  animation-play-state: paused;
+}
+
+/* ── WhatsApp bounce ────────────────────────────────────────────────── */
+
+@keyframes acs-bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.acs-bounce-enter {
+  animation: acs-bounce-subtle 1s var(--acs-ease-spring) 2;
+}
+
+/* ── Prefers-reduced-motion: disable all animations ─────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .acs-reveal,
+  .acs-counter {
+    opacity: 1;
+  }
+
+  .acs-reveal.is-visible,
+  .acs-counter.is-visible {
+    animation: none;
+  }
+
+  .acs-card-lift:hover {
+    transform: none;
+  }
+
+  .acs-tilt__inner {
+    transform: none;
+    transition: none;
+  }
+
+  .acs-marquee__track {
+    animation: none;
+  }
+
+  .acs-bounce-enter {
+    animation: none;
+  }
+}
